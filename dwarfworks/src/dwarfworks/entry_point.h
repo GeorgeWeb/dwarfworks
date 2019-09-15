@@ -6,6 +6,10 @@
 extern dwarfworks::application* dwarfworks::create_app();
 
 int main(int argc, char** argv) {
+  dwarfworks::log::init();
+  // dwarfworks::log::get_core_logger()->warn("Initialized Log!");
+  // dwarfworks::log::get_client_logger()->warn("Initialized Log!");
+
   auto app = dwarfworks::create_app();
   app->run();
   delete app;

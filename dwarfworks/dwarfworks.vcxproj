@@ -57,6 +57,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>DWARFWORKS_PLATFORM_WINDOWS;DWARFWORKS_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)dwarfworks\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -71,6 +72,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>DWARFWORKS_PLATFORM_WINDOWS;DWARFWORKS_BUILD_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)dwarfworks\vendor\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -79,9 +81,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\dwarfworks\log.cpp" />
     <ClCompile Include="src\dwarfworks\application.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\dwarfworks\log.h" />
     <ClInclude Include="src\dwarfworks\core.h" />
     <ClInclude Include="src\dwarfworks\application.h" />
     <ClInclude Include="src\dwarfworks\entry_point.h" />

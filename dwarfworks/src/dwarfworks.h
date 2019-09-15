@@ -3,12 +3,12 @@
 
 // For use by Dwarfworks applications
 
-#include "core/application.h"
+#include "dwarfworks/application.h"
 
 // -- Entry point -----------
-#include "core/entry_point.h"
+#include "dwarfworks/entry_point.h"
 // --------------------------
 
 // #include "graphics/graphics.h"
 
-#endif // DWARFWORKS_DWARFWORKS_H_
+#endif  // DWARFWORKS_DWARFWORKS_H_

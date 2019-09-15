@@ -79,12 +79,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\application.cpp" />
+    <ClCompile Include="src\dwarfworks\application.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\core.h" />
-    <ClInclude Include="src\core\application.h" />
-    <ClInclude Include="src\core\entry_point.h" />
+    <ClInclude Include="src\dwarfworks\core.h" />
+    <ClInclude Include="src\dwarfworks\application.h" />
+    <ClInclude Include="src\dwarfworks\entry_point.h" />
     <ClInclude Include="src\dwarfworks.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

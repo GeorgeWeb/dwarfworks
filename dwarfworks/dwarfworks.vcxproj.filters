@@ -15,21 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\core\core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\core\application.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\dwarfworks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\core\entry_point.h">
+    <ClInclude Include="src\dwarfworks\application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dwarfworks\core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\dwarfworks\entry_point.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\core\application.cpp">
+    <ClCompile Include="src\dwarfworks\application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

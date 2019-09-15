@@ -5,3 +5,6 @@ bin-int/
 
 # file
 *.user
+
+# temporary excludes (clang-tidy and clang-format, used by the clang power tools)
+.clang-*

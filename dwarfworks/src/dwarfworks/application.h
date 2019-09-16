@@ -5,7 +5,7 @@
 
 namespace dwarfworks {
 
-class DWARFWORKS_API application {
+class DWARF_API application {
   // represents the state of the application,
   // used to gracefully exit with a message
   enum class state : int { OK = 0, FAILED = 1, RUNNING = 2 };

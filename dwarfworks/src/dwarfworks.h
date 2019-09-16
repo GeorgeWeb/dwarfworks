@@ -3,12 +3,17 @@
 
 // For use by Dwarfworks applications
 
-#include "dwarfworks/application.h"
-
-// -- Entry point -----------
-#include "dwarfworks/entry_point.h"
+// -- Logger ----------------
+//#include "dwarfworks/log.h"
+#include "dwarfworks/log.cpp"
 // --------------------------
 
-// #include "graphics/graphics.h"
+// -- Application -----------------
+#include "dwarfworks/application.h"
+// --------------------------------
+
+// -- Entry point -----------------
+#include "dwarfworks/entry_point.h"
+// --------------------------------
 
 #endif  // DWARFWORKS_DWARFWORKS_H_

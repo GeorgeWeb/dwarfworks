@@ -3,9 +3,10 @@
 
 // For use by Dwarfworks applications
 
-// -- Logger --------------
-#include "dwarfworks/log.h"
-// ------------------------
+// -- Logger ----------------
+//#include "dwarfworks/log.h"
+#include "dwarfworks/log.cpp"
+// --------------------------
 
 // -- Application -----------------
 #include "dwarfworks/application.h"

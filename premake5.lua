@@ -117,7 +117,8 @@ project "sandbox"
 
 		-- preprocessor definitions
 		defines {
-			"DWARF_PLATFORM_WINDOWS"
+			"DWARF_PLATFORM_WINDOWS",
+			"DWARF_DYNAMIC_LINK"
 		}
 	
 	-- specify build and compilation options per build configuration

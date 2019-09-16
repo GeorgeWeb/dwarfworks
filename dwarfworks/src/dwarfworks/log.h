@@ -10,16 +10,39 @@
 
 namespace dwarfworks {
 
-class DWARF_API log {
+// Cannot export the log class symbols with `dllexport`, due to warnings:
+//
+// src\dwarfworks\log.h(27, 54) : warning C4251 :
+// 'dwarfworks::log::s_coreLogger' : class 'std::shared_ptr<spdlog::logger>'
+// needs to have dll - interface to be used by clients of class
+// 'dwarfworks::log' vendor\spdlog\include\spdlog\details\registry.h(33) :
+// message: see declaration of 'std::shared_ptr<spdlog::logger>'
+//
+// AND:
+//
+// src\dwarfworks\log.h(28, 56) : warning C4251 :
+// 'dwarfworks::log::s_clientLogger' : class 'std::shared_ptr<spdlog::logger>'
+// needs to have dll - interface to be used by clients of class
+// 'dwarfworks::log' vendor\spdlog\include\spdlog\details\registry.h(33) :
+// message: see declaration of 'std::shared_ptr<spdlog::logger>'
+//
+// Thus, adding `dllexport/dllimport` (via DWARF_API) for each of the static
+// functions. The private members should not be visible in the client code using
+// the DLL.
+//
+// reference:
+// https://docs.microsoft.com/en-us/cpp/cpp/using-dllimport-and-dllexport-in-cpp-classes
+
+class log {
  public:
-  static void init();
+  static DWARF_API void init();
 
   // gets the core/engine logger instance
-  static inline std::shared_ptr<spdlog::logger>& get_core_logger() {
+  static DWARF_API inline std::shared_ptr<spdlog::logger>& get_core_logger() {
     return s_coreLogger;
   }
   // gets the client/application logger instance
-  static inline std::shared_ptr<spdlog::logger>& get_client_logger() {
+  static DWARF_API inline std::shared_ptr<spdlog::logger>& get_client_logger() {
     return s_clientLogger;
   }
 
@@ -27,9 +50,6 @@ class DWARF_API log {
   static std::shared_ptr<spdlog::logger> s_coreLogger;
   static std::shared_ptr<spdlog::logger> s_clientLogger;
 };
-
-// std::shared_ptr<spdlog::logger> log::s_coreLogger;
-// std::shared_ptr<spdlog::logger> log::s_clientLogger;
 
 }  // namespace dwarfworks
 

@@ -4,8 +4,7 @@
 // For use by Dwarfworks applications
 
 // -- Logger ----------------
-//#include "dwarfworks/log.h"
-#include "dwarfworks/log.cpp"
+#include "dwarfworks/log.h"
 // --------------------------
 
 // -- Application -----------------

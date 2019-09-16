@@ -8,3 +8,10 @@ bin-int/
 
 # temporary excludes (clang-tidy and clang-format, used by the clang power tools)
 .clang-*
+
+# Visual Studio solution & project files
+*.sln
+dwarfworks/*.vcxproj
+dwarfworks/*.vcxproj.*
+sandbox/*.vcxproj
+sandbox/*.vcxproj.*

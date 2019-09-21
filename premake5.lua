@@ -1,4 +1,4 @@
-workspace "dwarfworks"
+workspace "Dwarfworks"
 	architecture "x64"
 
 	configurations {
@@ -9,15 +9,17 @@ workspace "dwarfworks"
 
 -- platform-independent output directory definition
 local outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+-- description ...
+local sourcedir = "%{prj.name}/Source"
 
 ----------------------------
 --       Dwarfworks       --
 ----------------------------
 
-project "dwarfworks"
+project "Dwarfworks"
 	-- set project general settings
-	location "dwarfworks"
-	kind "SharedLib" -- dynamic library
+	location "Dwarfworks"
+	kind "SharedLib" -- dynamically linked library (DLL)
 	language "C++"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
@@ -25,13 +27,30 @@ project "dwarfworks"
 
 	-- set project source files
 	files {
-		"%{prj.name}/src/**.h", -- if needed, add `.hpp` files as well
-		"%{prj.name}/src/**.cpp"
+		-- Dwarfworks root
+		sourcedir .. "/**.h",
+		sourcedir .. "/**.cpp",
+		-- Core module
+		sourcedir .. "/Core/**.h",
+		sourcedir .. "/Core/**.cpp",
+		--/-- Event System
+		sourcedir .. "/Core/EventSystem/**.h",
+		sourcedir .. "/Core/EventSystem/**.cpp",
+		--/--/-- Defaut Events
+		sourcedir .. "/Core/EventSystem/Events/**.h",
+		sourcedir .. "/Core/EventSystem/Events/**.cpp",
+		-- Graphics module
+		sourcedir .. "/Graphics/**.h",
+		sourcedir .. "/Graphics/**.cpp",
+		-- Math module
+		sourcedir .. "/Math/**.h",
+		sourcedir .. "/Math/**.cpp"
 	}
 
 	-- set project include directories
 	includedirs {
-		"%{prj.name}/vendor/spdlog/include"
+		-- External Logging lib - spdlog
+		"%{prj.name}/Vendor/spdlog/include"
 	}
 
 	-- set project target properties
@@ -50,10 +69,10 @@ project "dwarfworks"
 		-- copying DLLs and resoruces
 		postbuildcommands {
 			-- copy dwarfworks.dll into sandbox
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/sandbox")
+			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
 		}
 
-	print("%{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/sandbox")
+	print("%{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
 	
 	-- specify build and compilation options per build configuration
 	filter "configurations:Debug"
@@ -83,9 +102,9 @@ project "dwarfworks"
 --       Sandbox       --
 -------------------------
 
-project "sandbox"
+project "Sandbox"
 	-- set project general settings
-	location "sandbox"
+	location "Sandbox"
 	kind "ConsoleApp" -- executable
 	language "C++"
 
@@ -94,19 +113,21 @@ project "sandbox"
 
 	-- set project source files
 	files {
-		"%{prj.name}/src/**.h", -- if needed, add `.hpp` files as well
-		"%{prj.name}/src/**.cpp"
+		sourcedir .. "/**.h", -- if needed, add `.hpp` files as well
+		sourcedir .. "/**.cpp"
 	}
 
 	-- set project include directories
 	includedirs {
-		"dwarfworks/vendor/spdlog/include",
-		"dwarfworks/src"
+		-- External Logging lib - spdlog
+		"Dwarfworks/Vendor/spdlog/include",
+		-- The Game Engine - Dwarfworks
+		"Dwarfworks/Source"
 	}
 
 	-- set project link targets
 	links {
-		"dwarfworks"
+		"Dwarfworks"
 	}
 
 	-- set project target properties

@@ -15,4 +15,9 @@
 #include "Dwarfworks/Core/EntryPoint.h"
 // ------------------------------------
 
+// -- Events -----------------------------------------------------
+#include "Dwarfworks/Core/EventSystem/Events/ApplicationEvent.h"
+#include "Dwarfworks/Core/EventSystem/Events/UncategorizedEvent.h"
+// ---------------------------------------------------------------
+
 #endif  // DWARFWORKS_DWARFWORKS_H_

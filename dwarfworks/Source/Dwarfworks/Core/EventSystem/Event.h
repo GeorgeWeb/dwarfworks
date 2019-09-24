@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <functional>
 #include <string>
+#include <type_traits>
 #include <typeinfo>
 
 namespace Dwarfworks {
@@ -23,15 +24,20 @@ namespace Core {
 // -----------------
 // Uncategorized, Application, Input, Keyboard, Mouse, MouseButton
 
+namespace {
 // Each category is represented as a bit that is set in a bitfield to define
 // the category of an event
-namespace EventCategoryFlags {
-static constexpr int Uncategorized = 0;
-static constexpr int Application = BIT(0);
-static constexpr int Input = BIT(1);
-static constexpr int Keyboard = BIT(2);
-static constexpr int Mouse = BIT(3);
-}  // namespace EventCategoryFlags
+struct DWARF_API EventCategory {
+  using Type = int;  // ...
+  static constexpr Type Uncategorized = 0;
+  static constexpr Type Application = BIT(0);
+  static constexpr Type Input = BIT(1);
+  static constexpr Type Keyboard = BIT(2);
+  static constexpr Type Mouse = BIT(3);
+};
+// alias
+using EventCategoryT = EventCategory::Type;
+}  // namespace
 
 // ------------
 // Event Types:
@@ -46,34 +52,86 @@ static constexpr int Mouse = BIT(3);
 // Dispatch => Handle
 // EventDispatcher => EventHandler
 
-// ...
-template <typename EventType, int CategoryFlags>
+// prototype of the Event class
+// template <class EventType, EventCategoryT Category>
+// class EventT;
+
+// prototype of the equality operator for Event
+template <class EventLhs, class EventRhs>
+bool operator==(EventLhs, EventRhs);
+
+template <class EventType, EventCategoryT Category>
 class DWARF_API EventT : public CRTP<EventType> {
-  // ...
-  template <typename EventType>
+  template <class Event>
   friend class EventDispatcher;
 
- public:
   // ...
-  EventType const& GetType() const { return this->Implementation(); }
-  // ...
-  std::string GetName() const { return typeid(this->Implementation()).name(); }
+  template <class EventLhs, class EventRhs>
+  friend bool operator==<>(EventLhs, EventRhs);
 
-  // ...
-  int GetCategoryFlags() const {
-    return Category;
-    // return this->Implementation().GetCategoryFlags();
+ public:
+  // for debugging purposes mostly
+  EventType GetEventType() const noexcept { return this->Implementation(); }
+  std::string GetName() const noexcept {
+    // TODO: use boost::core::demangle to produce a more human-readable output
+    return typeid(this->Implementation()).name();
+  }
+  std::string ToString() const { return this->Implementation().ToString(); }
+
+  template <class OtherEvent>
+  inline bool IsSameAs(OtherEvent event) {
+    return std::is_same_v<decltype(this->Implementation().GetEventType()),
+                          decltype(event.GetEventType())>;
   }
 
-  inline bool IsInCategory(int category) const {
+  // ...
+  template <typename OtherEventType>
+  inline bool EqualsType() {
+    return std::is_same_v<decltype(this->implementation.GetEventType()),
+                          OtherEventType>;
+  }
+
+  // ...
+  inline EventCategoryT GetCategoryFlags() const noexcept { return Category; }
+  inline bool IsInCategory(EventCategoryT category) const noexcept {
     return GetCategoryFlags() & category;
   }
 
-  // dispatching
-  // void Dispatch() const { this->Implementation().Dispatch(); }
-
  protected:
-  bool m_Handled;
+  bool m_IsHandled = false;
+};
+
+// ...
+template <class EventLhs, class EventRhs>
+bool operator==<>(EventLhs eventLhs, EventRhs eventRhs) {
+  if (eventLhs.IsSameAs(eventRhs)) {
+    DWARF_CORE_INFO("Hooray, event types match.");
+    return true;
+  }
+  DWARF_CORE_WARN("Oopsie, event types do not match.");
+  return false;
+}
+
+template <class Event>
+class EventDispatcher {
+  template <class EventType>
+  using EventFn = std::function<bool(EventType&)>;
+
+ public:
+  explicit EventDispatcher(Event& event) : m_Event(event) {}
+
+  template <class EventType>
+  inline bool Dispatch(EventFn<EventType> func) {
+    if (m_Event.EqualsType(EventType)) {
+      DWARF_CORE_INFO("The events are of the same type.");
+      m_Event.m_Handled = func(m_Event);
+      return true;
+    }
+    return false;
+  }
+
+ private:
+  Event m_Event;
 };
 
 }  // namespace Core

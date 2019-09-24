@@ -1,7 +1,9 @@
 #include "Application.h"
+#include "EventSystem/Events/ApplicationEvent.h"
+#include "EventSystem/Events/UncategorizedEvent.h"
 
-#include <iostream>
 #include <stdexcept>
+#include "Log.h"
 
 namespace Dwarfworks {
 namespace Core {
@@ -24,13 +26,28 @@ void Application::ChangeState(const State& state) noexcept(false) {
 void Application::Run() {
   try {
     ChangeState(State::Running);
-    std::cout << "Running <dwarfworks> application." << std::endl;
+    DWARF_CORE_INFO("Running <dwarfworks> application.");
+    EventDispatcher disp(ApplicationEvent{});
+    ApplicationEvent appEvnt{};
+
+    // evntDisp.Dispatch(f(appEvnt));
+
+    if (appEvnt.IsInCategory(EventCategory::Application)) {
+      DWARF_CORE_INFO("{0} is in Application category", appEvnt.GetName());
+    }
+
+    // testing events comparison
+    UncategorizedEvent otherEvnt{};
+    if (appEvnt == otherEvnt) {
+      // Do something ...
+    }
+
     while (IsRunning()) {
       // handle main loop
     }
   } catch (std::exception const& error) {
-    std::cout << "Application runtime has failed." << std::endl;
-    std::cout << "Error: " << error.what() << std::endl;
+    DWARF_CORE_ERROR("Application runtime has failed.");
+    DWARF_CORE_ERROR("Error: {0}.", error.what());
   }
 }
 

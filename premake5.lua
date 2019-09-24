@@ -1,166 +1,167 @@
 workspace "Dwarfworks"
-	architecture "x64"
-
-	configurations {
-		"Debug", -- Full on debug code enabled with all information available
-		"Release", -- Stripped out a lot of debug info, but some (like Logging) is kept
-		"Dist" -- build to be distributed to the public with all debug info stripped
-	}
+    architecture "x64"
+    configurations {
+        "Debug",      -- Full on debug code enabled with all information available
+        "Release",    -- Stripped out a lot of debug info, but some (like Logging) is kept
+        "Dist"        -- build to be distributed to the public with all debug info stripped
+    }
 
 -- platform-independent output directory definition
-local outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+local OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- description ...
-local sourcedir = "%{prj.name}/Source"
+local SourceDir = "%{prj.name}/Source"
+-- local IncludeDir -- TODO: create a list/array of incldue dirs.
 
 ----------------------------
 --       Dwarfworks       --
 ----------------------------
 
 project "Dwarfworks"
-	-- set project general settings
-	location "Dwarfworks"
-	kind "SharedLib" -- dynamically linked library (DLL)
-	language "C++"
+    -- set project general settings
+    location "Dwarfworks"
+    kind "SharedLib" -- dynamically linked library (DLL)
+    language "C++"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
+    objdir ("bin-int/" .. OutputDir .. "/%{prj.name}")
 
-	-- set project source files
-	files {
-		-- Dwarfworks root
-		sourcedir .. "/**.h",
-		sourcedir .. "/**.cpp",
-		-- Core module
-		sourcedir .. "/Core/**.h",
-		sourcedir .. "/Core/**.cpp",
-		--/-- Event System
-		sourcedir .. "/Core/EventSystem/**.h",
-		sourcedir .. "/Core/EventSystem/**.cpp",
-		--/--/-- Defaut Events
-		sourcedir .. "/Core/EventSystem/Events/**.h",
-		sourcedir .. "/Core/EventSystem/Events/**.cpp",
-		-- Graphics module
-		sourcedir .. "/Graphics/**.h",
-		sourcedir .. "/Graphics/**.cpp",
-		-- Math module
-		sourcedir .. "/Math/**.h",
-		sourcedir .. "/Math/**.cpp"
-	}
+    -- set project source files
+    files {
+        -- Dwarfworks root
+        SourceDir .. "/**.h",
+        SourceDir .. "/**.cpp",
+        -- Core module
+        SourceDir .. "/Core/**.h",
+        SourceDir .. "/Core/**.cpp",
+        --/-- Event System
+        SourceDir .. "/Core/EventSystem/**.h",
+        SourceDir .. "/Core/EventSystem/**.cpp",
+        --/--/-- Defaut Events
+        SourceDir .. "/Core/EventSystem/Events/**.h",
+        SourceDir .. "/Core/EventSystem/Events/**.cpp",
+        -- Graphics module
+        SourceDir .. "/Graphics/**.h",
+        SourceDir .. "/Graphics/**.cpp",
+        -- Math module
+        SourceDir .. "/Math/**.h",
+        SourceDir .. "/Math/**.cpp"
+    }
 
-	-- set project include directories
-	includedirs {
-		-- External Logging lib - spdlog
-		"%{prj.name}/Vendor/spdlog/include"
-	}
+    -- set project include directories
+    includedirs {
+        -- External Logging lib - spdlog
+        "%{prj.name}/Vendor/spdlog/include"
+    }
 
-	-- set project target properties
-	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
+    -- set project target properties
+    filter "system:windows"
+        cppdialect "C++17"
+        staticruntime "on"
+        systemversion "latest"
 
-		-- preprocessor definitions
-		defines {
-			"DWARF_PLATFORM_WINDOWS",
-			"DWARF_DYNAMIC_LINK",
-			"DWARF_BUILD_DLL"
-		}
+        -- preprocessor definitions
+        defines {
+            "DWARF_PLATFORM_WINDOWS",
+            "DWARF_DYNAMIC_LINK",
+            "DWARF_BUILD_DLL",
+            -- silence the noise from external libraries
+            "_CRT_SECURE_NO_WARNINGS"
+        }
 
-		-- copying DLLs and resoruces
-		postbuildcommands {
-			-- copy dwarfworks.dll into sandbox
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-		}
+        -- copying DLLs and resoruces
+        postbuildcommands {
+            -- copy dwarfworks.dll into sandbox
+            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
+        }
 
-	print("%{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-	
-	-- specify build and compilation options per build configuration
-	filter "configurations:Debug"
-		defines "DWARF_DEBUG"
-		symbols "On"
+    print("%{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
 
-	filter "configurations:Release"
-		defines "DWARF_RELEASE"
-		optimize "On"
+    -- specify build and compilation options per build configuration
+    filter "configurations:Debug"
+        defines "DWARF_DEBUG"
+        symbols "on"
 
-	filter "configurations:Dist"
-		defines "DWARF_DIST"
-		optimize "On"
-	
-	-- specify versions of the run-time library to be used on codegen per build configuration
-	filter { "system:windows", "configurations:Debug" }
-		buildoptions "/MTd"
+    filter "configurations:Release"
+        defines "DWARF_RELEASE"
+        optimize "on"
 
-	filter { "system:windows", "configurations:Release" }
-		buildoptions "/MT"
+    filter "configurations:Dist"
+        defines "DWARF_DIST"
+        optimize "on"
 
-	filter { "system:windows", "configurations:Dist" }
-		buildoptions "/MT"
+    -- specify versions of the run-time library to be used on codegen per build configuration
+    filter { "system:windows", "configurations:Debug" }
+        buildoptions "/MTd"
 
+    filter { "system:windows", "configurations:Release" }
+        buildoptions "/MT"
+
+    filter { "system:windows", "configurations:Dist" }
+        buildoptions "/MT"
 
 -------------------------
 --       Sandbox       --
 -------------------------
 
 project "Sandbox"
-	-- set project general settings
-	location "Sandbox"
-	kind "ConsoleApp" -- executable
-	language "C++"
+    -- set project general settings
+    location "Sandbox"
+    kind "ConsoleApp" -- executable
+    language "C++"
 
-	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
+    targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
+    objdir ("bin-int/" .. OutputDir .. "/%{prj.name}")
 
-	-- set project source files
-	files {
-		sourcedir .. "/**.h", -- if needed, add `.hpp` files as well
-		sourcedir .. "/**.cpp"
-	}
+    -- set project source files
+    files {
+        SourceDir .. "/**.h", -- if needed, add `.hpp` files as well
+        SourceDir .. "/**.cpp"
+    }
 
-	-- set project include directories
-	includedirs {
-		-- External Logging lib - spdlog
-		"Dwarfworks/Vendor/spdlog/include",
-		-- The Game Engine - Dwarfworks
-		"Dwarfworks/Source"
-	}
+    -- set project include directories
+    includedirs {
+        -- External Logging lib - spdlog
+        "Dwarfworks/Vendor/spdlog/include",
+        -- The Game Engine - Dwarfworks
+        "Dwarfworks/Source"
+    }
 
-	-- set project link targets
-	links {
-		"Dwarfworks"
-	}
+    -- set project link targets
+    links {
+        "Dwarfworks"
+    }
 
-	-- set project target properties
-	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
+    -- set project target properties
+    filter "system:windows"
+        cppdialect "C++17"
+        staticruntime "on"
+        systemversion "latest"
 
-		-- preprocessor definitions
-		defines {
-			"DWARF_PLATFORM_WINDOWS",
-			"DWARF_DYNAMIC_LINK"
-		}
-	
-	-- specify build and compilation options per build configuration
-	filter "configurations:Debug"
-		defines "DWARF_DEBUG"
-		symbols "On"
+        -- preprocessor definitions
+        defines {
+            "DWARF_PLATFORM_WINDOWS",
+            "DWARF_DYNAMIC_LINK"
+        }
 
-	filter "configurations:Release"
-		defines "DWARF_RELEASE"
-		optimize "On"
+    -- specify build and compilation options per build configuration
+    filter "configurations:Debug"
+        defines "DWARF_DEBUG"
+        symbols "on"
 
-	filter "configurations:Dist"
-		defines "DWARF_DIST"
-		optimize "On"
-	
-	-- specify versions of the run-time library to be used on codegen per build configuration
-	filter { "system:windows", "configurations:Debug" }
-		buildoptions "/MTd"
+    filter "configurations:Release"
+        defines "DWARF_RELEASE"
+        optimize "on"
 
-	filter { "system:windows", "configurations:Release" }
-		buildoptions "/MT"
+    filter "configurations:Dist"
+        defines "DWARF_DIST"
+        optimize "on"
 
-	filter { "system:windows", "configurations:Dist" }
-		buildoptions "/MT"
+    -- specify versions of the run-time library to be used on compilation per build configuration
+    filter { "system:windows", "configurations:Debug" }
+        buildoptions "/MTd"
+
+    filter { "system:windows", "configurations:Release" }
+        buildoptions "/MT"
+
+    filter { "system:windows", "configurations:Dist" }
+        buildoptions "/MT"

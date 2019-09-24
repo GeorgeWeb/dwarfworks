@@ -2,7 +2,7 @@
 #define DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_H_
 
 #include "../Core.h"
-#include "../Log.h"
+#include "../Logging/Log.h"
 
 #include <algorithm>
 #include <functional>
@@ -12,6 +12,7 @@
 
 namespace Dwarfworks {
 namespace Core {
+namespace EventSystem {
 
 // Events in Dwarfworks are currently blocking or synchronous.
 // This means that when an event occurs it immediately gets dispatched
@@ -65,45 +66,46 @@ class DWARF_API EventT : public CRTP<EventType> {
   template <class Event>
   friend class EventDispatcher;
 
-  // ...
+  //
   template <class EventLhs, class EventRhs>
-  friend bool operator==<>(EventLhs, EventRhs);
+  friend bool operator==(EventLhs, EventRhs);
 
  public:
   // for debugging purposes mostly
-  EventType GetEventType() const noexcept { return this->Implementation(); }
   std::string GetName() const noexcept {
     // TODO: use boost::core::demangle to produce a more human-readable output
     return typeid(this->Implementation()).name();
   }
   std::string ToString() const { return this->Implementation().ToString(); }
 
+  inline EventCategoryT GetCategoryFlags() const noexcept { return Category; }
+  inline bool IsInCategory(EventCategoryT category) const noexcept {
+    return GetCategoryFlags() & category;
+  }
+
+  EventType GetEventType() const noexcept { return this->Implementation(); }
+
+  // compare object against another object based on type
   template <class OtherEvent>
   inline bool IsSameAs(OtherEvent event) {
     return std::is_same_v<decltype(this->Implementation().GetEventType()),
                           decltype(event.GetEventType())>;
   }
 
-  // ...
+  // compare object type against another object type
   template <typename OtherEventType>
   inline bool EqualsType() {
     return std::is_same_v<decltype(this->implementation.GetEventType()),
                           OtherEventType>;
   }
 
-  // ...
-  inline EventCategoryT GetCategoryFlags() const noexcept { return Category; }
-  inline bool IsInCategory(EventCategoryT category) const noexcept {
-    return GetCategoryFlags() & category;
-  }
-
  protected:
-  bool m_IsHandled = false;
+  bool m_IsHandled{false};
 };
 
 // ...
 template <class EventLhs, class EventRhs>
-bool operator==<>(EventLhs eventLhs, EventRhs eventRhs) {
+bool operator==(EventLhs eventLhs, EventRhs eventRhs) {
   if (eventLhs.IsSameAs(eventRhs)) {
     DWARF_CORE_INFO("Hooray, event types match.");
     return true;
@@ -112,28 +114,7 @@ bool operator==<>(EventLhs eventLhs, EventRhs eventRhs) {
   return false;
 }
 
-template <class Event>
-class EventDispatcher {
-  template <class EventType>
-  using EventFn = std::function<bool(EventType&)>;
-
- public:
-  explicit EventDispatcher(Event& event) : m_Event(event) {}
-
-  template <class EventType>
-  inline bool Dispatch(EventFn<EventType> func) {
-    if (m_Event.EqualsType(EventType)) {
-      DWARF_CORE_INFO("The events are of the same type.");
-      m_Event.m_Handled = func(m_Event);
-      return true;
-    }
-    return false;
-  }
-
- private:
-  Event m_Event;
-};
-
+}  // namespace EventSystem
 }  // namespace Core
 }  // namespace Dwarfworks
 

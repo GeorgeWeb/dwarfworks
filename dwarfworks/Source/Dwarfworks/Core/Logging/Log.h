@@ -1,7 +1,7 @@
-#ifndef DWARFWORKS_CORE_LOG_H_
-#define DWARFWORKS_CORE_LOG_H_
+#ifndef DWARFWORKS_CORE_LOGGING_LOG_H_
+#define DWARFWORKS_CORE_LOGGING_LOG_H_
 
-#include "core.h"
+#include "../Core.h"
 
 // header-only (interface) lib
 #include "spdlog/spdlog.h"
@@ -10,6 +10,7 @@
 
 namespace Dwarfworks {
 namespace Core {
+namespace Logging {
 
 // Cannot export the log class symbols with `dllexport`, due to warnings:
 //
@@ -54,6 +55,7 @@ class Log {
   static std::shared_ptr<spdlog::logger> s_ClientLogger;
 };
 
+}  // namespace Logging
 }  // namespace Core
 }  // namespace Dwarfworks
 
@@ -61,27 +63,27 @@ namespace {
 
 // Core: Dwarfworks/Engine log macros
 #define DWARF_CORE_TRACE(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->trace(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetCoreLogger()->trace(__VA_ARGS__)
 #define DWARF_CORE_INFO(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->info(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetCoreLogger()->info(__VA_ARGS__)
 #define DWARF_CORE_WARN(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->warn(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define DWARF_CORE_ERROR(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->error(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetCoreLogger()->error(__VA_ARGS__)
 #define DWARF_CORE_FATAL(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->critical(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client: Application/Game log macros
 #define DWARF_TRACE(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->trace(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetClientLogger()->trace(__VA_ARGS__)
 #define DWARF_INFO(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->info(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetClientLogger()->info(__VA_ARGS__)
 #define DWARF_WARN(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->warn(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define DWARF_ERROR(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->error(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetClientLogger()->error(__VA_ARGS__)
 #define DWARF_FATAL(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->critical(__VA_ARGS__)
+  ::Dwarfworks::Core::Logging::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 // Strip out (from binary) the core log macros on distribution
 #ifdef DWARF_DIST_BUILD
@@ -94,4 +96,4 @@ namespace {
 
 }  // namespace
 
-#endif  // DWARFWORKS_CORE_LOG_H_
+#endif  // DWARFWORKS_CORE_LOGGING_LOG_H_

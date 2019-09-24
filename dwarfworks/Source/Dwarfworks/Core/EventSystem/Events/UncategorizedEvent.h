@@ -5,13 +5,14 @@
 
 namespace Dwarfworks {
 namespace Core {
+namespace EventSystem {
 
 // Default event declaration (& definition) for UncategorizedEvent.
 struct DWARF_API UncategorizedEvent
-    : public EventT<UncategorizedEvent, EventCategory::Uncategorized> {
-  std::string ToString() const { return GetName(); }
-};
+    : public EventT<UncategorizedEvent, EventCategory::Uncategorized> {};
+
+}  // namespace EventSystem
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // !DWARFWORKS_CORE_EVENT_SYSTEM_DEFAULT_EVENTS_UNCATEGORIZED_EVENT_H_
+#endif  // !DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_UNCATEGORIZED_EVENT_H_

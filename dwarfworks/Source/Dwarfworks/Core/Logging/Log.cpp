@@ -2,8 +2,11 @@
 
 #include "spdlog/sinks/stdout_color_sinks.h"
 
+#include <string>
+
 namespace Dwarfworks {
 namespace Core {
+namespace Logging {
 
 std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
 std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
@@ -22,5 +25,6 @@ void Log::Initialize() noexcept {
   s_ClientLogger->set_level(spdlog::level::trace);
 }
 
+}  // namespace Logging
 }  // namespace Core
 }  // namespace Dwarfworks

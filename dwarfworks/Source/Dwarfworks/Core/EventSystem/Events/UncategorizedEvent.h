@@ -8,8 +8,13 @@ namespace Core {
 namespace EventSystem {
 
 // Default event declaration (& definition) for UncategorizedEvent.
-struct DWARF_API UncategorizedEvent
-    : public EventT<UncategorizedEvent, EventCategory::Uncategorized> {};
+class DWARF_API UncategorizedEvent
+    : public EventT<UncategorizedEvent, EventCategory::Uncategorized> {
+ public:
+  UncategorizedEvent() = default;
+
+  std::string ToString() const { return GetName(); }
+};
 
 }  // namespace EventSystem
 }  // namespace Core

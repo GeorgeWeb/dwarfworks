@@ -9,11 +9,19 @@ namespace Dwarfworks {
 namespace Core {
 namespace EventSystem {
 
+// ---------------------
+// Keyboard Input Events
+// ---------------------
+
 template <class KeyEventType>
 class DWARF_API KeyEvent
     : public EventT<KeyEvent<KeyEventType>,
                     EventCategory::Keyboard | EventCategory::Input> {
  public:
+  KeyEvent() = default;
+
+  std::string ToString() const { return GetName(); }
+
   inline int GetKeyCode() const noexcept { return m_KeyCode; }
 
  protected:
@@ -22,6 +30,8 @@ class DWARF_API KeyEvent
 
 struct DWARF_API KeyPressedEvent : public KeyEvent<KeyPressedEvent> {
  public:
+  KeyPressedEvent() = default;
+
   std::string ToString() const {
     std::stringstream ss;
     ss << "KeyPressedEvent: " << m_KeyCode << " (" << m_RepeatCount
@@ -37,6 +47,8 @@ struct DWARF_API KeyPressedEvent : public KeyEvent<KeyPressedEvent> {
 
 struct DWARF_API KeyReleasedEvent : public KeyEvent<KeyReleasedEvent> {
  public:
+  KeyReleasedEvent() = default;
+
   std::string ToString() const {
     std::stringstream ss;
     ss << "KeyReleasedEvent: " << m_KeyCode;

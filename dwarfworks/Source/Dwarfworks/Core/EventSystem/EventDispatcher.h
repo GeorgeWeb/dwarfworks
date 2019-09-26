@@ -13,26 +13,30 @@ namespace EventSystem {
 // For the future, a better strategy might be to buffer events in an event bus
 // (a queue) and process them during the "event" part of the update stage.
 
-template <class Event>
+template <class EventType>
 class EventDispatcher {
-  template <class EventType>
-  using EventFn = std::function<bool(EventType&)>;
+  template <class DispEventType>
+  using EventFn = std::function<bool(DispEventType&)>;
 
  public:
-  explicit EventDispatcher(Event& event) : m_Event(event) {}
+  explicit EventDispatcher(EventType& event) : m_Event(event) {}
 
-  template <class EventType>
-  inline bool Dispatch(EventFn<EventType> func) {
-    if (m_Event.EqualsType(EventType)) {
-      DWARF_CORE_INFO("The events are of the same type.");
-      m_Event.m_Handled = func(m_Event);
+  template <class DispEventType>
+  inline bool Dispatch(EventFn<DispEventType> func) {
+    if (m_Event.EqualsType(DispEventType)) {
+      handleEvent(func);
       return true;
     }
     return false;
   }
 
  private:
-  Event m_Event;
+  EventType m_Event;
+
+  template <class DispEventType>
+  void handleEvent(EventFn<DispEventType> func) {
+    m_Event.m_Handled = func(m_Event);
+  }
 };
 
 }  // namespace EventSystem

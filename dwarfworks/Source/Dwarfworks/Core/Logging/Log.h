@@ -3,8 +3,9 @@
 
 #include "../Core.h"
 
-// header-only (interface) lib
 #include "spdlog/spdlog.h"
+// for outputting custom types
+#include "spdlog/fmt/ostr.h"
 
 #include <memory>
 

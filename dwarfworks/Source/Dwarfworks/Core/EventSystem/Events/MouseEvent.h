@@ -9,6 +9,10 @@ namespace Dwarfworks {
 namespace Core {
 namespace EventSystem {
 
+// ------------------
+// Mouse Input Events
+// ------------------
+
 class DWARF_API MouseMovedEvent
     : public EventT<MouseMovedEvent,
                     EventCategory::Mouse | EventCategory::Input> {
@@ -50,17 +54,21 @@ class DWARF_API MouseScrolledEvent
   float m_YOffset;
 };
 
+// -------------------------
+// Mouse Button Input Events
+// -------------------------
+
 template <class MouseButtonEventType>
 class DWARF_API MouseButtonEvent
     : public EventT<MouseButtonEvent<MouseButtonEventType>,
                     EventCategory::Mouse | EventCategory::Input> {
  public:
+  std::string ToString() const { return GetName(); }
+
   inline float GetButton() const noexcept { return m_Button; }
-  // inline void SetButton(int button) noexcept { m_Button = button; }
 
  protected:
-  // MouseButtonEvent() = default;
-  explicit MouseButtonEvent(float button) : m_Button(button) {}
+  explicit MouseButtonEvent(int button) : m_Button(button) {}
 
   int m_Button;
 };

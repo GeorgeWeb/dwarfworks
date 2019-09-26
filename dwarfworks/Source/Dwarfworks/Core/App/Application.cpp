@@ -24,34 +24,33 @@ void Application::Run() {
 
   try {
     DWARF_CORE_INFO("Running <dwarfworks> application.");
-    EventDispatcher disp(ApplicationEvent{});
-    ApplicationEvent appEvnt{};
-
-    // evntDisp.Dispatch(f(appEvnt));
+    EventDispatcher disp(UpdateEvent{});
+    UpdateEvent appEvnt{};
+    DWARF_TRACE(appEvnt);
 
     // testing event category check
     if (appEvnt.IsInCategory(EventCategory::Input)) {
-      DWARF_CORE_INFO("Yes, {0} is in Application category", appEvnt.GetName());
+      DWARF_TRACE("Yes, {0} is in Application category", appEvnt);
     } else {
-      DWARF_CORE_WARN("No, {0} is NOT in Application category",
-                      appEvnt.GetName());
+      DWARF_WARN("No, {0} is NOT in Application category", appEvnt);
     }
 
     // testing events comparison
-    ApplicationEvent otherEvnt{};
+    UpdateEvent otherEvnt{};
     if (appEvnt == otherEvnt) {
-      // Do something ...
-    }
-    UncategorizedEvent otherEvnt2{};
-    if (appEvnt == otherEvnt2) {
-      // Do something ...
+      DWARF_TRACE("{0} equals {1}", appEvnt, otherEvnt);
+    } else {
+      DWARF_WARN("{0} are NOT {1} the same", appEvnt, otherEvnt);
     }
 
-    MouseMovedEvent mouseEvnt1(100, 100);
-    DWARF_TRACE("{0}", mouseEvnt1.ToString());
-
-    MouseButtonPressedEvent mouseEvnt2(1);
-    DWARF_TRACE("{0}", mouseEvnt2.ToString());
+    RenderEvent anotherEvnt{};
+    if (otherEvnt == anotherEvnt) {
+      DWARF_TRACE("{0} equals {1}", otherEvnt, anotherEvnt);
+    } else {
+      DWARF_WARN("{0} are NOT {1} the same", otherEvnt, anotherEvnt);
+    }
+    WindowResizeEvent winEvnt(1280, 720);
+    DWARF_TRACE(winEvnt);
 
     // the main loop
     while (IsRunning()) {

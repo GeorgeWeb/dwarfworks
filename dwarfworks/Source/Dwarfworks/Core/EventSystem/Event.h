@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <ostream>
 #include <string>
 #include <type_traits>
 #include <typeinfo>
@@ -35,6 +36,7 @@ struct DWARF_API EventCategory {
   static constexpr Type Input = BIT(1);
   static constexpr Type Keyboard = BIT(2);
   static constexpr Type Mouse = BIT(3);
+  static constexpr Type MouseButton = BIT(4);
 };
 // alias
 using EventCategoryT = EventCategory::Type;
@@ -44,31 +46,22 @@ using EventCategoryT = EventCategory::Type;
 // Event Types:
 // ------------
 // Uncategorized
-// [Application] Window: WindowClose, WindowResize, WindowFocus, WindowMoved,
-// [Application] Application: AppTick, AppUpdate, AppRender
-// [Input] Keyboard: KeyPressed, KeyReleased
-// [Input] Mouse: MouseButtonPressed, MouseButtonReleased
-// [Input] MouseButton: MouseMoved, MouseScrolled
+// Application: WindowClose, WindowResize, WindowFocus, WindowMoved
+// Application: FixedUpdate, Update, Render
+// Keyboard | Input: KeyPressed, KeyReleased
+// Mouse | Input: MouseMoved, MouseScrolled
+// MouseButton | Mouse | Input: MouseButtonPressed, MouseButtonReleased,
 
-// Dispatch => Handle
-// EventDispatcher => EventHandler
-
-// prototype of the Event class
-// template <class EventType, EventCategoryT Category>
-// class EventT;
-
-// prototype of the equality operator for Event
-template <class EventLhs, class EventRhs>
-bool operator==(EventLhs, EventRhs);
+template <class EventTypeLhs, class EventTypeRhs>
+bool operator==(EventTypeLhs, EventTypeRhs);
 
 template <class EventType, EventCategoryT Category>
 class DWARF_API EventT : public CRTP<EventType> {
-  template <class Event>
+  template <class>
   friend class EventDispatcher;
 
-  //
-  template <class EventLhs, class EventRhs>
-  friend bool operator==(EventLhs, EventRhs);
+  template <class EventTypeLhs, class EventTypeRhs>
+  friend bool operator==(EventTypeLhs, EventTypeRhs);
 
  public:
   // for debugging purposes mostly
@@ -86,8 +79,8 @@ class DWARF_API EventT : public CRTP<EventType> {
   EventType GetEventType() const noexcept { return this->Implementation(); }
 
   // compare object against another object based on type
-  template <class OtherEvent>
-  inline bool IsSameAs(OtherEvent event) {
+  template <class ComparisonEventType>
+  inline bool IsSameAs(ComparisonEventType event) {
     return std::is_same_v<decltype(this->Implementation().GetEventType()),
                           decltype(event.GetEventType())>;
   }
@@ -103,15 +96,15 @@ class DWARF_API EventT : public CRTP<EventType> {
   bool m_IsHandled{false};
 };
 
-// ...
-template <class EventLhs, class EventRhs>
-bool operator==(EventLhs eventLhs, EventRhs eventRhs) {
-  if (eventLhs.IsSameAs(eventRhs)) {
-    DWARF_CORE_INFO("Hooray, event types match.");
-    return true;
-  }
-  DWARF_CORE_WARN("Oopsie, event types do not match.");
-  return false;
+template <class EventTypeLhs, class EventTypeRhs>
+bool operator==(EventTypeLhs eventLhs, EventTypeRhs eventRhs) {
+  return eventLhs.IsSameAs(eventRhs);
+}
+
+template <class EventType, EventCategoryT Category>
+inline std::ostream& operator<<(std::ostream& os,
+                                EventT<EventType, Category> const& event) {
+  return os << event.ToString();
 }
 
 }  // namespace EventSystem

@@ -7,8 +7,6 @@
 // for outputting custom types
 #include "spdlog/fmt/ostr.h"
 
-#include <memory>
-
 namespace Dwarfworks {
 namespace Core {
 namespace Logging {

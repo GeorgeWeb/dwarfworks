@@ -1,15 +1,10 @@
 #ifndef DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_H_
 #define DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_H_
 
+#include "dwpch.h"
+
 #include "../Core.h"
 #include "../Logging/Log.h"
-
-#include <algorithm>
-#include <functional>
-#include <ostream>
-#include <string>
-#include <type_traits>
-#include <typeinfo>
 
 namespace Dwarfworks {
 namespace Core {

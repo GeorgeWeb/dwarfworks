@@ -23,7 +23,7 @@ class EventDispatcher {
 
   template <class DispEventType>
   inline bool Dispatch(EventFn<DispEventType> func) {
-    if (m_Event.EqualsType(DispEventType)) {
+    if (m_Event.CompareType(DispEventType)) {
       handleEvent(func);
       return true;
     }

@@ -80,14 +80,14 @@ class DWARF_API EventT : public CRTP<EventType> {
 
   // compare object against another object based on type
   template <class ComparisonEventType>
-  inline bool IsSameAs(ComparisonEventType event) {
+  inline bool Compare(ComparisonEventType event) {
     return std::is_same_v<decltype(this->Implementation().GetEventType()),
                           decltype(event.GetEventType())>;
   }
 
   // compare object type against another object type
   template <typename OtherEventType>
-  inline bool EqualsType() {
+  inline bool CompareType() {
     return std::is_same_v<decltype(this->implementation.GetEventType()),
                           OtherEventType>;
   }
@@ -98,7 +98,7 @@ class DWARF_API EventT : public CRTP<EventType> {
 
 template <class EventTypeLhs, class EventTypeRhs>
 bool operator==(EventTypeLhs eventLhs, EventTypeRhs eventRhs) {
-  return eventLhs.IsSameAs(eventRhs);
+  return eventLhs.Compare(eventRhs);
 }
 
 template <class EventType, EventCategoryT Category>

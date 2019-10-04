@@ -11,7 +11,7 @@ bin-int/
 
 # Visual Studio solution & project files
 *.sln
-dwarfworks/*.vcxproj
-dwarfworks/*.vcxproj.*
-sandbox/*.vcxproj
-sandbox/*.vcxproj.*
+Dwarfworks/*.vcxproj
+Dwarfworks/*.vcxproj.*
+Sandbox/*.vcxproj
+Sandbox/*.vcxproj.*

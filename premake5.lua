@@ -25,6 +25,9 @@ project "Dwarfworks"
     targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
     objdir ("bin-int/" .. OutputDir .. "/%{prj.name}")
 
+    pchheader "dwpch.h"                         -- create pre-compiled header
+    pchsource "Dwarfworks/Source/dwpch.cpp"     -- use pre-compiled header (from source)
+
     -- set project source files
     files {
         -- Dwarfworks root
@@ -50,7 +53,8 @@ project "Dwarfworks"
     -- set project include directories
     includedirs {
         -- External Logging lib - spdlog
-        "%{prj.name}/Vendor/spdlog/include"
+        "%{prj.name}/Vendor/spdlog/include",
+        SourceDir
     }
 
     -- set project target properties

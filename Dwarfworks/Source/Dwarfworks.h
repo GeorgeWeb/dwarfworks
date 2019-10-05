@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_DWARFWORKS_H_
-#define DWARFWORKS_DWARFWORKS_H_
+#ifndef DWARFWORKS_H_
+#define DWARFWORKS_H_
 
 // For use by Dwarfworks applications
 
@@ -23,4 +23,4 @@
 #include "Dwarfworks/Core/EventSystem/Events/UncategorizedEvent.h"
 // ---------------------------------------------------------------
 
-#endif  // DWARFWORKS_DWARFWORKS_H_
+#endif  // DWARFWORKS_H_

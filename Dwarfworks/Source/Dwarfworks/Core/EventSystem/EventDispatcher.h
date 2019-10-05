@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
-#define DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
+#ifndef CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
+#define CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
 
 #include "Event.h"
 
@@ -14,7 +14,7 @@ namespace EventSystem {
 // (a queue) and process them during the "event" part of the update stage.
 
 template <class EventType>
-class EventDispatcher {
+class DW_API EventDispatcher {
   template <class DispEventType>
   using EventFn = std::function<bool(DispEventType&)>;
 
@@ -43,4 +43,4 @@ class EventDispatcher {
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
+#endif  // CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_

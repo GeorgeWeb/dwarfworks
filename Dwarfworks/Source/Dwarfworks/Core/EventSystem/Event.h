@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_H_
-#define DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_H_
+#ifndef CORE_EVENT_SYSTEM_EVENT_H_
+#define CORE_EVENT_SYSTEM_EVENT_H_
 
 #include "dwpch.h"
 
@@ -24,7 +24,7 @@ namespace EventSystem {
 namespace {
 // Each category is represented as a bit that is set in a bitfield to define
 // the category of an event
-struct DWARF_API EventCategory {
+struct DW_API EventCategory {
   using Type = int;  // ...
   static constexpr Type Uncategorized = 0;
   static constexpr Type Application = BIT(0);
@@ -51,7 +51,7 @@ template <class EventTypeLhs, class EventTypeRhs>
 bool operator==(EventTypeLhs, EventTypeRhs);
 
 template <class EventType, EventCategoryT Category>
-class DWARF_API EventT : public CRTP<EventType> {
+class DW_API EventT : public CRTP<EventType> {
   template <class>
   friend class EventDispatcher;
 
@@ -106,4 +106,4 @@ inline std::ostream& operator<<(std::ostream& os,
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // DWARFWORKS_CORE_EVENT_SYSTEM_EVENT_H_
+#endif  // CORE_EVENT_SYSTEM_EVENT_H_

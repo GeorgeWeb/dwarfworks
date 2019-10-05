@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_CORE_EVENT_SYSTEM_APPLICATION_EVENT_H_
-#define DWARFWORKS_CORE_EVENT_SYSTEM_APPLICATION_EVENT_H_
+#ifndef CORE_EVENT_SYSTEM_APPLICATION_EVENT_H_
+#define CORE_EVENT_SYSTEM_APPLICATION_EVENT_H_
 
 #include "../Event.h"
 
@@ -11,13 +11,13 @@ namespace EventSystem {
 // Application Window Events
 // --------------------------
 
-class DWARF_API WindowCloseEvent
+class DW_API WindowCloseEvent
     : public EventT<WindowCloseEvent, EventCategory::Application> {
  public:
   WindowCloseEvent() = default;
 };
 
-class DWARF_API WindowResizeEvent
+class DW_API WindowResizeEvent
     : public EventT<WindowResizeEvent, EventCategory::Application> {
  public:
   WindowResizeEvent(unsigned int width, unsigned int height)
@@ -33,7 +33,7 @@ class DWARF_API WindowResizeEvent
   unsigned int m_Width, m_Height;
 };
 
-class DWARF_API WindowFocusEvent
+class DW_API WindowFocusEvent
     : public EventT<WindowFocusEvent, EventCategory::Application> {
  public:
   WindowFocusEvent() = default;
@@ -41,7 +41,7 @@ class DWARF_API WindowFocusEvent
   std::string ToString() const { return GetName(); }
 };
 
-class DWARF_API WindowMovedEvent
+class DW_API WindowMovedEvent
     : public EventT<WindowMovedEvent, EventCategory::Application> {
  public:
   WindowMovedEvent() = default;
@@ -53,7 +53,7 @@ class DWARF_API WindowMovedEvent
 // Application (Game Loop) Events
 // ------------------------------
 
-class DWARF_API FixedUpdateEvent  // OnFixedUpdate (for physics)
+class DW_API FixedUpdateEvent  // OnFixedUpdate (for physics)
     : public EventT<FixedUpdateEvent, EventCategory::Application> {
  public:
   FixedUpdateEvent() = default;
@@ -61,7 +61,7 @@ class DWARF_API FixedUpdateEvent  // OnFixedUpdate (for physics)
   std::string ToString() const { return GetName(); }
 };
 
-class DWARF_API UpdateEvent  // OnUpdate
+class DW_API UpdateEvent  // OnUpdate
     : public EventT<UpdateEvent, EventCategory::Application> {
  public:
   UpdateEvent() = default;
@@ -69,7 +69,7 @@ class DWARF_API UpdateEvent  // OnUpdate
   std::string ToString() const { return GetName(); }
 };
 
-class DWARF_API RenderEvent  // OnRender
+class DW_API RenderEvent  // OnRender
     : public EventT<RenderEvent, EventCategory::Application> {
  public:
   RenderEvent() = default;
@@ -81,4 +81,4 @@ class DWARF_API RenderEvent  // OnRender
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // !DWARFWORKS_CORE_EVENT_SYSTEM_APPLICATION_EVENT_H_
+#endif  // CORE_EVENT_SYSTEM_APPLICATION_EVENT_H_

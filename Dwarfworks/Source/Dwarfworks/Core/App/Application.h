@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_CORE_APP_APPLICATION_H_
-#define DWARFWORKS_CORE_APP_APPLICATION_H_
+#ifndef CORE_APP_APPLICATION_H_
+#define CORE_APP_APPLICATION_H_
 
 #include "../Core.h"
 
@@ -7,7 +7,7 @@ namespace Dwarfworks {
 namespace Core {
 namespace App {
 
-class DWARF_API Application {
+class DW_API Application {
  public:
   Application() = default;
   virtual ~Application() = default;
@@ -31,4 +31,4 @@ Application* CreateApplication();
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // DWARFWORKS_CORE_APP_APPLICATION_H_
+#endif  // CORE_APP_APPLICATION_H_

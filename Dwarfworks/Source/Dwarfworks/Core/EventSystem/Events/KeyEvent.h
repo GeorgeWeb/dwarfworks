@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_KEY_EVENT_H_
-#define DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_KEY_EVENT_H_
+#ifndef CORE_EVENT_SYSTEM_EVENTS_KEY_EVENT_H_
+#define CORE_EVENT_SYSTEM_EVENTS_KEY_EVENT_H_
 
 #include "../Event.h"
 
@@ -12,7 +12,7 @@ namespace EventSystem {
 // ---------------------
 
 template <class KeyEventType>
-class DWARF_API KeyEvent
+class DW_API KeyEvent
     : public EventT<KeyEvent<KeyEventType>,
                     EventCategory::Keyboard | EventCategory::Input> {
  public:
@@ -26,7 +26,7 @@ class DWARF_API KeyEvent
   int m_KeyCode;
 };
 
-struct DWARF_API KeyPressedEvent : public KeyEvent<KeyPressedEvent> {
+struct DW_API KeyPressedEvent : public KeyEvent<KeyPressedEvent> {
  public:
   KeyPressedEvent() = default;
 
@@ -43,7 +43,7 @@ struct DWARF_API KeyPressedEvent : public KeyEvent<KeyPressedEvent> {
   int m_RepeatCount;
 };
 
-struct DWARF_API KeyReleasedEvent : public KeyEvent<KeyReleasedEvent> {
+struct DW_API KeyReleasedEvent : public KeyEvent<KeyReleasedEvent> {
  public:
   KeyReleasedEvent() = default;
 
@@ -58,4 +58,4 @@ struct DWARF_API KeyReleasedEvent : public KeyEvent<KeyReleasedEvent> {
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // !DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_KEY_EVENT_H_
+#endif  // CORE_EVENT_SYSTEM_EVENTS_KEY_EVENT_H_

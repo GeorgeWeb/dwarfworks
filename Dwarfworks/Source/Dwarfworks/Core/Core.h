@@ -1,19 +1,19 @@
-#ifndef DWARFWORKS_CORE_CORE_H_
-#define DWARFWORKS_CORE_CORE_H_
+#ifndef CORE_CORE_H_
+#define CORE_CORE_H_
 
-#ifdef DWARF_PLATFORM_WINDOWS
-#if DWARF_DYNAMIC_LINK
-#ifdef DWARF_BUILD_DLL
-#define DWARF_API __declspec(dllexport)
+#ifdef DW_PLATFORM_WINDOWS
+#if DW_DYNAMIC_LINK
+#ifdef DW_BUILD_DLL
+#define DW_API __declspec(dllexport)
 #else
-#define DWARF_API __declspec(dllimport)
-#endif  // DWARF_BUILD_DLL
+#define DW_API __declspec(dllimport)
+#endif
 #else
-#define DWARF_API
+#define DW_API
 #endif
 #else
 #error Dwarfworks only supports Windows at the time!
-#endif  // DWARF_PLATFORM_WINDOWS
+#endif
 
 // used to create bitfields
 #define BIT(x) (1 << x)
@@ -23,7 +23,7 @@ namespace Core {
 
 // Helps getting rid of `static_cast` in our CRTP interfaces
 template <typename ImplType>
-struct DWARF_API CRTP {
+struct DW_API CRTP {
   inline ImplType& Implementation() { return static_cast<ImplType&>(*this); }
   // Deals with the case where the implementation object is const
   inline ImplType const& Implementation() const {
@@ -34,4 +34,4 @@ struct DWARF_API CRTP {
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // DWARFWORKS_CORE_CORE_H_
+#endif  // CORE_CORE_H_

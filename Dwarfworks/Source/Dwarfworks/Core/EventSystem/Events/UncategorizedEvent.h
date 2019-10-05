@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_UNCATEGORIZED_EVENT_H_
-#define DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_UNCATEGORIZED_EVENT_H_
+#ifndef CORE_EVENT_SYSTEM_EVENTS_UNCATEGORIZED_EVENT_H_
+#define CORE_EVENT_SYSTEM_EVENTS_UNCATEGORIZED_EVENT_H_
 
 #include "../Event.h"
 
@@ -8,7 +8,7 @@ namespace Core {
 namespace EventSystem {
 
 // Default event declaration (& definition) for UncategorizedEvent.
-class DWARF_API UncategorizedEvent
+class DW_API UncategorizedEvent
     : public EventT<UncategorizedEvent, EventCategory::Uncategorized> {
  public:
   UncategorizedEvent() = default;
@@ -20,4 +20,4 @@ class DWARF_API UncategorizedEvent
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // !DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_UNCATEGORIZED_EVENT_H_
+#endif  // CORE_EVENT_SYSTEM_EVENTS_UNCATEGORIZED_EVENT_H_

@@ -65,9 +65,9 @@ project "Dwarfworks"
 
         -- preprocessor definitions
         defines {
-            "DWARF_PLATFORM_WINDOWS",
-            "DWARF_DYNAMIC_LINK",
-            "DWARF_BUILD_DLL",
+            "DW_PLATFORM_WINDOWS",
+            "DW_DYNAMIC_LINK",
+            "DW_BUILD_DLL",
             -- silence the noise from external libraries
             "_CRT_SECURE_NO_WARNINGS"
         }
@@ -82,15 +82,15 @@ project "Dwarfworks"
 
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
-        defines "DWARF_DEBUG"
+        defines "DW_DEBUG"
         symbols "on"
 
     filter "configurations:Release"
-        defines "DWARF_RELEASE"
+        defines "DW_RELEASE"
         optimize "on"
 
     filter "configurations:Dist"
-        defines "DWARF_DIST"
+        defines "DW_DIST"
         optimize "on"
 
     -- specify versions of the run-time library to be used on codegen per build configuration
@@ -143,21 +143,21 @@ project "Sandbox"
 
         -- preprocessor definitions
         defines {
-            "DWARF_PLATFORM_WINDOWS",
-            "DWARF_DYNAMIC_LINK"
+            "DW_PLATFORM_WINDOWS",
+            "DW_DYNAMIC_LINK"
         }
 
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
-        defines "DWARF_DEBUG"
+        defines "DW_DEBUG"
         symbols "on"
 
     filter "configurations:Release"
-        defines "DWARF_RELEASE"
+        defines "DW_RELEASE"
         optimize "on"
 
     filter "configurations:Dist"
-        defines "DWARF_DIST"
+        defines "DW_DIST"
         optimize "on"
 
     -- specify versions of the run-time library to be used on compilation per build configuration

@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_MOUSE_EVENT_H_
-#define DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_MOUSE_EVENT_H_
+#ifndef CORE_EVENT_SYSTEM_EVENTS_MOUSE_EVENT_H_
+#define CORE_EVENT_SYSTEM_EVENTS_MOUSE_EVENT_H_
 
 #include "../Event.h"
 
@@ -11,7 +11,7 @@ namespace EventSystem {
 // Mouse Input Events
 // ------------------
 
-class DWARF_API MouseMovedEvent
+class DW_API MouseMovedEvent
     : public EventT<MouseMovedEvent,
                     EventCategory::Mouse | EventCategory::Input> {
  public:
@@ -31,7 +31,7 @@ class DWARF_API MouseMovedEvent
   float m_MouseY;
 };
 
-class DWARF_API MouseScrolledEvent
+class DW_API MouseScrolledEvent
     : public EventT<MouseScrolledEvent,
                     EventCategory::Mouse | EventCategory::Input> {
  public:
@@ -57,7 +57,7 @@ class DWARF_API MouseScrolledEvent
 // -------------------------
 
 template <class MouseButtonEventType>
-class DWARF_API MouseButtonEvent
+class DW_API MouseButtonEvent
     : public EventT<MouseButtonEvent<MouseButtonEventType>,
                     EventCategory::Mouse | EventCategory::Input> {
  public:
@@ -71,7 +71,7 @@ class DWARF_API MouseButtonEvent
   int m_Button;
 };
 
-class DWARF_API MouseButtonPressedEvent
+class DW_API MouseButtonPressedEvent
     : public MouseButtonEvent<MouseButtonPressedEvent> {
  public:
   explicit MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
@@ -83,7 +83,7 @@ class DWARF_API MouseButtonPressedEvent
   }
 };
 
-class DWARF_API MouseButtonReleasedEvent
+class DW_API MouseButtonReleasedEvent
     : public MouseButtonEvent<MouseButtonReleasedEvent> {
  public:
   explicit MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
@@ -99,4 +99,4 @@ class DWARF_API MouseButtonReleasedEvent
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // !DWARFWORKS_CORE_EVENT_SYSTEM_EVENTS_MOUSE_EVENT_H_
+#endif  // CORE_EVENT_SYSTEM_EVENTS_MOUSE_EVENT_H_

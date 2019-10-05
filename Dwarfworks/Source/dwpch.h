@@ -14,6 +14,6 @@
 #include <unordered_set>
 #include <vector>
 
-#ifdef DWARF_PLATFORM_WINDOWS
+#ifdef DW_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif

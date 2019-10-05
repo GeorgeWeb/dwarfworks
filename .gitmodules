@@ -1,3 +1,6 @@
 [submodule "Dwarfworks/Vendor/spdlog"]
 	path = Dwarfworks/Vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Dwarfworks/Vendor/glfw"]
+	path = Dwarfworks/Vendor/glfw
+	url = https://github.com/GeorgeWeb/glfw.git

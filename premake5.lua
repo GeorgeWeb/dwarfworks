@@ -41,21 +41,34 @@ project "Dwarfworks"
         -- Dwarfworks root
         SourceDir .. "/**.h",
         SourceDir .. "/**.cpp",
+        
         -- Core module
         SourceDir .. "/Core/**.h",
         SourceDir .. "/Core/**.cpp",
-        --/-- Event System
-        SourceDir .. "/Core/EventSystem/**.h",
-        SourceDir .. "/Core/EventSystem/**.cpp",
-        --/--/-- Defaut Events
-        SourceDir .. "/Core/EventSystem/Events/**.h",
-        SourceDir .. "/Core/EventSystem/Events/**.cpp",
-        -- Graphics module
+        -- Logging sub-module
+        SourceDir .. "/Core/Log/**.h",
+        SourceDir .. "/Core/Log/**.cpp",
+        -- Events (Event System) sub-module
+        SourceDir .. "/Core/Events/**.h",
+        SourceDir .. "/Core/Events/**.cpp",
+        -- Application sub-module
+        SourceDir .. "/Core/Application/**.h",
+        SourceDir .. "/Core/Application/**.cpp",
+        -- Window sub-module
+        SourceDir .. "/Core/Window/**.h",
+        SourceDir .. "/Core/Window/**.cpp",
+        
+        -- Graphics sub-module
         SourceDir .. "/Graphics/**.h",
         SourceDir .. "/Graphics/**.cpp",
+        
         -- Math module
         SourceDir .. "/Math/**.h",
-        SourceDir .. "/Math/**.cpp"
+        SourceDir .. "/Math/**.cpp",
+        
+        -- Platform-specific code
+        SourceDir .. "/Platform/**.h",
+        SourceDir .. "/Platform/**.cpp"
     }
 
     -- set project include directories
@@ -81,7 +94,6 @@ project "Dwarfworks"
 
         -- preprocessor definitions
         defines {
-            "DW_PLATFORM_WINDOWS",
             "DW_DYNAMIC_LINK",
             "DW_BUILD_DLL",
             -- silence the noise from external libraries
@@ -159,7 +171,6 @@ project "Sandbox"
 
         -- preprocessor definitions
         defines {
-            "DW_PLATFORM_WINDOWS",
             "DW_DYNAMIC_LINK"
         }
 

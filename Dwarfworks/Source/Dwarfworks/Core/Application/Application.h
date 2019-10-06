@@ -1,11 +1,11 @@
-#ifndef CORE_APP_APPLICATION_H_
-#define CORE_APP_APPLICATION_H_
+#ifndef CORE_APPLICATION_APPLICATION_H_
+#define CORE_APPLICATION_APPLICATION_H_
 
 #include "../Core.h"
+#include "../Window/Window.h"
 
 namespace Dwarfworks {
 namespace Core {
-namespace App {
 
 class DW_API Application {
  public:
@@ -22,13 +22,9 @@ class DW_API Application {
   bool m_IsRunning{false};
 };
 
-// declaration only
-extern "C" {
 Application* CreateApplication();
-}
 
-}  // namespace App
 }  // namespace Core
 }  // namespace Dwarfworks
 
-#endif  // CORE_APP_APPLICATION_H_
+#endif  // CORE_APPLICATION_APPLICATION_H_

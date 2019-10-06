@@ -4,7 +4,6 @@
 #include "Event.h"
 
 namespace Dwarfworks {
-namespace Core {
 
 // ---------------------
 // Keyboard Input Events
@@ -66,7 +65,6 @@ class DW_API KeyTypedEvent : public KeyEvent {
   EVENT_CLASS_TYPE(KeyTyped)
 };
 
-}  // namespace Core
 }  // namespace Dwarfworks
 
 #endif  // CORE_EVENTS_KEY_EVENT_H_

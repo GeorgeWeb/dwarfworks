@@ -13,13 +13,20 @@
 #include "../Events/EventDispatcher.h"
 
 namespace Dwarfworks {
-namespace Core {
+
+Application::Application() = default;
+
+Application::~Application() = default;
 
 void Application::Run() {
   m_IsRunning = true;
 
   DW_CORE_INFO("Running <dwarfworks> application.");
-  EventDispatcher disp(AppUpdateEvent{});
+
+  // fix by creating an empty event
+  EventManager eventManager(/*empty_event*/ AppFixedUpdateEvent{});
+
+  eventManager.Register(AppUpdateEvent{});
   AppUpdateEvent appEvnt{};
   DW_TRACE(appEvnt);
 
@@ -42,7 +49,7 @@ void Application::Run() {
   if (otherEvnt == anotherEvnt) {
     DW_TRACE("{0} equals {1}", otherEvnt, anotherEvnt);
   } else {
-    DW_WARN("{0} are NOT {1} the same", otherEvnt, anotherEvnt);
+    DW_WARN("{0} and {1} are NOT the same", otherEvnt, anotherEvnt);
   }
   WindowResizeEvent winEvnt(1280, 720);
   DW_TRACE(winEvnt);
@@ -56,5 +63,4 @@ void Application::Run() {
   }
 }
 
-}  // namespace Core
 }  // namespace Dwarfworks

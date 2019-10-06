@@ -3,11 +3,25 @@
 #include "WindowsWindow.h"
 
 namespace Dwarfworks {
-namespace Platform {
 
-WindowsWindow::WindowsWindow(const Core::WindowProps& props) {
-  // TODO ...
+Window* Window::Create(const WindowProps& props) {
+  return new WindowsWindow{props};
 }
 
-}  // namespace Platform
+WindowsWindow::WindowsWindow(const WindowProps& props) { Initialize(props); }
+
+WindowsWindow::~WindowsWindow() = default;
+
+void WindowsWindow::OnUpdate() {}
+
+void WindowsWindow::SetEventCallback(const EventCallbackFn& callback) {}
+
+void WindowsWindow::SetVSync(bool isEnabled) {}
+
+bool WindowsWindow::IsVSync() const { return false; }
+
+void WindowsWindow::Initialize(const WindowProps& props) {}
+
+void WindowsWindow::Shutdown(const WindowProps& props) {}
+
 }  // namespace Dwarfworks

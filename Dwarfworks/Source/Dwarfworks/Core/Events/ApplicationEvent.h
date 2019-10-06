@@ -4,7 +4,6 @@
 #include "Event.h"
 
 namespace Dwarfworks {
-namespace Core {
 
 // --------------------------
 // Application Window Events
@@ -66,7 +65,6 @@ class DW_API AppRenderEvent : public Event {
   EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-}  // namespace Core
 }  // namespace Dwarfworks
 
 #endif  // CORE_EVENTS_APPLICATION_EVENT_H_

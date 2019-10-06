@@ -4,7 +4,6 @@
 #include "Event.h"
 
 namespace Dwarfworks {
-namespace Core {
 
 // ------------------
 // Mouse Input Events
@@ -90,7 +89,6 @@ class DW_API MouseButtonReleasedEvent : public MouseButtonEvent {
   EVENT_CLASS_TYPE(MouseButtonReleased)
 };
 
-}  // namespace Core
 }  // namespace Dwarfworks
 
 #endif  // CORE_EVENTS_MOUSE_EVENT_H_

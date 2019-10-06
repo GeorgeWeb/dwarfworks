@@ -7,7 +7,6 @@
 #include "../Log/Log.h"
 
 namespace Dwarfworks {
-namespace Core {
 
 // Events in Dwarfworks are currently blocking or synchronous.
 // This means that when an event occurs it immediately gets dispatched
@@ -94,7 +93,6 @@ inline std::ostream& operator<<(std::ostream& os, const Event& event) {
   return os << event.ToString();
 }
 
-}  // namespace Core
 }  // namespace Dwarfworks
 
 #endif  // CORE_EVENT_SYSTEM_EVENT_H_

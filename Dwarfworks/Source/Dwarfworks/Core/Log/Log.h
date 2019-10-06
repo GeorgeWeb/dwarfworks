@@ -8,7 +8,6 @@
 #include "spdlog/fmt/ostr.h"
 
 namespace Dwarfworks {
-namespace Core {
 
 // Cannot export the log class symbols with `dllexport`, due to warnings:
 //
@@ -53,34 +52,26 @@ class Log {
   static std::shared_ptr<spdlog::logger> s_ClientLogger;
 };
 
-}  // namespace Core
 }  // namespace Dwarfworks
 
 namespace {
-
 // Core: Dwarfworks/Engine log macros
 #define DW_CORE_TRACE(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define DW_CORE_INFO(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define DW_CORE_WARN(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->warn(__VA_ARGS__)
+  ::Dwarfworks::Log::GetCoreLogger()->trace(__VA_ARGS__)
+#define DW_CORE_INFO(...) ::Dwarfworks::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define DW_CORE_WARN(...) ::Dwarfworks::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define DW_CORE_ERROR(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->error(__VA_ARGS__)
+  ::Dwarfworks::Log::GetCoreLogger()->error(__VA_ARGS__)
 #define DW_CORE_FATAL(...) \
-  ::Dwarfworks::Core::Log::GetCoreLogger()->critical(__VA_ARGS__)
+  ::Dwarfworks::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
 // Client: Application/Game log macros
-#define DW_TRACE(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define DW_INFO(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->info(__VA_ARGS__)
-#define DW_WARN(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define DW_ERROR(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->error(__VA_ARGS__)
+#define DW_TRACE(...) ::Dwarfworks::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define DW_INFO(...) ::Dwarfworks::Log::GetClientLogger()->info(__VA_ARGS__)
+#define DW_WARN(...) ::Dwarfworks::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define DW_ERROR(...) ::Dwarfworks::Log::GetClientLogger()->error(__VA_ARGS__)
 #define DW_FATAL(...) \
-  ::Dwarfworks::Core::Log::GetClientLogger()->critical(__VA_ARGS__)
+  ::Dwarfworks::Log::GetClientLogger()->critical(__VA_ARGS__)
 
 // Strip out (from binary) the core log macros on distribution
 #ifdef DW_DIST_BUILD
@@ -90,7 +81,6 @@ namespace {
 #define DW_CORE_ERROR
 #define DW_CORE_FATAL
 #endif
-
 }  // namespace
 
 #endif  // CORE_LOGGING_LOG_H_

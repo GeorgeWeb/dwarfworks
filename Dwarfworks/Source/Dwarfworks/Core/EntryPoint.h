@@ -3,16 +3,16 @@
 
 #ifdef DW_PLATFORM_WINDOWS
 
-extern Dwarfworks::Core::Application* Dwarfworks::Core::CreateApplication();
+extern Dwarfworks::Application* Dwarfworks::CreateApplication();
 
 int main(int argc, char** argv) {
-  Dwarfworks::Core::Log::Initialize();
+  Dwarfworks::Log::Initialize();
 
   DW_CORE_WARN("Initialized Log!");
   auto msg = "folks";
   DW_INFO("Hello {0}.", msg);
 
-  auto app = Dwarfworks::Core::CreateApplication();
+  auto app = Dwarfworks::CreateApplication();
   app->Run();
   delete app;
   return 0;

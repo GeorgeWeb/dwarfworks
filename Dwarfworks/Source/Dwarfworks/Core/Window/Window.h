@@ -7,7 +7,6 @@
 #include "../Events/EventDispatcher.h"
 
 namespace Dwarfworks {
-namespace Core {
 
 struct WindowProps {
   std::string Title;
@@ -19,7 +18,8 @@ struct WindowProps {
       : Title(title), Width(width), Height(height) {}
 };
 
-// Pure abstract Window interface that can be implemented per platform
+// Interface representing a desktop system based window
+// Implemented per platform
 class DW_API Window {
  public:
   using EventCallbackFn = std::function<void(Event&)>;
@@ -34,6 +34,8 @@ class DW_API Window {
 
   // Window attributes
   virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
+  virtual void SetVSync(bool isEnabled) = 0;
+  virtual bool IsVSync() const = 0;
 
   // Here just for a remainder for future implementation
   // virtual void* GetNativeWindow() const = 0
@@ -41,7 +43,6 @@ class DW_API Window {
   static Window* Create(const WindowProps& props = WindowProps{});
 };
 
-}  // namespace Core
 }  // namespace Dwarfworks
 
 #endif  // CORE_WINDOW_WINDOW_H_

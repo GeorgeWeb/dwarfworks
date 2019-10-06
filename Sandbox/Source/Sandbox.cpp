@@ -2,10 +2,10 @@
 
 using namespace Dwarfworks;
 
-class Sandbox : public Core::Application {
+class Sandbox : public Application {
  public:
   Sandbox() = default;
   virtual ~Sandbox() override = default;
 };
 
-Core::Application* Core::CreateApplication() { return new Sandbox(); }
+Application* CreateApplication() { return new Sandbox(); }

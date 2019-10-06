@@ -1,16 +1,15 @@
-#ifndef CORE_APPLICATION_APPLICATION_H_
-#define CORE_APPLICATION_APPLICATION_H_
+#ifndef APPLICATION_APPLICATION_H_
+#define APPLICATION_APPLICATION_H_
 
 #include "../Core.h"
 #include "../Window/Window.h"
 
 namespace Dwarfworks {
-namespace Core {
 
 class DW_API Application {
  public:
-  Application() = default;
-  virtual ~Application() = default;
+  Application();
+  virtual ~Application();
 
   // the application/game main loop
   void Run();
@@ -24,7 +23,6 @@ class DW_API Application {
 
 Application* CreateApplication();
 
-}  // namespace Core
 }  // namespace Dwarfworks
 
 #endif  // CORE_APPLICATION_APPLICATION_H_

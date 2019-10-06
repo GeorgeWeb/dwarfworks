@@ -7,10 +7,18 @@ workspace "Dwarfworks"
     }
 
 -- platform-independent output directory definition
-local OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
--- description ...
+OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+-- include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Dwarfworks/Vendor/glfw/include"
+
+-- define project external dependencies
+group "Dependencies"
+    include "Dwarfworks/Vendor/glfw"
+
+-- relative path to Dwarfworks source folder
 local SourceDir = "%{prj.name}/Source"
--- local IncludeDir -- TODO: create a list/array of incldue dirs.
 
 ----------------------------
 --       Dwarfworks       --
@@ -52,9 +60,16 @@ project "Dwarfworks"
 
     -- set project include directories
     includedirs {
+        -- the project source folder
+        SourceDir,
         -- External Logging lib - spdlog
         "%{prj.name}/Vendor/spdlog/include",
-        SourceDir
+        -- (cross-platform) Window lib - GLFW
+        "%{IncludeDir.GLFW}"
+    }
+
+    links {
+        "GLFW"
     }
 
     -- set project target properties

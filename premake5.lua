@@ -69,7 +69,8 @@ project "Dwarfworks"
     }
 
     links {
-        "GLFW"
+        "GLFW",
+        "opengl32.lib"
     }
 
     -- set project target properties

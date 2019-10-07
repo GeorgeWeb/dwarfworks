@@ -2,6 +2,8 @@
 
 #include "Application.h"
 
+#include <glad/glad.h>
+
 namespace Dwarfworks {
 
 Application::Application()
@@ -17,6 +19,9 @@ void Application::Run() {
 
   // the main loop
   while (IsRunning()) {
+    glClearColor(1, 1, 0, 1);
+    glClear(GL_COLOR_BUFFER_BIT);
+
     std::for_each(m_LayerStack.begin(), m_LayerStack.end(), updateLayer);
     m_Window->OnUpdate();
   }

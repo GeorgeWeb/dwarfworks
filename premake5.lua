@@ -12,10 +12,12 @@ OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Dwarfworks/Vendor/glfw/include"
+IncludeDir["Glad"] = "Dwarfworks/Vendor/glad/include"
 
 -- define project external dependencies
 group "Dependencies"
     include "Dwarfworks/Vendor/glfw"
+    include "Dwarfworks/Vendor/glad"
 
 -- relative path to Dwarfworks source folder
 local SourceDir = "%{prj.name}/Source"
@@ -92,11 +94,13 @@ project "Dwarfworks"
         -- External Logging lib - spdlog
         "%{prj.name}/Vendor/spdlog/include",
         -- (cross-platform) Window lib - GLFW
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}"
     }
 
     links {
         "GLFW",
+        "Glad",
         "opengl32.lib"
     }
 

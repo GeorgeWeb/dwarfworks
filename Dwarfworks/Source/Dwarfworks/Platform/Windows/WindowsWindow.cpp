@@ -6,6 +6,11 @@
 #include "../../Core/Events/KeyEvent.h"
 #include "../../Core/Events/MouseEvent.h"
 
+// Glad
+#include <glad/glad.h>
+// glfw
+#include <GLFW/glfw3.h>
+
 namespace Dwarfworks {
 
 static bool s_IsGLFWInitialized{false};
@@ -63,6 +68,13 @@ void WindowsWindow::Initialize(const WindowProps& props) {
 
   // set the current context to the created window
   glfwMakeContextCurrent(m_Window);
+
+  // load OpenGL through the Glad GL Loader
+  auto status =
+      gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+  DW_CORE_ASSERT(status, "Failed to initialize Glad!");
+
+  // set the custom window data to the GLFWwindow
   glfwSetWindowUserPointer(m_Window, &m_Data);
   SetVSync(true);  // v-sync is on by default
 

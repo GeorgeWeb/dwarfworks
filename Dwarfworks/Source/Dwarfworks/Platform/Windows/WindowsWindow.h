@@ -3,7 +3,17 @@
 
 #include "../../Core/Window/Window.h"
 
-#include <GLFW/glfw3.h>
+/// \struct GLFWwindow
+///
+/// \brief Form for viewing the GLFWwindow.
+///
+/// \author Georg
+/// \date 07/10/2019
+
+struct GLFWwindow;
+// Note: This forward declaration is used so we avoid include the glfw3.h header
+// just for declaring a GLFWwindow* member of the WindowsWindow class and also
+// avoid errors for the order of inclusion of their headers (glad.h is first).
 
 namespace Dwarfworks {
 

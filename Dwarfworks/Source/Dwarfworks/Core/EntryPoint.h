@@ -3,21 +3,24 @@
 
 #ifdef DW_PLATFORM_WINDOWS
 
-// extern "C" {
-Dwarfworks::Core::App::Application* Dwarfworks::Core::App::CreateApplication();
-//}
+extern Dwarfworks::Application* Dwarfworks::CreateApplication();
 
-int main(int argc, char** argv) {
-  Dwarfworks::Core::Logging::Log::Initialize();
+/// <summary>	Main entry-point for an application. </summary>
+///
+/// <remarks>	Georg, 07/10/2019. </remarks>
+///
+/// <param name="argc">	The number of command-line arguments provided. </param>
+/// <param name="argv">	An array of command-line argument strings. </param>
+///
+/// <returns>	Exit-code for the process - 0 for success, else an error code.
+/// </returns>
 
-  DW_CORE_WARN("Initialized Log!");
-  auto msg = "folks";
-  DW_INFO("Hello {0}.", msg);
+auto main() -> void {
+  Dwarfworks::Log::Initialize();
 
-  auto app = Dwarfworks::Core::App::CreateApplication();
+  auto app = Dwarfworks::CreateApplication();
   app->Run();
   delete app;
-  return 0;
 }
 
 #endif

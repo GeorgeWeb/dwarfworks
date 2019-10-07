@@ -7,10 +7,18 @@ workspace "Dwarfworks"
     }
 
 -- platform-independent output directory definition
-local OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
--- description ...
+OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
+
+-- include directories relative to root folder (solution directory)
+IncludeDir = {}
+IncludeDir["GLFW"] = "Dwarfworks/Vendor/glfw/include"
+
+-- define project external dependencies
+group "Dependencies"
+    include "Dwarfworks/Vendor/glfw"
+
+-- relative path to Dwarfworks source folder
 local SourceDir = "%{prj.name}/Source"
--- local IncludeDir -- TODO: create a list/array of incldue dirs.
 
 ----------------------------
 --       Dwarfworks       --
@@ -19,8 +27,10 @@ local SourceDir = "%{prj.name}/Source"
 project "Dwarfworks"
     -- set project general settings
     location "Dwarfworks"
-    kind "SharedLib" -- dynamically linked library (DLL)
+    kind "StaticLib" -- SharedLib
     language "C++"
+    cppdialect "C++17"
+    staticruntime "on" -- off
 
     targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
     objdir ("bin-int/" .. OutputDir .. "/%{prj.name}")
@@ -30,53 +40,81 @@ project "Dwarfworks"
 
     -- set project source files
     files {
+        -- ---------------
         -- Dwarfworks root
+        -- ---------------
         SourceDir .. "/**.h",
         SourceDir .. "/**.cpp",
+        -- -----------
         -- Core module
+        -- -----------
         SourceDir .. "/Core/**.h",
         SourceDir .. "/Core/**.cpp",
-        --/-- Event System
-        SourceDir .. "/Core/EventSystem/**.h",
-        SourceDir .. "/Core/EventSystem/**.cpp",
-        --/--/-- Defaut Events
-        SourceDir .. "/Core/EventSystem/Events/**.h",
-        SourceDir .. "/Core/EventSystem/Events/**.cpp",
+        -- Logging sub-module
+        SourceDir .. "/Core/Log/**.h",
+        SourceDir .. "/Core/Log/**.cpp",
+        -- Events (Event System) sub-module
+        SourceDir .. "/Core/Events/**.h",
+        SourceDir .. "/Core/Events/**.cpp",
+        -- Application sub-module
+        SourceDir .. "/Core/Application/**.h",
+        SourceDir .. "/Core/Application/**.cpp",
+        -- Window sub-module
+        SourceDir .. "/Core/Window/**.h",
+        SourceDir .. "/Core/Window/**.cpp",
+        -- ---------------
         -- Graphics module
+        -- ---------------
         SourceDir .. "/Graphics/**.h",
         SourceDir .. "/Graphics/**.cpp",
+        -- -----------
         -- Math module
+        -- -----------
         SourceDir .. "/Math/**.h",
-        SourceDir .. "/Math/**.cpp"
+        SourceDir .. "/Math/**.cpp",
+        -- ----------------------
+        -- Platform-specific code
+        -- ----------------------
+        SourceDir .. "/Platform/**.h",
+        SourceDir .. "/Platform/**.cpp",
+        -- Windows Window 
+        SourceDir .. "/Platform/Windows/**.h",
+        SourceDir .. "/Platform/Windows/**.cpp"
     }
 
     -- set project include directories
     includedirs {
+        -- the project source folder
+        SourceDir,
         -- External Logging lib - spdlog
         "%{prj.name}/Vendor/spdlog/include",
-        SourceDir
+        -- (cross-platform) Window lib - GLFW
+        "%{IncludeDir.GLFW}"
+    }
+
+    links {
+        "GLFW",
+        "opengl32.lib"
     }
 
     -- set project target properties
     filter "system:windows"
-        cppdialect "C++17"
-        staticruntime "on"
         systemversion "latest"
 
         -- preprocessor definitions
         defines {
-            "DW_PLATFORM_WINDOWS",
-            "DW_DYNAMIC_LINK",
-            "DW_BUILD_DLL",
-            -- silence the noise from external libraries
-            "_CRT_SECURE_NO_WARNINGS"
+            -- silence external "noise"
+            "_CRT_SECURE_NO_WARNINGS",
+            -- "DW_DYNAMIC_LINK",
+            -- "DW_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
         }
 
         -- copying DLLs and resoruces
-        postbuildcommands {
+        -- postbuildcommands {
             -- copy dwarfworks.dll into sandbox
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
-        }
+            -- ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
+        -- }
 
     print("%{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
 
@@ -93,16 +131,6 @@ project "Dwarfworks"
         defines "DW_DIST"
         optimize "on"
 
-    -- specify versions of the run-time library to be used on codegen per build configuration
-    filter { "system:windows", "configurations:Debug" }
-        buildoptions "/MTd"
-
-    filter { "system:windows", "configurations:Release" }
-        buildoptions "/MT"
-
-    filter { "system:windows", "configurations:Dist" }
-        buildoptions "/MT"
-
 -------------------------
 --       Sandbox       --
 -------------------------
@@ -112,6 +140,8 @@ project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp" -- executable
     language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
 
     targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
     objdir ("bin-int/" .. OutputDir .. "/%{prj.name}")
@@ -124,10 +154,11 @@ project "Sandbox"
 
     -- set project include directories
     includedirs {
-        -- External Logging lib - spdlog
-        "Dwarfworks/Vendor/spdlog/include",
         -- The Game Engine - Dwarfworks
-        "Dwarfworks/Source"
+        "Dwarfworks/Source",
+        "Dwarfworks/Vendor",
+        -- External Logging lib - spdlog
+        "Dwarfworks/Vendor/spdlog/include"
     }
 
     -- set project link targets
@@ -137,14 +168,11 @@ project "Sandbox"
 
     -- set project target properties
     filter "system:windows"
-        cppdialect "C++17"
-        staticruntime "on"
         systemversion "latest"
 
         -- preprocessor definitions
         defines {
-            "DW_PLATFORM_WINDOWS",
-            "DW_DYNAMIC_LINK"
+            -- "DW_DYNAMIC_LINK"
         }
 
     -- specify build and compilation options per build configuration
@@ -159,13 +187,3 @@ project "Sandbox"
     filter "configurations:Dist"
         defines "DW_DIST"
         optimize "on"
-
-    -- specify versions of the run-time library to be used on compilation per build configuration
-    filter { "system:windows", "configurations:Debug" }
-        buildoptions "/MTd"
-
-    filter { "system:windows", "configurations:Release" }
-        buildoptions "/MT"
-
-    filter { "system:windows", "configurations:Dist" }
-        buildoptions "/MT"

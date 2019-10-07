@@ -5,11 +5,9 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 
 namespace Dwarfworks {
-namespace Core {
-namespace Logging {
 
-std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
-std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
+std::shared_ptr<spdlog::logger> Log::s_CoreLogger;    // = nullptr;
+std::shared_ptr<spdlog::logger> Log::s_ClientLogger;  // = nullptr;
 
 void Log::Initialize() noexcept {
   // define the log pattern:
@@ -25,6 +23,4 @@ void Log::Initialize() noexcept {
   s_ClientLogger->set_level(spdlog::level::trace);
 }
 
-}  // namespace Logging
-}  // namespace Core
 }  // namespace Dwarfworks

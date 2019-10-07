@@ -5,17 +5,15 @@
 
 extern Dwarfworks::Application* Dwarfworks::CreateApplication();
 
-/// <summary>	Main entry-point for an application. </summary>
+/// \fn auto main() -> void
 ///
-/// <remarks>	Georg, 07/10/2019. </remarks>
+/// \brief Main entry-point for an application.
 ///
-/// <param name="argc">	The number of command-line arguments provided. </param>
-/// <param name="argv">	An array of command-line argument strings. </param>
-///
-/// <returns>	Exit-code for the process - 0 for success, else an error code.
-/// </returns>
+/// \author Georg
+/// \date 07/10/2019
 
 auto main() -> void {
+  // TODO: Create Dwarfworks::System to handle system init/shut via RAII
   Dwarfworks::Log::Initialize();
 
   auto app = Dwarfworks::CreateApplication();

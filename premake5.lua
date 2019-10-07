@@ -62,6 +62,9 @@ project "Dwarfworks"
         -- Window sub-module
         SourceDir .. "/Core/Window/**.h",
         SourceDir .. "/Core/Window/**.cpp",
+        -- Layers sub-module
+        SourceDir .. "/Core/Layers/**.h",
+        SourceDir .. "/Core/Layers/**.cpp",
         -- ---------------
         -- Graphics module
         -- ---------------

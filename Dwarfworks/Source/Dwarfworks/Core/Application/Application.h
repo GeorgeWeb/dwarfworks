@@ -5,6 +5,7 @@
 #include "../Window/Window.h"
 
 #include "../Events/ApplicationEvent.h"
+#include "../Layers/LayerStack.h"
 
 namespace Dwarfworks {
 
@@ -67,6 +68,28 @@ class DW_API Application {
 
   inline bool IsRunning() const noexcept { return m_IsRunning; }
 
+  /// \fn void Application::PushLayer(Layer* layer);
+  ///
+  /// \brief Pushes a layer
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param [in,out] layer If non-null, the layer.
+
+  void PushLayer(Layer* layer);
+
+  /// \fn void Application::PushOverlay(Layer* layer);
+  ///
+  /// \brief Pushes an overlay
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param [in,out] layer If non-null, the layer.
+
+  void PushOverlay(Layer* layer);
+
  private:
   /// \fn bool Application::OnWindowClosed(WindowCloseEvent& event);
   ///
@@ -81,10 +104,12 @@ class DW_API Application {
 
   bool OnWindowClosed(WindowCloseEvent& event);
 
-  /// \brief The window.
-  std::unique_ptr<Window> m_Window;
   /// \brief True if is running, false if not.
   bool m_IsRunning{true};
+  /// \brief The window.
+  std::unique_ptr<Window> m_Window;
+  /// \brief Stack of layers
+  LayerStack m_LayerStack;
 };
 
 /// \fn Dwarfworks::Application* CreateApplication();

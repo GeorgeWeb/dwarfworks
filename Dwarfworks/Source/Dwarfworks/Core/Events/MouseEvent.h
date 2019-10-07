@@ -157,8 +157,6 @@ class DW_API MouseButtonEvent : public Event {
   /// \date 07/10/2019
   ///
   /// \returns The mouse button.
-  ///
-  /// \returns The mouse button.
 
   inline int GetMouseButton() const { return m_Button; }
 
@@ -207,8 +205,6 @@ class DW_API MouseButtonPressedEvent : public MouseButtonEvent {
   /// \date 07/10/2019
   ///
   /// \returns A std::string that represents this object.
-  ///
-  /// \returns A std::string that represents this object.
 
   std::string ToString() const override {
     std::stringstream ss;
@@ -245,8 +241,6 @@ class DW_API MouseButtonReleasedEvent : public MouseButtonEvent {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns A std::string that represents this object.
   ///
   /// \returns A std::string that represents this object.
 

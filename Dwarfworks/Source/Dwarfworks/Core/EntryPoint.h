@@ -15,14 +15,12 @@ extern Dwarfworks::Application* Dwarfworks::CreateApplication();
 /// <returns>	Exit-code for the process - 0 for success, else an error code.
 /// </returns>
 
-int main(int argc, char** argv) {
+auto main() -> void {
   Dwarfworks::Log::Initialize();
 
   auto app = Dwarfworks::CreateApplication();
   app->Run();
   delete app;
-
-  return 0;
 }
 
 #endif

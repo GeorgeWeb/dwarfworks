@@ -40,8 +40,6 @@ class DW_API WindowResizeEvent : public Event {
   /// \date 07/10/2019
   ///
   /// \returns The width.
-  ///
-  /// \returns The width.
 
   inline unsigned int GetWidth() const { return m_Width; }
 
@@ -53,8 +51,6 @@ class DW_API WindowResizeEvent : public Event {
   /// \date 07/10/2019
   ///
   /// \returns The height.
-  ///
-  /// \returns The height.
 
   inline unsigned int GetHeight() const { return m_Height; }
 
@@ -64,8 +60,6 @@ class DW_API WindowResizeEvent : public Event {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns A std::string that represents this object.
   ///
   /// \returns A std::string that represents this object.
 

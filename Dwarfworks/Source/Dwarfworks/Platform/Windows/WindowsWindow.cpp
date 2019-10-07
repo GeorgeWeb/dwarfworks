@@ -2,6 +2,10 @@
 
 #include "WindowsWindow.h"
 
+#include "../../Core/Events/ApplicationEvent.h"
+#include "../../Core/Events/KeyEvent.h"
+#include "../../Core/Events/MouseEvent.h"
+
 namespace Dwarfworks {
 
 static bool s_IsGLFWInitialized{false};
@@ -14,9 +18,14 @@ WindowsWindow::WindowsWindow(const WindowProps& props) { Initialize(props); }
 
 WindowsWindow::~WindowsWindow() { Shutdown(); };
 
-void WindowsWindow::OnUpdate() {}
+void WindowsWindow::OnUpdate() {
+  glfwPollEvents();
+  glfwSwapBuffers(m_Window);
+}
 
-void WindowsWindow::SetEventCallback(const EventCallbackFn& callback) {}
+void WindowsWindow::SetEventCallback(const EventCallbackFn& callback) {
+  m_Data.EventCallback = callback;
+}
 
 void WindowsWindow::SetVSync(bool isEnabled) {
   // set the interval synchronisation time for a frame to be
@@ -40,7 +49,10 @@ void WindowsWindow::Initialize(const WindowProps& props) {
     // TODO: glfwTerminate() on system shutdown (not on window close!)
     auto success = glfwInit();
     DW_CORE_ASSERT(success, "Could not initialize GLFW!");
-
+    // temporary until abstracted away in a GLFWErrorCallback function
+    glfwSetErrorCallback([](int error, const char* description) {
+      DW_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+    });
     s_IsGLFWInitialized = true;
   }
 
@@ -53,6 +65,97 @@ void WindowsWindow::Initialize(const WindowProps& props) {
   glfwMakeContextCurrent(m_Window);
   glfwSetWindowUserPointer(m_Window, &m_Data);
   SetVSync(true);  // v-sync is on by default
+
+  // ------------------
+  // set glfw callbacks
+  // ------------------
+
+  // window resize
+  glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width,
+                                         int height) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+    auto event = WindowResizeEvent(width, height);
+    // update the window dimensions
+    data.Width = width;
+    data.Height = height;
+    // set the window resize callback
+    data.EventCallback(event);
+  });
+
+  // window close
+  glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+    auto event = WindowCloseEvent{};
+    // set the window close callback
+    data.EventCallback(event);
+  });
+
+  // key action
+  glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode,
+                                  int action, int mods) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+
+    switch (action) {
+      case GLFW_PRESS: {
+        auto event = KeyPressedEvent(key, 0);
+        data.EventCallback(event);
+        break;
+      }
+      case GLFW_RELEASE: {
+        auto event = KeyReleasedEvent(key);
+        data.EventCallback(event);
+        break;
+      }
+      case GLFW_REPEAT: {
+        // temporarily set to 1, but should consider extracting the exact number
+        // of repeats in future iteration of this function
+        auto event = KeyPressedEvent(key, 1);
+        data.EventCallback(event);
+        break;
+      }
+    }
+  });
+
+  // mouse button action
+  glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button,
+                                          int action, int mods) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+
+    switch (action) {
+      case GLFW_PRESS: {
+        auto event = MouseButtonPressedEvent(button);
+        data.EventCallback(event);
+        break;
+      }
+      case GLFW_RELEASE: {
+        auto event = MouseButtonReleasedEvent(button);
+        data.EventCallback(event);
+        break;
+      }
+    }
+  });
+
+  // mouse scroll action
+  glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset,
+                                     double yOffset) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+
+    const auto xOffsetFloat = static_cast<float>(xOffset);
+    const auto yOffsetFloat = static_cast<float>(yOffset);
+    auto event = MouseScrolledEvent(xOffsetFloat, yOffsetFloat);
+    data.EventCallback(event);
+  });
+
+  // mouse cursor move action
+  glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos,
+                                        double yPos) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+
+    const auto xPosFloat = static_cast<float>(xPos);
+    const auto yPosFloat = static_cast<float>(yPos);
+    auto event = MouseMovedEvent(xPosFloat, yPosFloat);
+    data.EventCallback(event);
+  });
 }
 
 void WindowsWindow::Shutdown() { glfwDestroyWindow(m_Window); }

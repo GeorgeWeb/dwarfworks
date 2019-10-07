@@ -4,6 +4,8 @@
 #include "../Core.h"
 #include "../Window/Window.h"
 
+#include "../Events/ApplicationEvent.h"
+
 namespace Dwarfworks {
 
 /// \class Application
@@ -42,6 +44,17 @@ class DW_API Application {
 
   void Run();
 
+  /// \fn void Application::OnEvent(Event& event);
+  ///
+  /// \brief Executes the event action
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param [in,out] event The event.
+
+  void OnEvent(Event& event);
+
  protected:
   /// \fn inline bool Application::IsRunning() const noexcept
   ///
@@ -55,11 +68,23 @@ class DW_API Application {
   inline bool IsRunning() const noexcept { return m_IsRunning; }
 
  private:
-  /// \brief True if is running, false if not.
-  bool m_IsRunning{true};
+  /// \fn bool Application::OnWindowClosed(WindowCloseEvent& event);
+  ///
+  /// \brief Executes the window closed action
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param [in,out] event The event.
+  ///
+  /// \returns True if it succeeds, false if it fails.
+
+  bool OnWindowClosed(WindowCloseEvent& event);
 
   /// \brief The window.
   std::unique_ptr<Window> m_Window;
+  /// \brief True if is running, false if not.
+  bool m_IsRunning{true};
 };
 
 /// \fn Dwarfworks::Application* CreateApplication();

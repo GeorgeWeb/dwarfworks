@@ -101,7 +101,7 @@ enum class EventType {
 class DW_API Event {
  public:
   /// \brief True if handled.
-  bool Handled = false;
+  bool IsHandled = false;
 
   /// \fn virtual EventType Event::GetEventType() const = 0;
   ///
@@ -109,8 +109,6 @@ class DW_API Event {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns The event type.
   ///
   /// \returns The event type.
 
@@ -124,8 +122,6 @@ class DW_API Event {
   /// \date 07/10/2019
   ///
   /// \returns Null if it fails, else the name.
-  ///
-  /// \returns Null if it fails, else the name.
 
   virtual const char* GetName() const = 0;
 
@@ -137,8 +133,6 @@ class DW_API Event {
   /// \date 07/10/2019
   ///
   /// \returns The category flags.
-  ///
-  /// \returns The category flags.
 
   virtual int GetCategoryFlags() const = 0;
 
@@ -148,8 +142,6 @@ class DW_API Event {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns A std::string that represents this object.
   ///
   /// \returns A std::string that represents this object.
 
@@ -166,8 +158,6 @@ class DW_API Event {
   /// The category.
   ///
   /// \returns True if in category, false if not.
-  ///
-  /// \returns True if in category, false if not.
 
   inline bool IsInCategory(EventCategory category) const {
     return GetCategoryFlags() & category;
@@ -182,8 +172,6 @@ class DW_API Event {
   ///
   /// \param type
   /// The type.
-  ///
-  /// \returns True if it succeeds, false if it fails.
   ///
   /// \returns True if it succeeds, false if it fails.
 
@@ -204,15 +192,12 @@ class DW_API Event {
 /// The second instance to compare.
 ///
 /// \returns True if the parameters are considered equivalent.
-///
-/// \returns True if the parameters are considered equivalent.
 
 inline bool operator==(const Event& lhs, const Event& rhs) {
-  return
-      // check types
-      lhs.GetEventType() == rhs.GetEventType()
-      // check names
-      && lhs.GetName() == rhs.GetName();
+  // check types
+  return lhs.GetEventType() == rhs.GetEventType();
+  // check names
+  // && lhs.GetName() == rhs.GetName();
 }
 
 /// \fn inline std::ostream& operator<<(std::ostream& os, const Event& event) {
@@ -226,8 +211,6 @@ inline bool operator==(const Event& lhs, const Event& rhs) {
 /// \param [in,out] os    The operating system.
 /// \param 		    event
 /// The event.
-///
-/// \returns The shifted result.
 ///
 /// \returns The shifted result.
 

@@ -47,10 +47,8 @@
 #if DW_DYNAMIC_LINK
 #ifdef DW_BUILD_DLL
 #define DW_API __declspec(dllexport)
-#define DW_API_EXTERN extern __declspec(dllexport)
 #else
 #define DW_API __declspec(dllimport)
-#define DW_API_EXTERN __declspec(dllimport)
 #endif
 #else
 #define DW_API

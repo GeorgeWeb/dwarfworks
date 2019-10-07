@@ -64,29 +64,8 @@ class DW_API EventManager {
 
   template <typename EventT, typename EventFn>
   bool Dispatch(const EventFn& func) {
-    if (m_Event.CompareType(EventT)) {
-      m_Event.m_Handled = func(static_cast<EventFn>(m_Event));
-      return true;
-    }
-    return false;
-  }
-
-  /// \fn template <typename EventT, typename EventFn> bool
-  /// EventManager::Dispatch(EventFn&& func)
-  ///
-  /// \brief Dispatches the given function (r-value event function).
-  ///
-  /// \typeparam EventT  Type of the event.
-  /// \typeparam EventFn Type of the event function.
-  /// \param [in,out] func The function.
-  ///
-  /// \returns True if it succeeds, false if it fails.
-
-  template <typename EventT, typename EventFn>
-  bool Dispatch(EventFn&& func) {
-    if (m_Event.CompareType(EventT)) {
-      m_Event.m_Handled = std::forward<EventFn>(
-          func(static_cast<EventFn>(std::forward<EventT>(m_Event))));
+    if (m_Event.CompareType(EventT::GetStaticType())) {
+      m_Event.IsHandled = func(static_cast<EventT&>(m_Event));
       return true;
     }
     return false;

@@ -26,8 +26,6 @@ class DW_API KeyEvent : public Event {
   /// \date 07/10/2019
   ///
   /// \returns The key code.
-  ///
-  /// \returns The key code.
 
   inline int GetKeyCode() const { return m_KeyCode; }
 
@@ -78,8 +76,6 @@ class DW_API KeyPressedEvent : public KeyEvent {
   /// \date 07/10/2019
   ///
   /// \returns The repeat count.
-  ///
-  /// \returns The repeat count.
 
   inline int GetRepeatCount() const { return m_RepeatCount; }
 
@@ -89,8 +85,6 @@ class DW_API KeyPressedEvent : public KeyEvent {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns A std::string that represents this object.
   ///
   /// \returns A std::string that represents this object.
 
@@ -135,8 +129,6 @@ class DW_API KeyReleasedEvent : public KeyEvent {
   /// \date 07/10/2019
   ///
   /// \returns A std::string that represents this object.
-  ///
-  /// \returns A std::string that represents this object.
 
   std::string ToString() const override {
     std::stringstream ss;
@@ -173,8 +165,6 @@ class DW_API KeyTypedEvent : public KeyEvent {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns A std::string that represents this object.
   ///
   /// \returns A std::string that represents this object.
 

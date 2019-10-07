@@ -154,10 +154,11 @@ project "Sandbox"
 
     -- set project include directories
     includedirs {
-        -- External Logging lib - spdlog
-        "Dwarfworks/Vendor/spdlog/include",
         -- The Game Engine - Dwarfworks
-        "Dwarfworks/Source"
+        "Dwarfworks/Source",
+        "Dwarfworks/Vendor",
+        -- External Logging lib - spdlog
+        "Dwarfworks/Vendor/spdlog/include"
     }
 
     -- set project link targets

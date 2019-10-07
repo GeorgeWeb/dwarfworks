@@ -1,9 +1,9 @@
 #ifndef PLATFORM_WINDOWS_WINDOW_H_
 #define PLATFORM_WINDOWS_WINDOW_H_
 
-#include <GLFW/glfw3.h>
-
 #include "../../Core/Window/Window.h"
+
+#include <GLFW/glfw3.h>
 
 namespace Dwarfworks {
 
@@ -53,8 +53,6 @@ class DW_API WindowsWindow : public Window {
   /// \date 07/10/2019
   ///
   /// \returns The width.
-  ///
-  /// \returns The width.
 
   unsigned int GetWidth() const override { return m_Data.Width; }
 
@@ -64,8 +62,6 @@ class DW_API WindowsWindow : public Window {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns The height.
   ///
   /// \returns The height.
 
@@ -102,8 +98,6 @@ class DW_API WindowsWindow : public Window {
   ///
   /// \author Georg
   /// \date 07/10/2019
-  ///
-  /// \returns True if v synchronise, false if not.
   ///
   /// \returns True if v synchronise, false if not.
 
@@ -146,9 +140,14 @@ class DW_API WindowsWindow : public Window {
   /// \date 07/10/2019
 
   struct WindowData {
-    std::string Title;
-    unsigned int Width, Height;
-    bool VSync;
+    /// \brief The title
+    std::string Title{"Dwarfworks Engine"};
+    /// \brief The width
+    unsigned int Width{1280};
+    /// \brief The height
+    unsigned int Height{720};
+    /// \brief True to synchronise
+    bool VSync{false};
     // construct appropirate callback for the event
     EventCallbackFn EventCallback;
   };

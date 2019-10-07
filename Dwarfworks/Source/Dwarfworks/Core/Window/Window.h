@@ -8,22 +8,32 @@
 
 namespace Dwarfworks {
 
-/// <summary>	An api. </summary>
+/// \struct WindowProps
 ///
-/// <remarks>	Georg, 07/10/2019. </remarks>
+/// \brief An api.
+///
+/// \author Georg
+/// \date 07/10/2019
 
 struct DW_API WindowProps {
+  /// \brief The title
   std::string Title;
+  /// \brief The width
   unsigned int Width;
+  /// \brief The height
   unsigned int Height;
 
-  /// <summary>	Constructor. </summary>
+  /// \fn explicit WindowProps(const std::string& title = "Dwarfworks Engine",
+  /// unsigned int width = 1280, unsigned int height = 720)
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Constructor.
   ///
-  /// <param name="title"> 	(Optional) The title. </param>
-  /// <param name="width"> 	(Optional) The width. </param>
-  /// <param name="height">	(Optional) The height. </param>
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param title  (Optional) The title.
+  /// \param width  (Optional) The width.
+  /// \param height (Optional) The height.
 
   explicit WindowProps(const std::string& title = "Dwarfworks Engine",
                        unsigned int width = 1280, unsigned int height = 720)
@@ -33,82 +43,111 @@ struct DW_API WindowProps {
 //
 // Implemented per platform
 
-/// <summary>	Interface representing a desktop system based window.
-/// Implemented per platform </summary>
+/// \class Window
 ///
-/// <remarks>	Georg, 07/10/2019. </remarks>
+/// \brief Interface representing a desktop system based window. Implemented per
+/// platform
+///
+/// \author Georg
+/// \date 07/10/2019
 
 class DW_API Window {
  public:
-  /// <summary>	The event callback function. </summary>
+  /// \brief The event callback function.
   using EventCallbackFn = std::function<void(Event&)>;
 
   // CRTP or no CRTP, we need the virtual destructor
 
-  /// <summary>	Destructor. </summary>
+  /// \fn virtual Window::~Window() = default;
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Destructor.
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
 
   virtual ~Window() = default;
 
-  /// <summary>	Executes the update action. </summary>
+  /// \fn virtual void Window::OnUpdate() = 0;
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Executes the update action.
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
 
   virtual void OnUpdate() = 0;
 
-  /// <summary>	Gets the width. </summary>
+  /// \fn virtual unsigned int Window::GetWidth() const = 0;
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Gets the width.
   ///
-  /// <returns>	The width. </returns>
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \returns The width.
 
   virtual unsigned int GetWidth() const = 0;
 
-  /// <summary>	Gets the height. </summary>
+  /// \fn virtual unsigned int Window::GetHeight() const = 0;
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Gets the height.
   ///
-  /// <returns>	The height. </returns>
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \returns The height.
 
   virtual unsigned int GetHeight() const = 0;
 
   // Window attributes
 
-  /// <summary>	Callback, called when the set event. </summary>
+  /// \fn virtual void Window::SetEventCallback(const EventCallbackFn& callback)
+  /// = 0;
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Callback, called when the set event.
   ///
-  /// <param name="callback">	The callback. </param>
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param callback The callback.
 
   virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 
-  /// <summary>	Sets v synchronise. </summary>
+  /// \fn virtual void Window::SetVSync(bool isEnabled) = 0;
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Sets v synchronise.
   ///
-  /// <param name="isEnabled">	True if is enabled, false if not. </param>
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param isEnabled True if is enabled, false if not.
 
   virtual void SetVSync(bool isEnabled) = 0;
 
-  /// <summary>	Query if this object is v synchronise. </summary>
+  /// \fn virtual bool Window::IsVSync() const = 0;
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Query if this object is v synchronise.
   ///
-  /// <returns>	True if v synchronise, false if not. </returns>
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \returns True if v synchronise, false if not.
 
   virtual bool IsVSync() const = 0;
 
   // Here just for a remainder for future implementation
   // virtual void* GetNativeWindow() const = 0;
 
-  /// <summary>	Creates a new Window*. </summary>
+  /// \fn static Window* Window::Create(const WindowProps& props =
+  /// WindowProps{});
   ///
-  /// <remarks>	Georg, 07/10/2019. </remarks>
+  /// \brief Creates a new Window*.
   ///
-  /// <param name="props">	(Optional) The properties. </param>
+  /// \author Georg
+  /// \date 07/10/2019
   ///
-  /// <returns>	Null if it fails, else a pointer to a Window. </returns>
+  /// \param props (Optional) The properties.
+  ///
+  /// \returns Null if it fails, else a pointer to a Window.
 
   static Window* Create(const WindowProps& props = WindowProps{});
 };

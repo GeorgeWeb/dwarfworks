@@ -11,6 +11,13 @@ namespace Dwarfworks {
 // For the future, a better strategy might be to buffer events in an event bus
 // (a queue) and process them during the "event" part of the update stage.
 
+/// \class EventManager
+///
+/// \brief An api.
+///
+/// \author Georg
+/// \date 07/10/2019
+
 class DW_API EventManager {
   // commented out because we actually don't need a
   // heterogeneous collection of callable objects
@@ -19,12 +26,42 @@ class DW_API EventManager {
  public:
   // TODO: Remove the current constructors and adapt the class
   // to be used as a "singleton"!
+
+  /// \fn explicit EventManager::EventManager(Event& event)
+  ///
+  /// \brief Constructor.
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param [in,out] event The event.
+
   explicit EventManager(Event& event) : m_Event(event) {}
+
+  /// \fn inline void EventManager::Register(Event& event)
+  ///
+  /// \brief Registers this object.
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+  ///
+  /// \param [in,out] event The event.
 
   inline void Register(Event& event) { m_Event = event; }
 
-  // EventFn will be (automatically) deduced by the compiler
-  // lvalue event function
+  // Event functions (EventFn) will be (automatically) deduced by the compiler
+
+  /// \fn template <typename EventT, typename EventFn> bool
+  /// EventManager::Dispatch(const EventFn& func)
+  ///
+  /// \brief Dispatches the given function (l-value event function)..
+  ///
+  /// \typeparam EventT  Type of the event.
+  /// \typeparam EventFn Type of the event function.
+  /// \param func The function.
+  ///
+  /// \returns True if it succeeds, false if it fails.
+
   template <typename EventT, typename EventFn>
   bool Dispatch(const EventFn& func) {
     if (m_Event.CompareType(EventT)) {
@@ -33,7 +70,18 @@ class DW_API EventManager {
     }
     return false;
   }
-  // rvalue event function
+
+  /// \fn template <typename EventT, typename EventFn> bool
+  /// EventManager::Dispatch(EventFn&& func)
+  ///
+  /// \brief Dispatches the given function (r-value event function).
+  ///
+  /// \typeparam EventT  Type of the event.
+  /// \typeparam EventFn Type of the event function.
+  /// \param [in,out] func The function.
+  ///
+  /// \returns True if it succeeds, false if it fails.
+
   template <typename EventT, typename EventFn>
   bool Dispatch(EventFn&& func) {
     if (m_Event.CompareType(EventT)) {
@@ -45,6 +93,7 @@ class DW_API EventManager {
   }
 
  private:
+  /// \brief The event.
   Event& m_Event;
 };
 

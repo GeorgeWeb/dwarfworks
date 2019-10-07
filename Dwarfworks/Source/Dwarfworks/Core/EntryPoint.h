@@ -5,16 +5,23 @@
 
 extern Dwarfworks::Application* Dwarfworks::CreateApplication();
 
+/// <summary>	Main entry-point for an application. </summary>
+///
+/// <remarks>	Georg, 07/10/2019. </remarks>
+///
+/// <param name="argc">	The number of command-line arguments provided. </param>
+/// <param name="argv">	An array of command-line argument strings. </param>
+///
+/// <returns>	Exit-code for the process - 0 for success, else an error code.
+/// </returns>
+
 int main(int argc, char** argv) {
   Dwarfworks::Log::Initialize();
-
-  DW_CORE_WARN("Initialized Log!");
-  auto msg = "folks";
-  DW_INFO("Hello {0}.", msg);
 
   auto app = Dwarfworks::CreateApplication();
   app->Run();
   delete app;
+
   return 0;
 }
 

@@ -7,6 +7,10 @@
 #include "Dwarfworks/Core/Log/Log.h"
 // -------------------------------------
 
+// -- Window -----------------------------
+#include "Dwarfworks/Core/Window/Window.h"
+// ---------------------------------------
+
 // -- Application ----------------------------------
 #include "Dwarfworks/Core/Application/Application.h"
 // -------------------------------------------------
@@ -16,8 +20,8 @@
 // ------------------------------------
 
 // -- Events -----------------------------------------------------
-#include "Dwarfworks/Core/Events/EventDispatcher.h"
-//
+#include "Dwarfworks/Core/Events/EventManager.h"
+// -- the events implementations
 #include "Dwarfworks/Core/Events/ApplicationEvent.h"
 #include "Dwarfworks/Core/Events/KeyEvent.h"
 #include "Dwarfworks/Core/Events/MouseEvent.h"

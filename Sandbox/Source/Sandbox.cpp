@@ -1,11 +1,11 @@
 #include <Dwarfworks.h>
 
-using namespace Dwarfworks;
-
-class Sandbox : public Application {
+class Sandbox : public Dwarfworks::Application {
  public:
   Sandbox() = default;
   virtual ~Sandbox() override = default;
 };
 
-Application* CreateApplication() { return new Sandbox(); }
+Dwarfworks::Application* Dwarfworks::CreateApplication() {
+  return new Sandbox();
+}

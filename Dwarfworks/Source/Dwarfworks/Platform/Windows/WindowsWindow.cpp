@@ -76,7 +76,7 @@ void WindowsWindow::Initialize(const WindowProps& props) {
 
   // set the custom window data to the GLFWwindow
   glfwSetWindowUserPointer(m_Window, &m_Data);
-  SetVSync(true);  // v-sync is on by default
+  m_Data.VSync = true;  // v-sync is on by default
 
   // ------------------
   // set glfw callbacks

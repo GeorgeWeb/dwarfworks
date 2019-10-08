@@ -114,10 +114,7 @@ class DW_API WindowsWindow : public Window {
   bool IsVSync() const override;
 
  private:
-  // "Virtuality" separation of init/shut logic for derived classes
-  // Example extensions: UniversalWindowsApp(UWP) Window or WindowsPhone Window
-
-  /// \fn virtual void WindowsWindow::Initialize(const WindowProps& props);
+  /// \fn void WindowsWindow::Initialize(const WindowProps& props);
   ///
   /// \brief Initializes this object.
   ///
@@ -126,16 +123,16 @@ class DW_API WindowsWindow : public Window {
   ///
   /// \param props The properties.
 
-  virtual void Initialize(const WindowProps& props);
+  void Initialize(const WindowProps& props);
 
-  /// \fn virtual void WindowsWindow::Shutdown();
+  /// \fn void WindowsWindow::Shutdown();
   ///
   /// \brief Shuts down this object and frees any resources it is using.
   ///
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual void Shutdown();
+  void Shutdown();
 
   /// \brief The window handle (pointer to GLFWwindow).
   GLFWwindow* m_Window;

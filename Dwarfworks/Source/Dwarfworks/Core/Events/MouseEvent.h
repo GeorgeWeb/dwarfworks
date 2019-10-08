@@ -171,7 +171,7 @@ class DW_API MouseButtonEvent : public Event {
   ///
   /// \param button The button.
 
-  MouseButtonEvent(int button) : m_Button(button) {}
+  explicit MouseButtonEvent(int button) : m_Button(button) {}
 
   /// <summary>	The button. </summary>
   int m_Button;
@@ -195,7 +195,7 @@ class DW_API MouseButtonPressedEvent : public MouseButtonEvent {
   ///
   /// \param button The button.
 
-  MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
+  explicit MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
 
   /// \fn std::string MouseButtonPressedEvent::ToString() const override
   ///
@@ -224,7 +224,8 @@ class DW_API MouseButtonPressedEvent : public MouseButtonEvent {
 
 class DW_API MouseButtonReleasedEvent : public MouseButtonEvent {
  public:
-  /// \fn MouseButtonReleasedEvent::MouseButtonReleasedEvent(int button)
+  /// \fn explicit MouseButtonReleasedEvent::MouseButtonReleasedEvent(int
+  /// button)
   ///
   /// \brief Constructor.
   ///
@@ -233,7 +234,7 @@ class DW_API MouseButtonReleasedEvent : public MouseButtonEvent {
   ///
   /// \param button The button.
 
-  MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+  explicit MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
 
   /// \fn std::string MouseButtonReleasedEvent::ToString() const override
   ///

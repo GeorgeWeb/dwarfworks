@@ -20,7 +20,7 @@ void LayerStack::PushOverlay(Layer* layer) { m_Layers.emplace_back(layer); }
 void LayerStack::PopLayer(Layer* layer) {
   if (auto it = DW_FIND(m_Layers, layer); it != m_Layers.end()) {
     m_Layers.erase(it);
-    m_LayerInsert--;
+    --m_LayerInsert;
   }
 }
 

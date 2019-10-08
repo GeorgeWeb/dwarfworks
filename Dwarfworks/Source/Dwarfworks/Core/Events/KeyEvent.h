@@ -31,7 +31,7 @@ class DW_API KeyEvent : public Event {
 
   EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
  protected:
-  /// \fn Dwarfworks::KeyEvent::KeyEvent(int keycode)
+  /// \fn explicit Dwarfworks::KeyEvent::KeyEvent(int keycode)
   ///
   /// \brief Constructor.
   ///
@@ -40,7 +40,7 @@ class DW_API KeyEvent : public Event {
   ///
   /// \param keycode The keycode.
 
-  KeyEvent(int keycode) : m_KeyCode(keycode) {}
+  explicit KeyEvent(int keycode) : m_KeyCode(keycode) {}
 
   /// \brief The key code.
   int m_KeyCode;
@@ -110,7 +110,7 @@ class DW_API KeyPressedEvent : public KeyEvent {
 
 class DW_API KeyReleasedEvent : public KeyEvent {
  public:
-  /// \fn KeyReleasedEvent::KeyReleasedEvent(int keycode)
+  /// \fn explicit KeyReleasedEvent::KeyReleasedEvent(int keycode)
   ///
   /// \brief Constructor.
   ///
@@ -119,7 +119,7 @@ class DW_API KeyReleasedEvent : public KeyEvent {
   ///
   /// \param keycode The keycode.
 
-  KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
+  explicit KeyReleasedEvent(int keycode) : KeyEvent(keycode) {}
 
   /// \fn std::string KeyReleasedEvent::ToString() const override
   ///
@@ -157,7 +157,7 @@ class DW_API KeyTypedEvent : public KeyEvent {
   ///
   /// \param keycode The keycode.
 
-  KeyTypedEvent(int keycode) : KeyEvent(keycode) {}
+  explicit KeyTypedEvent(int keycode) : KeyEvent(keycode) {}
 
   /// \fn std::string KeyTypedEvent::ToString() const override
   ///

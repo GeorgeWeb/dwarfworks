@@ -4,3 +4,6 @@
 [submodule "Dwarfworks/Vendor/glfw"]
 	path = Dwarfworks/Vendor/glfw
 	url = https://github.com/GeorgeWeb/glfw.git
+[submodule "Dwarfworks/Vendor/imgui"]
+	path = Dwarfworks/Vendor/imgui
+	url = https://github.com/GeorgeWeb/imgui.git

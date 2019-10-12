@@ -182,4 +182,4 @@ class DW_API LayerStack {
 
 }  // namespace Dwarfworks
 
-#endif CORE_LAYERS_LAYER_STACK_H_
+#endif  // CORE_LAYERS_LAYER_STACK_H_

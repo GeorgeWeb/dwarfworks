@@ -134,8 +134,16 @@ class DW_API Window {
 
   virtual bool IsVSync() const = 0;
 
-  // Here just for a remainder for future implementation
-  // virtual void* GetNativeWindow() const = 0;
+  /// \fn virtual void* Window::GetNativeWindow() const = 0;
+  ///
+  /// \brief Gets native window
+  ///
+  /// \author Georg
+  /// \date 12/10/2019
+  ///
+  /// \returns Null if it fails, else the native window.
+
+  virtual void* GetNativeWindow() const = 0;
 
   /// \fn static Window* Window::Create(const WindowProps& props =
   /// WindowProps{});

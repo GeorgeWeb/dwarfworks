@@ -3,7 +3,8 @@
 
 #ifdef DW_PLATFORM_WINDOWS
 
-extern Dwarfworks::Application* Dwarfworks::CreateApplication();
+extern Dwarfworks::Scope<Dwarfworks::Application>
+Dwarfworks::CreateApplication();
 
 /// \fn auto main() -> void
 ///
@@ -18,7 +19,6 @@ auto main() -> void {
 
   auto app = Dwarfworks::CreateApplication();
   app->Run();
-  delete app;
 }
 
 #endif

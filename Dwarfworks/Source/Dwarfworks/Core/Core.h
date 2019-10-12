@@ -1,6 +1,9 @@
 #ifndef CORE_CORE_H_
 #define CORE_CORE_H_
 
+#include <memory>
+#include <utility>
+
 // Platform detection using predefined macros
 #ifdef _WIN32
 /* Windows x64/x86 */
@@ -176,6 +179,92 @@ struct DW_API CRTP {
     return static_cast<ImplType const&>(*this);
   }
 };
+
+/// \brief A scoped life-time pointer (std::unique_ptr)
+template <typename T>
+using Scope = std::unique_ptr<T>;
+
+/// \fn template <typename T, typename... Params> constexpr Scope<T>
+/// CreateScope(Params&&... params)
+///
+/// \brief Creates a scope
+///
+/// \tparam T	   Generic type parameter.
+/// \tparam Params Type of the parameters.
+/// \param params A variable-length parameters list containing parameters.
+///
+/// \returns The new scope.
+
+template <typename T, typename... Params>
+constexpr Scope<T> CreateScope(Params&&... params) {
+  return std::make_unique<T>(std::forward<Params>(params)...);
+}
+
+/// \brief A reference counting basde life-time pointer (std::shared_ptr)
+template <typename T>
+using Ref = std::shared_ptr<T>;
+template <typename T, typename... Params>
+
+/// \fn constexpr Ref<T> CreateRef(Params&&... params)
+///
+/// \brief Creates a reference
+///
+/// \author Georg
+/// \date 07/10/2019
+///
+/// \param params A variable-length parameters list containing parameters.
+///
+/// \returns The new reference.
+
+constexpr Ref<T> CreateRef(Params&&... params) {
+  return std::make_shared<T>(std::forward<Params>(params)...);
+}
+
+/// \brief A weak pointer that serves to observe an object's state
+template <typename T>
+using Observable = std::weak_ptr<T>;  // Observe/able ?
+
+/// \fn template <typename T> constexpr bool CanObserve(Observable<T>
+/// observable)
+///
+/// \brief Determine if we can observe
+///
+/// \tparam T Generic type parameter.
+/// \param observable The observable.
+///
+/// \returns True if we can observe, false if not.
+
+template <typename T>
+constexpr bool CanObserve(Observable<T> observable) {
+  // check for nullptr in the event the object is assigned
+  auto ref = observable.lock();
+  return ref != nullptr;
+}
+
+/// \fn template <typename T, typename Callback> constexpr auto
+/// Observe(Observable<T> observable, const Callback& callback)
+///
+/// \brief Observes
+///
+/// \tparam T		 Generic type parameter.
+/// \tparam Callback Type of the callback.
+/// \param observable The observable.
+/// \param callback   The callback.
+///
+/// \returns An auto.
+
+template <typename T, typename Callback>
+constexpr void Observe(Observable<T> observable, const Callback& callback) {
+  if (CanObserve(observable)) {
+    auto ref = observable.lock();
+    auto object = static_cast<T>((*ref));
+    // observe the inner object
+    callback(object);
+  } else {
+    DW_CORE_WARN("Cannot observe a non-owning pointer that points to nothing");
+    return;
+  }
+}
 
 }  // namespace Dwarfworks
 

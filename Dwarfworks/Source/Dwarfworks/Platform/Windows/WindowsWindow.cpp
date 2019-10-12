@@ -6,12 +6,17 @@
 #include "../../Core/Events/KeyEvent.h"
 #include "../../Core/Events/MouseEvent.h"
 
+// Glad
+#include <glad/glad.h>
+// glfw
+#include <GLFW/glfw3.h>
+
 namespace Dwarfworks {
 
 static bool s_IsGLFWInitialized{false};
 
 Window* Window::Create(const WindowProps& props) {
-  return new WindowsWindow{props};
+  return new WindowsWindow(props);
 }
 
 WindowsWindow::WindowsWindow(const WindowProps& props) { Initialize(props); }
@@ -63,8 +68,15 @@ void WindowsWindow::Initialize(const WindowProps& props) {
 
   // set the current context to the created window
   glfwMakeContextCurrent(m_Window);
+
+  // load OpenGL through the Glad GL Loader
+  auto status =
+      gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
+  DW_CORE_ASSERT(status, "Failed to initialize Glad!");
+
+  // set the custom window data to the GLFWwindow
   glfwSetWindowUserPointer(m_Window, &m_Data);
-  SetVSync(true);  // v-sync is on by default
+  m_Data.VSync = true;  // v-sync is on by default
 
   // ------------------
   // set glfw callbacks
@@ -114,6 +126,13 @@ void WindowsWindow::Initialize(const WindowProps& props) {
         break;
       }
     }
+  });
+
+  // character type action
+  glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int charater) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+    KeyTypedEvent event(charater);
+    data.EventCallback(event);
   });
 
   // mouse button action

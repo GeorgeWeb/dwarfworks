@@ -1,9 +1,19 @@
-#ifndef PLATFORM_WINDOWS_WINDOW_H_
-#define PLATFORM_WINDOWS_WINDOW_H_
+#ifndef PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
+#define PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
 
 #include "../../Core/Window/Window.h"
 
-#include <GLFW/glfw3.h>
+/// \struct GLFWwindow
+///
+/// \brief Form for viewing the GLFWwindow.
+///
+/// \author Georg
+/// \date 07/10/2019
+
+struct GLFWwindow;
+// Note: This forward declaration is used so we avoid include the glfw3.h header
+// just for declaring a GLFWwindow* member of the WindowsWindow class and also
+// avoid errors for the order of inclusion of their headers (glad.h is first).
 
 namespace Dwarfworks {
 
@@ -27,14 +37,14 @@ class DW_API WindowsWindow : public Window {
 
   explicit WindowsWindow(const WindowProps& props);
 
-  /// \fn virtual WindowsWindow::~WindowsWindow();
+  /// \fn WindowsWindow::~WindowsWindow();
   ///
   /// \brief Destructor.
   ///
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual ~WindowsWindow();
+  ~WindowsWindow();
 
   /// \fn void WindowsWindow::OnUpdate() override;
   ///
@@ -103,11 +113,19 @@ class DW_API WindowsWindow : public Window {
 
   bool IsVSync() const override;
 
- private:
-  // "Virtuality" separation of init/shut logic for derived classes
-  // Example extensions: UniversalWindowsApp(UWP) Window or WindowsPhone Window
+  /// \fn inline void* WindowsWindow::GetNativeWindow() const override
+  ///
+  /// \brief Gets native window
+  ///
+  /// \author Georg
+  /// \date 12/10/2019
+  ///
+  /// \returns Null if it fails, else the native window.
 
-  /// \fn virtual void WindowsWindow::Initialize(const WindowProps& props);
+  inline void* GetNativeWindow() const override { return m_Window; }
+
+ private:
+  /// \fn void WindowsWindow::Initialize(const WindowProps& props);
   ///
   /// \brief Initializes this object.
   ///
@@ -116,16 +134,16 @@ class DW_API WindowsWindow : public Window {
   ///
   /// \param props The properties.
 
-  virtual void Initialize(const WindowProps& props);
+  void Initialize(const WindowProps& props);
 
-  /// \fn virtual void WindowsWindow::Shutdown();
+  /// \fn void WindowsWindow::Shutdown();
   ///
   /// \brief Shuts down this object and frees any resources it is using.
   ///
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual void Shutdown();
+  void Shutdown();
 
   /// \brief The window handle (pointer to GLFWwindow).
   GLFWwindow* m_Window;
@@ -158,4 +176,4 @@ class DW_API WindowsWindow : public Window {
 
 }  // namespace Dwarfworks
 
-#endif  // PLATFORM_WINDOWS_WINDOW_H_
+#endif  // PLATFORM_WINDOWS_WINDOWS_WINDOW_H_

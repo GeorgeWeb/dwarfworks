@@ -7,6 +7,9 @@
 #include "../Events/ApplicationEvent.h"
 #include "../Layers/LayerStack.h"
 
+#include <atomic>
+#include <mutex>
+
 namespace Dwarfworks {
 
 /// \class Application
@@ -34,7 +37,42 @@ class DW_API Application {
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual ~Application();
+  virtual ~Application() = default;
+
+  Application(const Application&) = delete;
+  Application& operator=(const Application&) = delete;
+
+  /// \fn inline static Application& Application::Get()
+  ///
+  /// \brief Gets the Application singleton instance
+  ///
+  /// \author Georg
+  /// \date 12/10/2019
+  ///
+  /// \returns A reference to an Application.
+
+  inline static Application& Get() {
+    // Acquire-Release semantic for C++ atomics (standard thread-safe guarantee)
+    // https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
+
+    // acquire: no reads or writes in the current thread can be reordered before
+    // this load
+    auto instance = s_Instance.load(std::memory_order_acquire);
+    // Double-checked locking pattern
+    if (!instance) {
+      std::scoped_lock<std::mutex> lock(s_Mutex);
+      // no synchronization or ordering constraints imposed on other reads or
+      // writes, only this operation's atomicity is guaranteed
+      instance = s_Instance.load(std::memory_order_relaxed);
+      if (!instance) {
+        instance = new Application();
+        // release: no reads or writes in the current thread can be reordered
+        // after this store
+        s_Instance.store(instance, std::memory_order_release);
+      }
+    }
+    return *instance;
+  }
 
   /// \fn void Application::Run();
   ///
@@ -56,7 +94,6 @@ class DW_API Application {
 
   void OnEvent(Event& event);
 
- protected:
   /// \fn inline bool Application::IsRunning() const noexcept
   ///
   /// \brief Query if this object is running.
@@ -90,6 +127,17 @@ class DW_API Application {
 
   void PushOverlay(Layer* layer);
 
+  /// \fn inline Window& Application::GetWindow() const
+  ///
+  /// \brief Gets the window
+  ///
+  /// \author Georg
+  /// \date 12/10/2019
+  ///
+  /// \returns The window.
+
+  inline Window& GetWindow() const { return *m_Window; }
+
  private:
   /// \fn bool Application::OnWindowClosed(WindowCloseEvent& event);
   ///
@@ -107,9 +155,15 @@ class DW_API Application {
   /// \brief True if is running, false if not.
   bool m_IsRunning{true};
   /// \brief The window.
-  std::unique_ptr<Window> m_Window;
+  Scope<Window> m_Window;
+  // Window* m_Window;
   /// \brief Stack of layers
   LayerStack m_LayerStack;
+
+  /// \brief The instance
+  static std::atomic<Application*> s_Instance;
+  /// \brief The mutex
+  static std::mutex s_Mutex;
 };
 
 /// \fn Dwarfworks::Application* CreateApplication();
@@ -121,7 +175,7 @@ class DW_API Application {
 ///
 /// \returns Null if it fails, else the new application.
 
-Dwarfworks::Application* CreateApplication();
+Scope<Dwarfworks::Application> CreateApplication();
 
 }  // namespace Dwarfworks
 

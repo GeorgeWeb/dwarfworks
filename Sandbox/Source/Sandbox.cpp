@@ -4,34 +4,40 @@ class TestLayer : public Dwarfworks::Layer {
  public:
   TestLayer() : Layer("Test Layer") {}
 
-  void OnUpdate() override { DW_INFO("TestLayer::Update"); }
+  void OnUpdate() override {
+    if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::TAB)) {
+      DW_INFO("Tab key is pressed (poll)!");
+    }
+
+    if (Dwarfworks::Input::IsMouseButtonPressed(
+            Dwarfworks::MouseButtonCodes::BUTTON_1)) {
+      const auto [x, y] = Dwarfworks::Input::GetMousePosition();
+      DW_INFO("Cursor is at ({0}, {1}).", x, y);
+    }
+  }
 
   void OnEvent(Dwarfworks::Event& event) override {
-    DW_TRACE("TestLayer::{0}::OnEvent", event);
+    if (event.GetEventType() == Dwarfworks::EventType::KeyPressed) {
+      auto& e = static_cast<Dwarfworks::KeyPressedEvent&>(event);
+      if (e.GetKeyCode() == Dwarfworks::KeyCodes::LEFT_CONTROL) {
+        DW_TRACE("Ctrl key is pressed (event)!");
+      } else {
+        DW_TRACE("{0}", static_cast<char>(e.GetKeyCode()));
+      }
+    }
   }
 };
 
-class AnotherTestLayer : public Dwarfworks::Layer {
- public:
-  AnotherTestLayer() : Layer("Another Test Layer") {}
-
-  void OnUpdate() override { DW_INFO("AnotherTestLayer::Update"); }
-
-  void OnEvent(Dwarfworks::Event& event) override {
-    DW_TRACE("AnotherTestLayer::{0}::OnEvent", event);
-  }
-};
-
-class Sandbox : public Dwarfworks::Application {
+class Sandbox final : public Dwarfworks::Application {
  public:
   Sandbox() {
     PushLayer(new TestLayer());
-    PushLayer(new AnotherTestLayer());
+    PushOverlay(new Dwarfworks::DebugUILayer());
   }
 
-  virtual ~Sandbox() override = default;
+  ~Sandbox() override = default;
 };
 
-Dwarfworks::Application* Dwarfworks::CreateApplication() {
-  return new Sandbox();
+Dwarfworks::Scope<Dwarfworks::Application> Dwarfworks::CreateApplication() {
+  return Dwarfworks::CreateScope<Sandbox>();
 }

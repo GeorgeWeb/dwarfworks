@@ -5,6 +5,7 @@ workspace "Dwarfworks"
         "Release",    -- Stripped out a lot of debug info, but some (like Logging) is kept
         "Dist"        -- build to be distributed to the public with all debug info stripped
     }
+    startproject "Sandbox"
 
 -- platform-independent output directory definition
 OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -12,10 +13,14 @@ OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 -- include directories relative to root folder (solution directory)
 IncludeDir = {}
 IncludeDir["GLFW"] = "Dwarfworks/Vendor/glfw/include"
+IncludeDir["Glad"] = "Dwarfworks/Vendor/glad/include"
+IncludeDir["ImGui"] = "Dwarfworks/Vendor/imgui"
 
 -- define project external dependencies
 group "Dependencies"
     include "Dwarfworks/Vendor/glfw"
+    include "Dwarfworks/Vendor/glad"
+    include "Dwarfworks/Vendor/imgui"
 
 -- relative path to Dwarfworks source folder
 local SourceDir = "%{prj.name}/Source"
@@ -65,6 +70,9 @@ project "Dwarfworks"
         -- Layers sub-module
         SourceDir .. "/Core/Layers/**.h",
         SourceDir .. "/Core/Layers/**.cpp",
+        -- DebugUI Layer
+        SourceDir .. "/DebugUI/**.h",
+        SourceDir .. "/DebugUI/**.cpp",
         -- ---------------
         -- Graphics module
         -- ---------------
@@ -80,6 +88,9 @@ project "Dwarfworks"
         -- ----------------------
         SourceDir .. "/Platform/**.h",
         SourceDir .. "/Platform/**.cpp",
+        -- OpenGL
+        -- SourceDir .. "/Platform/OpenGL/**.h",
+        -- SourceDir .. "/Platform/OpenGL/**.cpp",
         -- Windows Window 
         SourceDir .. "/Platform/Windows/**.h",
         SourceDir .. "/Platform/Windows/**.cpp"
@@ -92,11 +103,15 @@ project "Dwarfworks"
         -- External Logging lib - spdlog
         "%{prj.name}/Vendor/spdlog/include",
         -- (cross-platform) Window lib - GLFW
-        "%{IncludeDir.GLFW}"
+        "%{IncludeDir.GLFW}",
+        "%{IncludeDir.Glad}",
+        "%{IncludeDir.ImGui}"
     }
 
     links {
         "GLFW",
+        "Glad",
+        "ImGui",
         "opengl32.lib"
     }
 

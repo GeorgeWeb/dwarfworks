@@ -2,12 +2,17 @@
 .vs/
 bin/
 bin-int/
+*build*/
 
 # file
 *.user
 
 # temporary excludes (clang-tidy and clang-format, used by the clang power tools)
-.clang-*
+# .clang-*
+
+# exclude cppcheck config files
+*.cppcheck
+
 
 # Visual Studio solution & project files
 *.sln

@@ -20,3 +20,6 @@ Dwarfworks/*.vcxproj
 Dwarfworks/*.vcxproj.*
 Sandbox/*.vcxproj
 Sandbox/*.vcxproj.*
+
+# ImGui generated files
+Sandbox/imgui.ini

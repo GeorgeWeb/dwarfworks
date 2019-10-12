@@ -74,6 +74,9 @@ project "Dwarfworks"
         -- DebugUI Layer
         SourceDir .. "/DebugUI/**.h",
         SourceDir .. "/DebugUI/**.cpp",
+        -- Threading
+        SourceDir .. "/Core/Threading/**.h",
+        SourceDir .. "/Core/Threading/**.cpp",
         -- ---------------
         -- Graphics module
         -- ---------------

@@ -1,5 +1,5 @@
-#ifndef PLATFORM_WINDOWS_WINDOW_H_
-#define PLATFORM_WINDOWS_WINDOW_H_
+#ifndef PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
+#define PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
 
 #include "../../Core/Window/Window.h"
 
@@ -37,14 +37,14 @@ class DW_API WindowsWindow : public Window {
 
   explicit WindowsWindow(const WindowProps& props);
 
-  /// \fn virtual WindowsWindow::~WindowsWindow();
+  /// \fn WindowsWindow::~WindowsWindow();
   ///
   /// \brief Destructor.
   ///
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual ~WindowsWindow();
+  ~WindowsWindow();
 
   /// \fn void WindowsWindow::OnUpdate() override;
   ///
@@ -113,7 +113,7 @@ class DW_API WindowsWindow : public Window {
 
   bool IsVSync() const override;
 
-  /// \fn inline virtual void* WindowsWindow::GetNativeWindow() const override
+  /// \fn inline void* WindowsWindow::GetNativeWindow() const override
   ///
   /// \brief Gets native window
   ///
@@ -122,7 +122,7 @@ class DW_API WindowsWindow : public Window {
   ///
   /// \returns Null if it fails, else the native window.
 
-  inline virtual void* GetNativeWindow() const override { return m_Window; }
+  inline void* GetNativeWindow() const override { return m_Window; }
 
  private:
   /// \fn void WindowsWindow::Initialize(const WindowProps& props);
@@ -176,4 +176,4 @@ class DW_API WindowsWindow : public Window {
 
 }  // namespace Dwarfworks
 
-#endif  // PLATFORM_WINDOWS_WINDOW_H_
+#endif  // PLATFORM_WINDOWS_WINDOWS_WINDOW_H_

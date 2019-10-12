@@ -4,6 +4,8 @@
 
 #include <glad/glad.h>
 
+#include "Dwarfworks/Core/Input/Input.h"
+
 namespace Dwarfworks {
 
 std::atomic<Application*> Application::s_Instance = nullptr;
@@ -12,8 +14,6 @@ std::mutex Application::s_Mutex;
 Application::Application() {
   s_Instance = this;
 
-  // m_Window = CreateScope<Window>(Window::Create());
-  // m_Window = Window::Create();
   auto window = Window::Create();
   m_Window.reset(std::move(window));
   m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));

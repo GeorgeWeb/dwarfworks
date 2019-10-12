@@ -15,12 +15,10 @@
 #include "Dwarfworks/Core/Application/Application.h"
 // ---------------------------------------------------------------
 
-// -- Events -----------------------------------------------------
-#include "Dwarfworks/Core/Events/EventManager.h"
-// -- Core event implementations
-#include "Dwarfworks/Core/Events/ApplicationEvent.h"
-#include "Dwarfworks/Core/Events/KeyEvent.h"
-#include "Dwarfworks/Core/Events/MouseEvent.h"
+// -- Input ------------------------------------------------------
+#include "Dwarfworks/Core/Input/Input.h"
+#include "Dwarfworks/Core/Input/KeyCodes.h"
+#include "Dwarfworks/Core/Input/MouseButtonCodes.h"
 // ---------------------------------------------------------------
 
 // -- Layers -----------------------------------------------------

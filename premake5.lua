@@ -15,6 +15,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Dwarfworks/Vendor/glfw/include"
 IncludeDir["Glad"] = "Dwarfworks/Vendor/glad/include"
 IncludeDir["ImGui"] = "Dwarfworks/Vendor/imgui"
+IncludeDir["glm"] = "Dwarfworks/Vendor/glm"
 
 -- define project external dependencies
 group "Dependencies"
@@ -104,8 +105,12 @@ project "Dwarfworks"
         "%{prj.name}/Vendor/spdlog/include",
         -- (cross-platform) Window lib - GLFW
         "%{IncludeDir.GLFW}",
+        -- Modern OpenGL profile loader
         "%{IncludeDir.Glad}",
-        "%{IncludeDir.ImGui}"
+        -- Immediate mode UI
+        "%{IncludeDir.ImGui}",
+        -- SIMD Mathematics
+        "%{IncludeDir.glm}"
     }
 
     links {
@@ -176,7 +181,9 @@ project "Sandbox"
         "Dwarfworks/Source",
         "Dwarfworks/Vendor",
         -- External Logging lib - spdlog
-        "Dwarfworks/Vendor/spdlog/include"
+        "Dwarfworks/Vendor/spdlog/include",
+        -- External Mathematics lib - glm
+        "Dwarfworks/Vendor/glm"
     }
 
     -- set project link targets

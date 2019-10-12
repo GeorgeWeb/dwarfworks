@@ -6,6 +6,8 @@
 
 #include "Dwarfworks/Core/Input/Input.h"
 
+#include "Dwarfworks/Math/Math.h"
+
 namespace Dwarfworks {
 
 std::atomic<Application*> Application::s_Instance = nullptr;

@@ -21,7 +21,7 @@ Application::Application() {
 
 void Application::Run() {
   // helper lambda for update a layer
-  auto updateLayer = [](Layer* layer) { layer->OnUpdate(); };
+  const auto updateLayer = [](Layer* layer) { layer->OnUpdate(); };
 
   // the main loop
   while (IsRunning()) {
@@ -40,17 +40,11 @@ void Application::OnEvent(Event& event) {
   eventManager.Dispatch<WindowCloseEvent>(
       DW_BIND_EVENT_FN(Application::OnWindowClosed));
 
-  DW_CORE_INFO("{0}", event);
-
   // call events in reverse order from most top to most bottom layer
-  auto handleLayerEvent = [&event](Layer* layer) -> void {
+  std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](Layer* layer) {
     layer->OnEvent(event);
-    if (event.IsHandled) {
-      return;
-    }
-  };
-
-  std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), handleLayerEvent);
+    if (event.IsHandled) return;
+  });
 }
 
 void Application::PushLayer(Layer* layer) {

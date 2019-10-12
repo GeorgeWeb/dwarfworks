@@ -84,8 +84,6 @@ void DebugUILayer::OnUpdate() {
 }
 
 void DebugUILayer::OnEvent(Event& event) {
-  // Application& app = Application::Get();
-
   // listen for event
   EventManager eventManager(event);
 

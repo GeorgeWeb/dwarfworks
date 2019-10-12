@@ -5,6 +5,7 @@ workspace "Dwarfworks"
         "Release",    -- Stripped out a lot of debug info, but some (like Logging) is kept
         "Dist"        -- build to be distributed to the public with all debug info stripped
     }
+    startproject "Sandbox"
 
 -- platform-independent output directory definition
 OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"

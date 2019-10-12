@@ -113,6 +113,17 @@ class DW_API WindowsWindow : public Window {
 
   bool IsVSync() const override;
 
+  /// \fn inline virtual void* WindowsWindow::GetNativeWindow() const override
+  ///
+  /// \brief Gets native window
+  ///
+  /// \author Georg
+  /// \date 12/10/2019
+  ///
+  /// \returns Null if it fails, else the native window.
+
+  inline virtual void* GetNativeWindow() const override { return m_Window; }
+
  private:
   /// \fn void WindowsWindow::Initialize(const WindowProps& props);
   ///

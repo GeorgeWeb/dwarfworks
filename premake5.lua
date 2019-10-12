@@ -69,6 +69,9 @@ project "Dwarfworks"
         -- Layers sub-module
         SourceDir .. "/Core/Layers/**.h",
         SourceDir .. "/Core/Layers/**.cpp",
+        -- DebugUI Layer
+        SourceDir .. "/DebugUI/**.h",
+        SourceDir .. "/DebugUI/**.cpp",
         -- ---------------
         -- Graphics module
         -- ---------------
@@ -84,6 +87,9 @@ project "Dwarfworks"
         -- ----------------------
         SourceDir .. "/Platform/**.h",
         SourceDir .. "/Platform/**.cpp",
+        -- OpenGL
+        -- SourceDir .. "/Platform/OpenGL/**.h",
+        -- SourceDir .. "/Platform/OpenGL/**.cpp",
         -- Windows Window 
         SourceDir .. "/Platform/Windows/**.h",
         SourceDir .. "/Platform/Windows/**.cpp"

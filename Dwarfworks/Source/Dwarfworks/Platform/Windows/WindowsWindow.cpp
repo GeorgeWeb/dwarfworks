@@ -16,7 +16,7 @@ namespace Dwarfworks {
 static bool s_IsGLFWInitialized{false};
 
 Window* Window::Create(const WindowProps& props) {
-  return new WindowsWindow{props};
+  return new WindowsWindow(props);
 }
 
 WindowsWindow::WindowsWindow(const WindowProps& props) { Initialize(props); }
@@ -126,6 +126,13 @@ void WindowsWindow::Initialize(const WindowProps& props) {
         break;
       }
     }
+  });
+
+  // character type action
+  glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int charater) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+    KeyTypedEvent event(charater);
+    data.EventCallback(event);
   });
 
   // mouse button action

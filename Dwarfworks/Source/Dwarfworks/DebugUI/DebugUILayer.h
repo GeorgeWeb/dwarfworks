@@ -1,11 +1,15 @@
 #ifndef DEBUGUI_DEBUGUI_LAYER_H_
 #define DEBUGUI_DEBUGUI_LAYER_H_
 
-#include "../Core/Layers/Layer.h"
+#include "Dwarfworks/Core/Layers/Layer.h"
+
+#include "Dwarfworks/Core/Events/ApplicationEvent.h"
+#include "Dwarfworks/Core/Events/KeyEvent.h"
+#include "Dwarfworks/Core/Events/MouseEvent.h"
 
 namespace Dwarfworks {
 
-class DebugUILayer final : public Layer {
+class DW_API DebugUILayer final : public Layer {
  public:
   /// \fn final::DebugUILayer();
   ///
@@ -64,6 +68,7 @@ class DebugUILayer final : public Layer {
   void OnEvent(Event& event) override final;
 
  private:
+  float m_Time{0.0f};
 };
 
 }  // namespace Dwarfworks

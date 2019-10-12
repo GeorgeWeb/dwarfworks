@@ -11,27 +11,23 @@ class TestLayer : public Dwarfworks::Layer {
   }
 };
 
-class AnotherTestLayer : public Dwarfworks::Layer {
- public:
-  AnotherTestLayer() : Layer("Another Test Layer") {}
-
-  void OnUpdate() override { DW_INFO("AnotherTestLayer::Update"); }
-
-  void OnEvent(Dwarfworks::Event& event) override {
-    DW_TRACE("AnotherTestLayer::{0}::OnEvent", event);
-  }
-};
-
-class Sandbox : public Dwarfworks::Application {
+class Sandbox final : public Dwarfworks::Application {
  public:
   Sandbox() {
     PushLayer(new TestLayer());
-    PushLayer(new AnotherTestLayer());
+    PushOverlay(new Dwarfworks::DebugUILayer());
   }
 
-  virtual ~Sandbox() override = default;
+  /*
+  void Initialise() override {
+    // ...
+    Dwarfworks::Application::Initialise();
+  }
+  */
+
+  ~Sandbox() override = default;
 };
 
-Dwarfworks::Application* Dwarfworks::CreateApplication() {
-  return new Sandbox();
+Dwarfworks::Scope<Dwarfworks::Application> Dwarfworks::CreateApplication() {
+  return Dwarfworks::CreateScope<Sandbox>();
 }

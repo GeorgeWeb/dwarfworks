@@ -6,12 +6,18 @@
 
 namespace Dwarfworks {
 
-Application::Application()
-    : m_Window(std::unique_ptr<Window>(Window::Create())) {
+std::atomic<Application*> Application::s_Instance = nullptr;
+std::mutex Application::s_Mutex;
+
+Application::Application() {
+  s_Instance = this;
+
+  // m_Window = CreateScope<Window>(Window::Create());
+  // m_Window = Window::Create();
+  auto window = Window::Create();
+  m_Window.reset(std::move(window));
   m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));
 }
-
-Application::~Application() {}
 
 void Application::Run() {
   // helper lambda for update a layer
@@ -29,9 +35,9 @@ void Application::Run() {
 
 void Application::OnEvent(Event& event) {
   // listen for upcoming events and register them
-  EventManager manager(event);
+  EventManager eventManager(event);
   // dispatch the event and call its function if it matches the registered event
-  manager.Dispatch<WindowCloseEvent>(
+  eventManager.Dispatch<WindowCloseEvent>(
       DW_BIND_EVENT_FN(Application::OnWindowClosed));
 
   DW_CORE_INFO("{0}", event);
@@ -47,9 +53,15 @@ void Application::OnEvent(Event& event) {
   std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), handleLayerEvent);
 }
 
-void Application::PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
+void Application::PushLayer(Layer* layer) {
+  m_LayerStack.PushLayer(layer);
+  layer->OnAttach();
+}
 
-void Application::PushOverlay(Layer* layer) { m_LayerStack.PushOverlay(layer); }
+void Application::PushOverlay(Layer* layer) {
+  m_LayerStack.PushOverlay(layer);
+  layer->OnAttach();
+}
 
 bool Application::OnWindowClosed(WindowCloseEvent& event) {
   m_IsRunning = false;

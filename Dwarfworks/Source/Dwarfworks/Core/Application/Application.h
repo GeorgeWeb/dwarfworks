@@ -42,7 +42,7 @@ class DW_API Application {
   Application(const Application&) = delete;
   Application& operator=(const Application&) = delete;
 
-  /// \fn inline Application& Application::Get()
+  /// \fn inline static Application& Application::Get()
   ///
   /// \brief Gets the Application singleton instance
   ///
@@ -51,7 +51,7 @@ class DW_API Application {
   ///
   /// \returns A reference to an Application.
 
-  static Application& Get() {
+  inline static Application& Get() {
     // Acquire-Release semantic for C++ atomics (standard thread-safe guarantee)
     // https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
 
@@ -160,7 +160,9 @@ class DW_API Application {
   /// \brief Stack of layers
   LayerStack m_LayerStack;
 
+  /// \brief The instance
   static std::atomic<Application*> s_Instance;
+  /// \brief The mutex
   static std::mutex s_Mutex;
 };
 

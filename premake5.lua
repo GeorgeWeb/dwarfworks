@@ -94,7 +94,13 @@ project "Dwarfworks"
         -- SourceDir .. "/Platform/OpenGL/**.cpp",
         -- Windows Window 
         SourceDir .. "/Platform/Windows/**.h",
-        SourceDir .. "/Platform/Windows/**.cpp"
+        SourceDir .. "/Platform/Windows/**.cpp",
+        -- ----------------------
+        -- ----------------------
+        -- Test Framework
+        -- ----------------------
+        SourceDir .. "/Tests/**.h",
+        SourceDir .. "/Tests/**.cpp"
     }
 
     -- set project include directories

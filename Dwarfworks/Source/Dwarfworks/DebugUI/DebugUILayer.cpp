@@ -60,7 +60,11 @@ void DebugUILayer::OnAttach() {
   ImGui_ImplOpenGL3_Init("#version 410");
 }
 
-void DebugUILayer::OnDetach() {}
+void DebugUILayer::OnDetach() {
+  ImGui_ImplOpenGL3_Shutdown();
+  ImGui_ImplGlfw_Shutdown();
+  ImGui::DestroyContext();
+}
 
 void DebugUILayer::OnUpdate() {
   ImGuiIO& io = ImGui::GetIO();
@@ -155,6 +159,14 @@ void DebugUILayer::OnEvent(Event& event) {
     }
     return false;  // see MouseButtonPressedEvent handling for explanation
   });
+}
+
+[[maybe_unused]] void DebugUILayer::Begin() const {
+  // TODO
+}
+
+[[maybe_unused]] void DebugUILayer::End() const {
+  // TODO
 }
 
 }  // namespace Dwarfworks

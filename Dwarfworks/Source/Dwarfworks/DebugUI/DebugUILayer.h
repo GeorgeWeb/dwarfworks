@@ -67,6 +67,9 @@ class DW_API DebugUILayer final : public Layer {
 
   void OnEvent(Event& event) override final;
 
+  [[maybe_unused]] void Begin() const;
+  [[maybe_unused]] void End() const;
+
  private:
   float m_Time{0.0f};
 };

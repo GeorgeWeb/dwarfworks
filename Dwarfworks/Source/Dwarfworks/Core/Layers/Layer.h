@@ -72,7 +72,16 @@ class DW_API Layer {
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual void OnUpdate() {}
+  virtual void OnUpdate() {}  // TODO: Add Timestep!
+
+  /// \fn virtual void Layer::OnDebugUIRender()
+  ///
+  /// \brief Executes the DebugUI graphical user interface render action
+  ///
+  /// \author Georg
+  /// \date 13/10/2019
+
+  virtual void OnDebugUIRender() {}
 
   /// \fn virtual void Layer::OnEvent(Event& event)
   ///

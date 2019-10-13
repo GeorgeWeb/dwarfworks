@@ -12,7 +12,7 @@ class Playground : public Dwarfworks::Layer {
     }
 
     if (Dwarfworks::Input::IsMouseButtonPressed(
-            Dwarfworks::MouseButtonCodes::BUTTON_1)) {
+            Dwarfworks::MouseButtonCodes::BUTTON_LEFT)) {
       const auto [x, y] = Dwarfworks::Input::GetMousePosition();
       DW_INFO("Cursor is at ({0}, {1}).", x, y);
     }

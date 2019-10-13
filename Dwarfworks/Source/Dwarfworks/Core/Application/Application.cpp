@@ -10,6 +10,8 @@
 
 #include "Tests/Test.h"
 
+#include "Dwarfworks/Core/Threading/TaskGenerator.h"
+
 namespace Dwarfworks {
 
 std::atomic<Application*> Application::s_Instance = nullptr;
@@ -45,10 +47,25 @@ void Application::Run() {
   testMenu->RegisterTest<Tests::BasicTest>("Basic Test");
   testMenu->RegisterTest<Tests::ClearColorTest>("OpenGL Clear Color Test");
 
+  ThreadManager threadManager;
+  threadManager.CreateTaskLists();
+  threadManager.RunThreads();
+
+  TaskGenerator taskGenerator(&threadManager);
+  taskGenerator.CreateTasks();
+  taskGenerator.CreateTasks();
+  taskGenerator.CreateTasks();
+  taskGenerator.CreateTasks();
+
+  // threadManager.ThreadProcess();
+  threadManager.UnpauseThreads();
+
+  // the main loop
   while (IsRunning()) {
     // Test OpenGL clear color buffer
     glClearColor(1, 1, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
+    taskGenerator.CreateTasks();
 
     // Update layers
     for (auto appLayer : m_LayerStack) {
@@ -98,6 +115,9 @@ void Application::Run() {
 
   // cleanup tests
   delete testMenu;
+
+  threadManager.PauseThreads();
+  threadManager.JoinThreads();
 }
 
 void Application::OnEvent(Event& event) {

@@ -8,6 +8,7 @@
 
 #include "Dwarfworks/Math/Math.h"
 
+#include "Dwarfworks/Core/Threading/TaskGenerator.h"
 namespace Dwarfworks {
 
 std::atomic<Application*> Application::s_Instance = nullptr;
@@ -25,14 +26,30 @@ void Application::Run() {
   // helper lambda for update a layer
   const auto updateLayer = [](Layer* layer) { layer->OnUpdate(); };
 
+  ThreadManager threadManager;
+  threadManager.CreateTaskLists();
+  threadManager.RunThreads();
+
+  TaskGenerator taskGenerator(&threadManager);
+  taskGenerator.CreateTasks();
+  taskGenerator.CreateTasks();
+  taskGenerator.CreateTasks();
+  taskGenerator.CreateTasks();
+
+  // threadManager.ThreadProcess();
+  threadManager.UnpauseThreads();
+
   // the main loop
   while (IsRunning()) {
     glClearColor(1, 1, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
+    taskGenerator.CreateTasks();
 
     std::for_each(m_LayerStack.begin(), m_LayerStack.end(), updateLayer);
     m_Window->OnUpdate();
   }
+  threadManager.PauseThreads();
+  threadManager.JoinThreads();
 }
 
 void Application::OnEvent(Event& event) {

@@ -61,8 +61,8 @@ void DebugUILayer::OnDetach() {
 }
 
 void DebugUILayer::OnDebugUIRender() {
-  static bool show = true;
-  ImGui::ShowDemoWindow(&show);
+  // static bool show = true;
+  // ImGui::ShowDemoWindow(&show);
 }
 
 void DebugUILayer::Begin() const {

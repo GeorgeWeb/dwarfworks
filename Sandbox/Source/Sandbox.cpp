@@ -2,9 +2,9 @@
 
 #include "imgui/imgui.h"
 
-class TestLayer : public Dwarfworks::Layer {
+class Playground : public Dwarfworks::Layer {
  public:
-  TestLayer() : Layer("Test Layer") {}
+  Playground() : Layer("Playground") {}
 
   void OnUpdate() override {
     if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::TAB)) {
@@ -19,7 +19,7 @@ class TestLayer : public Dwarfworks::Layer {
   }
 
   void OnDebugUIRender() override {
-    ImGui::Begin("Test");
+    ImGui::Begin("Hello");
     ImGui::Text("Hello World!");
     ImGui::End();
   }
@@ -38,7 +38,7 @@ class TestLayer : public Dwarfworks::Layer {
 
 class Sandbox final : public Dwarfworks::Application {
  public:
-  Sandbox() { PushLayer(new TestLayer()); }
+  Sandbox() { PushLayer(new Playground()); }
   ~Sandbox() override = default;
 };
 

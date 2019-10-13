@@ -8,6 +8,8 @@
 
 #include "Dwarfworks/Math/Math.h"
 
+#include "Tests/Test.h"
+
 namespace Dwarfworks {
 
 std::atomic<Application*> Application::s_Instance = nullptr;
@@ -23,32 +25,79 @@ Application::Application() {
   // Set the Window event handling for this Application
   m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));
 
-  // Create (this) Application-centric DebugUI Layer
+  // Create Application DebugUI Layer
   m_DebugUILayer = CreateRef<DebugUILayer>();
   PushOverlay(m_DebugUILayer.get());
 }
 
 void Application::Run() {
+  // Setup Test Menu
+  // TODO: Implement the following tests:
+  // Tests::TestClearColor* clearColorTest; // Done
+  // Tests::TestDebugUIControls* debugUIControlsTest;
+  // Tests::TestThreadManager* threadManagerTest;
+  Tests::Test* currentTest = nullptr;
+  Tests::TestMenu* testMenu = new Tests::TestMenu(currentTest);
+  currentTest = testMenu;
+  m_LayerStack.PushLayer(currentTest);
+
+  // Register Tests
+  testMenu->RegisterTest<Tests::BasicTest>("Basic Test");
+  testMenu->RegisterTest<Tests::ClearColorTest>("OpenGL Clear Color Test");
+
   while (IsRunning()) {
     // Test OpenGL clear color buffer
-    glClearColor(1, 0, 0, 1);
+    glClearColor(1, 1, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // Update layers from the LayerStack
-    for (auto layer : m_LayerStack) {
-      layer->OnUpdate();
+    // Update layers
+    for (auto appLayer : m_LayerStack) {
+      if (currentTest) {
+        currentTest->OnUpdate();
+      } else {
+        if (appLayer != currentTest) {
+          appLayer->OnUpdate();
+        }
+      }
+    }
+
+    // Render layers
+    for (auto appLayer : m_LayerStack) {
+      if (currentTest) {
+        currentTest->OnRender();
+      } else {
+        if (appLayer != currentTest) {
+          appLayer->OnRender();
+        }
+      }
     }
 
     // Render DebugUI Layer
     m_DebugUILayer->Begin();
-    for (auto layer : m_LayerStack) {
-      layer->OnDebugUIRender();
+    if (currentTest) {
+      if (currentTest != testMenu && ImGui::Button("< Back")) {
+        delete currentTest;
+        currentTest = testMenu;
+      }
+      currentTest->OnDebugUIRender();
+    } else {
+      for (auto appLayer : m_LayerStack) {
+        if (appLayer != currentTest) {
+          appLayer->OnDebugUIRender();
+        }
+      }
     }
     m_DebugUILayer->End();
+
+    // TODO: Graphics Rendering
+    // Note: When Renderer is implemented
 
     // Update Window
     m_Window->OnUpdate();
   }
+
+  // cleanup tests
+  delete testMenu;
 }
 
 void Application::OnEvent(Event& event) {

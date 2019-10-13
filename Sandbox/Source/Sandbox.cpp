@@ -1,8 +1,10 @@
 #include <Dwarfworks.h>
 
-class TestLayer : public Dwarfworks::Layer {
+#include "imgui/imgui.h"
+
+class Playground : public Dwarfworks::Layer {
  public:
-  TestLayer() : Layer("Test Layer") {}
+  Playground() : Layer("Playground") {}
 
   void OnUpdate() override {
     if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::TAB)) {
@@ -14,6 +16,12 @@ class TestLayer : public Dwarfworks::Layer {
       const auto [x, y] = Dwarfworks::Input::GetMousePosition();
       DW_INFO("Cursor is at ({0}, {1}).", x, y);
     }
+  }
+
+  void OnDebugUIRender() override {
+    ImGui::Begin("Hello");
+    ImGui::Text("Hello World!");
+    ImGui::End();
   }
 
   void OnEvent(Dwarfworks::Event& event) override {
@@ -30,11 +38,7 @@ class TestLayer : public Dwarfworks::Layer {
 
 class Sandbox final : public Dwarfworks::Application {
  public:
-  Sandbox() {
-    PushLayer(new TestLayer());
-    PushOverlay(new Dwarfworks::DebugUILayer());
-  }
-
+  Sandbox() { PushLayer(new Playground()); }
   ~Sandbox() override = default;
 };
 

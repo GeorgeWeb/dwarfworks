@@ -1,8 +1,8 @@
 #ifndef CORE_LAYERS_LAYER_H_
 #define CORE_LAYERS_LAYER_H_
 
-#include "../Core.h"
-#include "../Events/Event.h"
+#include "Dwarfworks/Core/Core.h"
+#include "Dwarfworks/Core/Events/Event.h"
 
 namespace Dwarfworks {
 
@@ -72,7 +72,25 @@ class DW_API Layer {
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual void OnUpdate() {}
+  virtual void OnUpdate() {}  // TODO: Add Timestep!
+
+  /// \fn virtual void Layer::OnRender()
+  ///
+  /// \brief Executes the render action
+  ///
+  /// \author Georg
+  /// \date 13/10/2019
+
+  virtual void OnRender() {}
+
+  /// \fn virtual void Layer::OnDebugUIRender()
+  ///
+  /// \brief Executes the DebugUI graphical user interface render action
+  ///
+  /// \author Georg
+  /// \date 13/10/2019
+
+  virtual void OnDebugUIRender() {}
 
   /// \fn virtual void Layer::OnEvent(Event& event)
   ///

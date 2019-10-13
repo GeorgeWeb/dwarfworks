@@ -4,28 +4,35 @@
 
 namespace Dwarfworks {
 
-LayerStack::LayerStack() { m_LayerInsert = m_Layers.begin(); }
-
 LayerStack::~LayerStack() {
-  auto deleteLayer = [](Layer* layer) { delete layer; };
-  std::for_each(m_Layers.begin(), m_Layers.end(), deleteLayer);
-}
-
-void LayerStack::PushLayer(Layer* layer) {
-  m_LayerInsert = m_Layers.emplace(m_LayerInsert, layer);
-}
-
-void LayerStack::PushOverlay(Layer* layer) { m_Layers.emplace_back(layer); }
-
-void LayerStack::PopLayer(Layer* layer) {
-  if (auto it = DW_FIND(m_Layers, layer); it != m_Layers.end()) {
-    m_Layers.erase(it);
-    --m_LayerInsert;
+  for (auto layer : m_Layers) {
+    layer->OnDetach();
+    delete layer;
   }
 }
 
-void LayerStack::PopOverlay(Layer* layer) {
+void LayerStack::PushLayer(Layer* layer) {
+  m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
+  m_LayerInsertIndex++;
+  layer->OnAttach();
+}
+
+void LayerStack::PushOverlay(Layer* overlay) {
+  m_Layers.emplace_back(overlay);
+  overlay->OnAttach();
+}
+
+void LayerStack::PopLayer(Layer* layer) {
   if (auto it = DW_FIND(m_Layers, layer); it != m_Layers.end()) {
+    layer->OnDetach();
+    m_Layers.erase(it);
+    m_LayerInsertIndex--;
+  }
+}
+
+void LayerStack::PopOverlay(Layer* overlay) {
+  if (auto it = DW_FIND(m_Layers, overlay); it != m_Layers.end()) {
+    overlay->OnDetach();
     m_Layers.erase(it);
   }
 }

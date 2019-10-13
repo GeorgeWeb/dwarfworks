@@ -8,23 +8,44 @@
 
 #include "Dwarfworks/Math/Math.h"
 
+#include "Tests/Test.h"
+
 #include "Dwarfworks/Core/Threading/TaskGenerator.h"
+
 namespace Dwarfworks {
 
 std::atomic<Application*> Application::s_Instance = nullptr;
 std::mutex Application::s_Mutex;
 
 Application::Application() {
+  // set the Single Instance to point to this class only
   s_Instance = this;
 
+  // Create the Application Window
   auto window = Window::Create();
   m_Window.reset(std::move(window));
+  // Set the Window event handling for this Application
   m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));
+
+  // Create Application DebugUI Layer
+  m_DebugUILayer = CreateRef<DebugUILayer>();
+  PushOverlay(m_DebugUILayer.get());
 }
 
 void Application::Run() {
-  // helper lambda for update a layer
-  const auto updateLayer = [](Layer* layer) { layer->OnUpdate(); };
+  // Setup Test Menu
+  // TODO: Implement the following tests:
+  // Tests::TestClearColor* clearColorTest; // Done
+  // Tests::TestDebugUIControls* debugUIControlsTest;
+  // Tests::TestThreadManager* threadManagerTest;
+  Tests::Test* currentTest = nullptr;
+  Tests::TestMenu* testMenu = new Tests::TestMenu(currentTest);
+  currentTest = testMenu;
+  m_LayerStack.PushLayer(currentTest);
+
+  // Register Tests
+  testMenu->RegisterTest<Tests::BasicTest>("Basic Test");
+  testMenu->RegisterTest<Tests::ClearColorTest>("OpenGL Clear Color Test");
 
   ThreadManager threadManager;
   threadManager.CreateTaskLists();
@@ -41,13 +62,60 @@ void Application::Run() {
 
   // the main loop
   while (IsRunning()) {
+    // Test OpenGL clear color buffer
     glClearColor(1, 1, 0, 1);
     glClear(GL_COLOR_BUFFER_BIT);
     taskGenerator.CreateTasks();
 
-    std::for_each(m_LayerStack.begin(), m_LayerStack.end(), updateLayer);
+    // Update layers
+    for (auto appLayer : m_LayerStack) {
+      if (currentTest) {
+        currentTest->OnUpdate();
+      } else {
+        if (appLayer != currentTest) {
+          appLayer->OnUpdate();
+        }
+      }
+    }
+
+    // Render layers
+    for (auto appLayer : m_LayerStack) {
+      if (currentTest) {
+        currentTest->OnRender();
+      } else {
+        if (appLayer != currentTest) {
+          appLayer->OnRender();
+        }
+      }
+    }
+
+    // Render DebugUI Layer
+    m_DebugUILayer->Begin();
+    if (currentTest) {
+      if (currentTest != testMenu && ImGui::Button("< Back")) {
+        delete currentTest;
+        currentTest = testMenu;
+      }
+      currentTest->OnDebugUIRender();
+    } else {
+      for (auto appLayer : m_LayerStack) {
+        if (appLayer != currentTest) {
+          appLayer->OnDebugUIRender();
+        }
+      }
+    }
+    m_DebugUILayer->End();
+
+    // TODO: Graphics Rendering
+    // Note: When Renderer is implemented
+
+    // Update Window
     m_Window->OnUpdate();
   }
+
+  // cleanup tests
+  delete testMenu;
+
   threadManager.PauseThreads();
   threadManager.JoinThreads();
 }
@@ -66,15 +134,9 @@ void Application::OnEvent(Event& event) {
   });
 }
 
-void Application::PushLayer(Layer* layer) {
-  m_LayerStack.PushLayer(layer);
-  layer->OnAttach();
-}
+void Application::PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
 
-void Application::PushOverlay(Layer* layer) {
-  m_LayerStack.PushOverlay(layer);
-  layer->OnAttach();
-}
+void Application::PushOverlay(Layer* layer) { m_LayerStack.PushOverlay(layer); }
 
 bool Application::OnWindowClosed(WindowCloseEvent& event) {
   m_IsRunning = false;

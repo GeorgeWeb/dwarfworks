@@ -20,14 +20,7 @@ class DW_API DebugUILayer final : public Layer {
 
   DebugUILayer();
 
-  /// \fn final::~DebugUILayer() override final;
-  ///
-  /// \brief Destructor
-  ///
-  /// \author Georg
-  /// \date 08/10/2019
-
-  ~DebugUILayer() override final;
+  ~DebugUILayer() = default;
 
   /// \fn void final::OnAttach() override final;
   ///
@@ -47,25 +40,32 @@ class DW_API DebugUILayer final : public Layer {
 
   void OnDetach() override final;
 
-  /// \fn void final::OnUpdate() override final;
+  /// \fn void final::OnDebugUIRender() override final;
   ///
-  /// \brief Executes the update action
-  ///
-  /// \author Georg
-  /// \date 08/10/2019
-
-  void OnUpdate() override final;
-
-  /// \fn void final::OnEvent(Event& event) override final;
-  ///
-  /// \brief Executes the event action
+  /// \brief Executes the debug user interface render action
   ///
   /// \author Georg
-  /// \date 08/10/2019
-  ///
-  /// \param [in,out] event The event.
+  /// \date 13/10/2019
 
-  void OnEvent(Event& event) override final;
+  void OnDebugUIRender() override final;
+
+  /// \fn void final::Begin() const;
+  ///
+  /// \brief Begins this object
+  ///
+  /// \author Georg
+  /// \date 13/10/2019
+
+  void Begin() const;
+
+  /// \fn void final::End() const;
+  ///
+  /// \brief Ends this object
+  ///
+  /// \author Georg
+  /// \date 13/10/2019
+
+  void End() const;
 
  private:
   float m_Time{0.0f};

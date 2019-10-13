@@ -16,6 +16,7 @@ IncludeDir["GLFW"] = "Dwarfworks/Vendor/glfw/include"
 IncludeDir["Glad"] = "Dwarfworks/Vendor/glad/include"
 IncludeDir["ImGui"] = "Dwarfworks/Vendor/imgui"
 IncludeDir["glm"] = "Dwarfworks/Vendor/glm"
+IncludeDir["spdlog"] = "Dwarfworks/Vendor/spdlog/include"
 
 -- define project external dependencies
 group "Dependencies"
@@ -46,61 +47,13 @@ project "Dwarfworks"
 
     -- set project source files
     files {
-        -- ---------------
-        -- Dwarfworks root
-        -- ---------------
         SourceDir .. "/**.h",
         SourceDir .. "/**.cpp",
-        -- -----------
-        -- Core module
-        -- -----------
-        SourceDir .. "/Core/**.h",
-        SourceDir .. "/Core/**.cpp",
-        -- Logging sub-module
-        SourceDir .. "/Core/Log/**.h",
-        SourceDir .. "/Core/Log/**.cpp",
-        -- Events (Event System) sub-module
-        SourceDir .. "/Core/Events/**.h",
-        SourceDir .. "/Core/Events/**.cpp",
-        -- Application sub-module
-        SourceDir .. "/Core/Application/**.h",
-        SourceDir .. "/Core/Application/**.cpp",
-        -- Window sub-module
-        SourceDir .. "/Core/Window/**.h",
-        SourceDir .. "/Core/Window/**.cpp",
-        -- Layers sub-module
-        SourceDir .. "/Core/Layers/**.h",
-        SourceDir .. "/Core/Layers/**.cpp",
-        -- DebugUI Layer
-        SourceDir .. "/DebugUI/**.h",
-        SourceDir .. "/DebugUI/**.cpp",
-        -- ---------------
-        -- Graphics module
-        -- ---------------
-        SourceDir .. "/Graphics/**.h",
-        SourceDir .. "/Graphics/**.cpp",
-        -- -----------
-        -- Math module
-        -- -----------
-        SourceDir .. "/Math/**.h",
-        SourceDir .. "/Math/**.cpp",
-        -- ----------------------
-        -- Platform-specific code
-        -- ----------------------
-        SourceDir .. "/Platform/**.h",
-        SourceDir .. "/Platform/**.cpp",
-        -- OpenGL
-        -- SourceDir .. "/Platform/OpenGL/**.h",
-        -- SourceDir .. "/Platform/OpenGL/**.cpp",
-        -- Windows Window 
-        SourceDir .. "/Platform/Windows/**.h",
-        SourceDir .. "/Platform/Windows/**.cpp",
-        -- ----------------------
-        -- ----------------------
-        -- Test Framework
-        -- ----------------------
-        SourceDir .. "/Tests/**.h",
-        SourceDir .. "/Tests/**.cpp"
+    }
+
+    defines {
+        -- silence external "noise"
+        "_CRT_SECURE_NO_WARNINGS"
     }
 
     -- set project include directories
@@ -108,15 +61,15 @@ project "Dwarfworks"
         -- the project source folder
         SourceDir,
         -- External Logging lib - spdlog
-        "%{prj.name}/Vendor/spdlog/include",
+        "%{IncludeDir.spdlog}",
+        -- SIMD Mathematics
+        "%{IncludeDir.glm}",
         -- (cross-platform) Window lib - GLFW
         "%{IncludeDir.GLFW}",
         -- Modern OpenGL profile loader
         "%{IncludeDir.Glad}",
         -- Immediate mode UI
-        "%{IncludeDir.ImGui}",
-        -- SIMD Mathematics
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.ImGui}"
     }
 
     links {
@@ -132,11 +85,8 @@ project "Dwarfworks"
 
         -- preprocessor definitions
         defines {
-            -- silence external "noise"
-            "_CRT_SECURE_NO_WARNINGS",
-            -- "DW_DYNAMIC_LINK",
-            -- "DW_BUILD_DLL",
-            "GLFW_INCLUDE_NONE"
+			"HZ_BUILD_DLL",
+			"GLFW_INCLUDE_NONE"
         }
 
         -- copying DLLs and resoruces
@@ -187,9 +137,9 @@ project "Sandbox"
         "Dwarfworks/Source",
         "Dwarfworks/Vendor",
         -- External Logging lib - spdlog
-        "Dwarfworks/Vendor/spdlog/include",
+        "%{IncludeDir.spdlog}",
         -- External Mathematics lib - glm
-        "Dwarfworks/Vendor/glm"
+        "%{IncludeDir.glm}"
     }
 
     -- set project link targets

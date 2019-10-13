@@ -14,14 +14,14 @@ namespace Dwarfworks {
 
 class DW_API LayerStack {
  public:
-  /// \fn LayerStack::LayerStack();
+  /// \fn LayerStack::LayerStack() = default;
   ///
   /// \brief Default constructor
   ///
   /// \author Georg
   /// \date 07/10/2019
 
-  LayerStack();
+  LayerStack() = default;
 
   /// \fn LayerStack::~LayerStack();
   ///
@@ -103,7 +103,7 @@ class DW_API LayerStack {
   ///
   /// \param [in,out] layer If non-null, the layer.
 
-  void PushOverlay(Layer* layer);
+  void PushOverlay(Layer* overlay);
 
   /// \fn void LayerStack::PopLayer(Layer* layer);
   ///
@@ -125,7 +125,7 @@ class DW_API LayerStack {
   ///
   /// \param [in,out] layer If non-null, the layer.
 
-  void PopOverlay(Layer* layer);
+  void PopOverlay(Layer* overlay);
 
   /// \fn std::vector<Layer*>::iterator LayerStack::begin()
   ///
@@ -174,10 +174,8 @@ class DW_API LayerStack {
   std::vector<Layer*>::reverse_iterator rend() { return m_Layers.rend(); }
 
  private:
-  /// \brief The layers
   std::vector<Layer*> m_Layers;
-  /// \brief The layer insert
-  std::vector<Layer*>::iterator m_LayerInsert;
+  unsigned int m_LayerInsertIndex{0};
 };
 
 }  // namespace Dwarfworks

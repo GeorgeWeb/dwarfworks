@@ -1,5 +1,7 @@
 #include <Dwarfworks.h>
 
+#include "imgui/imgui.h"
+
 class TestLayer : public Dwarfworks::Layer {
  public:
   TestLayer() : Layer("Test Layer") {}
@@ -16,6 +18,12 @@ class TestLayer : public Dwarfworks::Layer {
     }
   }
 
+  void OnDebugUIRender() override {
+    ImGui::Begin("Test");
+    ImGui::Text("Hello World!");
+    ImGui::End();
+  }
+
   void OnEvent(Dwarfworks::Event& event) override {
     if (event.GetEventType() == Dwarfworks::EventType::KeyPressed) {
       auto& e = static_cast<Dwarfworks::KeyPressedEvent&>(event);
@@ -30,11 +38,7 @@ class TestLayer : public Dwarfworks::Layer {
 
 class Sandbox final : public Dwarfworks::Application {
  public:
-  Sandbox() {
-    PushLayer(new TestLayer());
-    PushOverlay(new Dwarfworks::DebugUILayer());
-  }
-
+  Sandbox() { PushLayer(new TestLayer()); }
   ~Sandbox() override = default;
 };
 

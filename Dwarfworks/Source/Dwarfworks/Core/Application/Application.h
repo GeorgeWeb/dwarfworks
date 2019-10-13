@@ -1,11 +1,17 @@
 #ifndef CORE_APPLICATION_APPLICATION_H_
 #define CORE_APPLICATION_APPLICATION_H_
 
-#include "../Core.h"
-#include "../Window/Window.h"
+#include "Dwarfworks/Core/Core.h"
 
-#include "../Events/ApplicationEvent.h"
-#include "../Layers/LayerStack.h"
+// Window
+#include "Dwarfworks/Core/Window/Window.h"
+
+// Layers
+#include "Dwarfworks/Core/Layers/LayerStack.h"
+#include "Dwarfworks/DebugUI/DebugUILayer.h"
+
+// Events
+#include "Dwarfworks/Core/Events/ApplicationEvent.h"
 
 #include <atomic>
 #include <mutex>
@@ -152,17 +158,14 @@ class DW_API Application {
 
   bool OnWindowClosed(WindowCloseEvent& event);
 
-  /// \brief True if is running, false if not.
-  bool m_IsRunning{true};
-  /// \brief The window.
+ private:
   Scope<Window> m_Window;
-  // Window* m_Window;
-  /// \brief Stack of layers
+  Ref<DebugUILayer> m_DebugUILayer;
+
+  bool m_IsRunning{true};
   LayerStack m_LayerStack;
 
-  /// \brief The instance
   static std::atomic<Application*> s_Instance;
-  /// \brief The mutex
   static std::mutex s_Mutex;
 };
 

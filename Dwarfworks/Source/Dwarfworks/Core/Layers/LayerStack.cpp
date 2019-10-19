@@ -7,7 +7,7 @@ namespace Dwarfworks {
 LayerStack::~LayerStack() {
   for (auto layer : m_Layers) {
     layer->OnDetach();
-    delete layer;
+    /* delete layer; */
   }
 }
 

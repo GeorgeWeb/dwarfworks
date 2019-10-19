@@ -2,7 +2,7 @@
 #define TEST_H_
 
 #include "Dwarfworks/Core/Core.h"
-#include "Dwarfworks/Core/Events/Event.h"
+// #include "Dwarfworks/Core/Events/Event.h"
 #include "Dwarfworks/Core/Layers/Layer.h"
 
 #include "imgui.h"
@@ -14,6 +14,7 @@ class Test : public Dwarfworks::Layer {
   Test() : Layer("TestLayer") {}
   virtual ~Test() = default;
 
+  // virtual void OnEvent(Dwarfworks::Event& event) override {}
   virtual void OnUpdate() override {}
   virtual void OnRender() override {}  // TODO: Integrate with Renderer
   virtual void OnDebugUIRender() override {}
@@ -48,22 +49,35 @@ void Tests::TestMenu::RegisterTest(const std::string& name) {
 // --- TESTS --------------------------------------------------------
 // ------------------------------------------------------------------
 
-class BasicTest final : public Test {
+class OpenGLInfoTest final : public Test {
  public:
-  BasicTest() = default;
+  OpenGLInfoTest() = default;
 
   void OnDebugUIRender() override final;
+
+ private:
+  std::array<float, 4> m_ClearColor;
 };
 
-class ClearColorTest final : public Test {
+class OpenGLClearColorTest final : public Test {
  public:
-  ClearColorTest();
+  OpenGLClearColorTest();
 
   void OnRender() override final;
   void OnDebugUIRender() override final;
 
  private:
   std::array<float, 4> m_ClearColor;
+};
+
+class OpenGLRenderTriangleTest final : public Test {
+ public:
+  OpenGLRenderTriangleTest();
+
+  void OnRender() override final;
+
+ private:
+  unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 };
 
 }  // namespace Tests

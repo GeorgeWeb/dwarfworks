@@ -3,8 +3,8 @@
 
 #include "dwpch.h"
 
-#include "../Core.h"
-#include "../Events/EventManager.h"
+#include "Dwarfworks/Core/Core.h"
+#include "Dwarfworks/Core/Events/EventManager.h"
 
 namespace Dwarfworks {
 

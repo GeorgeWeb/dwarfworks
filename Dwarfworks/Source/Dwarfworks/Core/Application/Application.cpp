@@ -8,9 +8,13 @@
 
 #include "Dwarfworks/Math/Math.h"
 
-#include "Tests/Test.h"
-
+/** Disable threading for now
 #include "Dwarfworks/Core/Threading/TaskGenerator.h"
+*/
+
+#ifdef ENABLE_VISUAL_TESTING
+#include "Tests/Test.h"
+#endif
 
 namespace Dwarfworks {
 
@@ -30,23 +34,22 @@ Application::Application() {
   // Create Application DebugUI Layer
   m_DebugUILayer = CreateRef<DebugUILayer>();
   PushOverlay(m_DebugUILayer.get());
+
+#ifdef ENABLE_VISUAL_TESTING
+  m_TestMenu = CreateRef<Tests::TestMenu>(m_CurrentTest);
+  m_CurrentTest = m_TestMenu.get();
+  m_LayerStack.PushLayer(m_CurrentTest);
+#endif
 }
 
 void Application::Run() {
-  // Setup Test Menu
-  // TODO: Implement the following tests:
-  // Tests::TestClearColor* clearColorTest; // Done
-  // Tests::TestDebugUIControls* debugUIControlsTest;
-  // Tests::TestThreadManager* threadManagerTest;
-  Tests::Test* currentTest = nullptr;
-  Tests::TestMenu* testMenu = new Tests::TestMenu(currentTest);
-  currentTest = testMenu;
-  m_LayerStack.PushLayer(currentTest);
-
+#ifdef ENABLE_VISUAL_TESTING
   // Register Tests
-  testMenu->RegisterTest<Tests::BasicTest>("Basic Test");
-  testMenu->RegisterTest<Tests::ClearColorTest>("OpenGL Clear Color Test");
+  m_TestMenu->RegisterTest<Tests::BasicTest>("Basic Test");
+  m_TestMenu->RegisterTest<Tests::ClearColorTest>("OpenGL Clear Color Test");
+#endif
 
+  /** Disable threading for now
   ThreadManager threadManager;
   threadManager.CreateTaskLists();
   threadManager.RunThreads();
@@ -59,51 +62,66 @@ void Application::Run() {
 
   // threadManager.ThreadProcess();
   threadManager.UnpauseThreads();
+  */
 
   // the main loop
   while (IsRunning()) {
     // Test OpenGL clear color buffer
-    glClearColor(1, 1, 0, 1);
+    glClearColor(0.2f, 0.3, 0.8, 1);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    /** Disable threading for now
     taskGenerator.CreateTasks();
+    */
 
     // Update layers
     for (auto appLayer : m_LayerStack) {
-      if (currentTest) {
-        currentTest->OnUpdate();
-      } else {
-        if (appLayer != currentTest) {
-          appLayer->OnUpdate();
-        }
+#ifdef ENABLE_VISUAL_TESTING
+      if (m_CurrentTest) {
+        m_CurrentTest->OnUpdate();
       }
+      if (appLayer != m_CurrentTest) {
+        appLayer->OnUpdate();
+      }
+#else
+      appLayer->OnUpdate();
+#endif
     }
 
     // Render layers
     for (auto appLayer : m_LayerStack) {
-      if (currentTest) {
-        currentTest->OnRender();
-      } else {
-        if (appLayer != currentTest) {
-          appLayer->OnRender();
-        }
+#ifdef ENABLE_VISUAL_TESTING
+      if (m_CurrentTest) {
+        m_CurrentTest->OnRender();
       }
+      if (appLayer != m_CurrentTest) {
+        appLayer->OnRender();
+      }
+#else
+      appLayer->OnRender();
+#endif
     }
 
     // Render DebugUI Layer
     m_DebugUILayer->Begin();
-    if (currentTest) {
-      if (currentTest != testMenu && ImGui::Button("< Back")) {
-        delete currentTest;
-        currentTest = testMenu;
+#ifdef ENABLE_VISUAL_TESTING
+    if (m_CurrentTest) {
+      if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("< Back")) {
+        delete m_CurrentTest;
+        m_CurrentTest = std::move(m_TestMenu.get());
       }
-      currentTest->OnDebugUIRender();
-    } else {
-      for (auto appLayer : m_LayerStack) {
-        if (appLayer != currentTest) {
-          appLayer->OnDebugUIRender();
-        }
+      m_CurrentTest->OnDebugUIRender();
+    }
+    for (auto appLayer : m_LayerStack) {
+      if (appLayer != m_CurrentTest) {
+        appLayer->OnDebugUIRender();
       }
     }
+#else
+    for (auto appLayer : m_LayerStack) {
+      appLayer->OnDebugUIRender();
+    }
+#endif
     m_DebugUILayer->End();
 
     // TODO: Graphics Rendering
@@ -113,11 +131,10 @@ void Application::Run() {
     m_Window->OnUpdate();
   }
 
-  // cleanup tests
-  delete testMenu;
-
+  /** Disable threading for now
   threadManager.PauseThreads();
   threadManager.JoinThreads();
+  */
 }
 
 void Application::OnEvent(Event& event) {
@@ -140,6 +157,11 @@ void Application::PushOverlay(Layer* layer) { m_LayerStack.PushOverlay(layer); }
 
 bool Application::OnWindowClosed(WindowCloseEvent& event) {
   m_IsRunning = false;
+#ifdef ENABLE_VISUAL_TESTING
+  if (m_CurrentTest) {
+    delete m_CurrentTest;
+  }
+#endif
   return true;
 }
 

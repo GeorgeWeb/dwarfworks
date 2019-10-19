@@ -16,6 +16,14 @@
 #include <atomic>
 #include <mutex>
 
+#ifdef ENABLE_VISUAL_TESTING
+// forward decl.
+namespace Tests {
+class Test;
+class TestMenu;
+}  // namespace Tests
+#endif
+
 namespace Dwarfworks {
 
 /// \class Application
@@ -164,6 +172,11 @@ class DW_API Application {
 
   bool m_IsRunning{true};
   LayerStack m_LayerStack;
+
+#ifdef ENABLE_VISUAL_TESTING
+  Tests::Test* m_CurrentTest = nullptr;
+  Ref<Tests::TestMenu> m_TestMenu;
+#endif
 
   static std::atomic<Application*> s_Instance;
   static std::mutex s_Mutex;

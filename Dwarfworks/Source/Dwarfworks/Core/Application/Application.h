@@ -4,7 +4,7 @@
 #include "Dwarfworks/Core/Core.h"
 
 // Window
-#include "Dwarfworks/Core/Window/Window.h"
+#include "Dwarfworks/Core/Window/IWindow.h"
 
 // Layers
 #include "Dwarfworks/Core/Layers/LayerStack.h"
@@ -142,7 +142,7 @@ class DW_API Application {
   ///
   /// \returns The window.
 
-  inline Window& GetWindow() const { return *m_Window; }
+  inline IWindow& GetWindow() const { return *m_Window; }
 
  private:
   /// \fn bool Application::OnWindowClosed(WindowCloseEvent& event);
@@ -159,7 +159,7 @@ class DW_API Application {
   bool OnWindowClosed(WindowCloseEvent& event);
 
  private:
-  Scope<Window> m_Window;
+  Scope<IWindow> m_Window;
   Ref<DebugUILayer> m_DebugUILayer;
 
   bool m_IsRunning{true};

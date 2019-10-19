@@ -51,7 +51,7 @@ struct DW_API WindowProps {
 /// \author Georg
 /// \date 07/10/2019
 
-class DW_API Window {
+class DW_API IWindow {
  public:
   /// \brief The event callback function.
   using EventCallbackFn = std::function<void(Event&)>;
@@ -65,7 +65,7 @@ class DW_API Window {
   /// \author Georg
   /// \date 07/10/2019
 
-  virtual ~Window() = default;
+  virtual ~IWindow() = default;
 
   /// \fn virtual void Window::OnUpdate() = 0;
   ///
@@ -157,7 +157,7 @@ class DW_API Window {
   ///
   /// \returns Null if it fails, else a pointer to a Window.
 
-  static Window* Create(const WindowProps& props = WindowProps{});
+  static IWindow* Create(const WindowProps& props = WindowProps{});
 };
 
 }  // namespace Dwarfworks

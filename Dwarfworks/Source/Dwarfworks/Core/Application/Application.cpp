@@ -22,7 +22,7 @@ Application::Application() {
   s_Instance = this;
 
   // Create the Application Window
-  auto window = Window::Create();
+  auto window = IWindow::Create();
   m_Window.reset(std::move(window));
   // Set the Window event handling for this Application
   m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));

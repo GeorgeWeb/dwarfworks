@@ -1,7 +1,7 @@
 #ifndef PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
 #define PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
 
-#include "../../Core/Window/Window.h"
+#include "../../Core/Window/IWindow.h"
 
 /// \struct GLFWwindow
 ///
@@ -24,7 +24,7 @@ namespace Dwarfworks {
 /// \author Georg
 /// \date 07/10/2019
 
-class DW_API WindowsWindow : public Window {
+class DW_API WindowsWindow : public IWindow {
  public:
   /// \fn explicit WindowsWindow::WindowsWindow(const WindowProps& props);
   ///

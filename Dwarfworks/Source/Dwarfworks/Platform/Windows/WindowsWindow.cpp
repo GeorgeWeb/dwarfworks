@@ -15,7 +15,7 @@ namespace Dwarfworks {
 
 static bool s_IsGLFWInitialized{false};
 
-Window* Window::Create(const WindowProps& props) {
+IWindow* IWindow::Create(const WindowProps& props) {
   return new WindowsWindow(props);
 }
 

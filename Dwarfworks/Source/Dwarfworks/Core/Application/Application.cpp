@@ -42,6 +42,12 @@ Application::Application() {
 #endif
 }
 
+#ifdef ENABLE_VISUAL_TESTING
+Application::~Application() = default;
+#else
+Application::~Application() = default;
+#endif
+
 void Application::Run() {
 #ifdef ENABLE_VISUAL_TESTING
   // Register Tests
@@ -67,7 +73,7 @@ void Application::Run() {
   // the main loop
   while (IsRunning()) {
     // Test OpenGL clear color buffer
-    glClearColor(0.2f, 0.3, 0.8, 1);
+    glClearColor(0.2f, 0.2, 0.2, 1);
     glClear(GL_COLOR_BUFFER_BIT);
 
     /** Disable threading for now
@@ -75,45 +81,49 @@ void Application::Run() {
     */
 
     // Update layers
-    for (auto appLayer : m_LayerStack) {
 #ifdef ENABLE_VISUAL_TESTING
-      if (m_CurrentTest) {
-        m_CurrentTest->OnUpdate();
-      }
-      if (appLayer != m_CurrentTest) {
+    if (m_CurrentTest) {
+      m_CurrentTest->OnUpdate();
+    }
+    for (auto appLayer : m_LayerStack) {
+      if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
         appLayer->OnUpdate();
       }
-#else
-      appLayer->OnUpdate();
-#endif
     }
+#else
+    for (auto appLayer : m_LayerStack) {
+      appLayer->OnUpdate();
+    }
+#endif
 
     // Render layers
-    for (auto appLayer : m_LayerStack) {
 #ifdef ENABLE_VISUAL_TESTING
-      if (m_CurrentTest) {
-        m_CurrentTest->OnRender();
-      }
-      if (appLayer != m_CurrentTest) {
+    if (m_CurrentTest) {
+      m_CurrentTest->OnRender();
+    }
+    for (auto appLayer : m_LayerStack) {
+      if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
         appLayer->OnRender();
       }
-#else
-      appLayer->OnRender();
-#endif
     }
+#else
+    for (auto appLayer : m_LayerStack) {
+      appLayer->OnRender();
+    }
+#endif
 
     // Render DebugUI Layer
     m_DebugUILayer->Begin();
 #ifdef ENABLE_VISUAL_TESTING
     if (m_CurrentTest) {
-      if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("< Back")) {
+      if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("<< Back")) {
         delete m_CurrentTest;
-        m_CurrentTest = std::move(m_TestMenu.get());
+        m_CurrentTest = m_TestMenu.get();
       }
       m_CurrentTest->OnDebugUIRender();
     }
     for (auto appLayer : m_LayerStack) {
-      if (appLayer != m_CurrentTest) {
+      if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
         appLayer->OnDebugUIRender();
       }
     }
@@ -135,7 +145,7 @@ void Application::Run() {
   threadManager.PauseThreads();
   threadManager.JoinThreads();
   */
-}
+}  // namespace Dwarfworks
 
 void Application::OnEvent(Event& event) {
   // listen for upcoming events and register them
@@ -156,12 +166,18 @@ void Application::PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
 void Application::PushOverlay(Layer* layer) { m_LayerStack.PushOverlay(layer); }
 
 bool Application::OnWindowClosed(WindowCloseEvent& event) {
-  m_IsRunning = false;
 #ifdef ENABLE_VISUAL_TESTING
+  // free Test layers
   if (m_CurrentTest) {
-    delete m_CurrentTest;
+    m_LayerStack.PopLayer(m_CurrentTest);
+    m_CurrentTest = nullptr;
   }
 #endif
+  // free DebugUI Overlay
+  m_LayerStack.PopOverlay(m_DebugUILayer.get());
+  m_DebugUILayer = nullptr;
+  // stop running
+  m_IsRunning = false;
   return true;
 }
 

@@ -106,14 +106,14 @@ project "Dwarfworks"
     filter "configurations:Debug"
         defines {
             "DW_DEBUG",
-            -- "ENABLE_VISUAL_TESTING"
+            "ENABLE_VISUAL_TESTING"
         }
         symbols "on"
 
     filter "configurations:Release"
         defines {
             "DW_RELEASE",
-            -- "ENABLE_VISUAL_TESTING"
+            "ENABLE_VISUAL_TESTING"
         }
         optimize "on"
 
@@ -174,14 +174,14 @@ project "Sandbox"
     filter "configurations:Debug"
         defines {
             "DW_DEBUG",
-            -- "ENABLE_VISUAL_TESTING"
+            "ENABLE_VISUAL_TESTING"
         }
         symbols "on"
 
     filter "configurations:Release"
         defines {
             "DW_RELEASE",
-            -- "ENABLE_VISUAL_TESTING"
+            "ENABLE_VISUAL_TESTING"
         }
         optimize "on"
 

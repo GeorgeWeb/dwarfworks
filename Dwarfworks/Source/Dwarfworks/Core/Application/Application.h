@@ -4,7 +4,7 @@
 #include "Dwarfworks/Core/Core.h"
 
 // Window
-#include "Dwarfworks/Core/Window/Window.h"
+#include "Dwarfworks/Core/Window/IWindow.h"
 
 // Layers
 #include "Dwarfworks/Core/Layers/LayerStack.h"
@@ -15,6 +15,14 @@
 
 #include <atomic>
 #include <mutex>
+
+#ifdef ENABLE_VISUAL_TESTING
+// forward decl.
+namespace Tests {
+class Test;
+class TestMenu;
+}  // namespace Tests
+#endif
 
 namespace Dwarfworks {
 
@@ -142,7 +150,7 @@ class DW_API Application {
   ///
   /// \returns The window.
 
-  inline Window& GetWindow() const { return *m_Window; }
+  inline IWindow& GetWindow() const { return *m_Window; }
 
  private:
   /// \fn bool Application::OnWindowClosed(WindowCloseEvent& event);
@@ -159,11 +167,16 @@ class DW_API Application {
   bool OnWindowClosed(WindowCloseEvent& event);
 
  private:
-  Scope<Window> m_Window;
+  Scope<IWindow> m_Window;
   Ref<DebugUILayer> m_DebugUILayer;
 
   bool m_IsRunning{true};
   LayerStack m_LayerStack;
+
+#ifdef ENABLE_VISUAL_TESTING
+  Tests::Test* m_CurrentTest = nullptr;
+  Ref<Tests::TestMenu> m_TestMenu;
+#endif
 
   static std::atomic<Application*> s_Instance;
   static std::mutex s_Mutex;

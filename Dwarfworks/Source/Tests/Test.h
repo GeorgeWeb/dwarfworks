@@ -28,10 +28,7 @@ class TestMenu final : public Test {
   void OnDebugUIRender() override final;
 
   template <class T>
-  inline void RegisterTest(const std::string& name) {
-    DW_CORE_INFO("Registering test: {0}", name);
-    m_TestList.push_back({name, [] { return new T(); }});
-  }
+  void RegisterTest(const std::string& name);
 
  private:
   // reference to test pointer that allows mutation/change
@@ -40,6 +37,12 @@ class TestMenu final : public Test {
   // Test instance sort of structure in a contiguous collection
   std::vector<std::pair<std::string, createTestFunc_t>> m_TestList;
 };
+
+template <class T>
+void Tests::TestMenu::RegisterTest(const std::string& name) {
+  DW_CORE_INFO("Registering test: {0}", name);
+  m_TestList.push_back({name, [] { return new T(); }});
+}
 
 // ------------------------------------------------------------------
 // --- TESTS --------------------------------------------------------

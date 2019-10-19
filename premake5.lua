@@ -51,10 +51,8 @@ project "Dwarfworks"
         SourceDir .. "/**.cpp",
     }
 
-    defines {
-        -- silence external "noise"
-        "_CRT_SECURE_NO_WARNINGS"
-    }
+    -- silence external "noise"
+    defines "_CRT_SECURE_NO_WARNINGS"
 
     -- set project include directories
     includedirs {
@@ -80,30 +78,43 @@ project "Dwarfworks"
     }
 
     -- set project target properties
+    
     filter "system:windows"
         systemversion "latest"
-
         -- preprocessor definitions
         defines {
-			"HZ_BUILD_DLL",
-			"GLFW_INCLUDE_NONE"
+            "HZ_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
         }
-
         -- copying DLLs and resoruces
         -- postbuildcommands {
             -- copy dwarfworks.dll into sandbox
             -- ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
         -- }
 
+    filter "system:linux"
+        systemversion "latest"
+        -- preprocessor definitions
+        defines {
+            "HZ_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
+        }
+
     print("%{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
 
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
-        defines "DW_DEBUG"
+        defines {
+            "DW_DEBUG",
+            -- "ENABLE_VISUAL_TESTING"
+        }
         symbols "on"
 
     filter "configurations:Release"
-        defines "DW_RELEASE"
+        defines {
+            "DW_RELEASE",
+            -- "ENABLE_VISUAL_TESTING"
+        }
         optimize "on"
 
     filter "configurations:Dist"
@@ -148,21 +159,30 @@ project "Sandbox"
     }
 
     -- set project target properties
+
     filter "system:windows"
         systemversion "latest"
-
         -- preprocessor definitions
-        defines {
-            -- "DW_DYNAMIC_LINK"
-        }
+        -- defines "DW_DYNAMIC_LINK"
+
+    filter "system:windows"
+        systemversion "latest"
+        -- preprocessor definitions
+        -- defines "DW_DYNAMIC_LINK"
 
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
-        defines "DW_DEBUG"
+        defines {
+            "DW_DEBUG",
+            -- "ENABLE_VISUAL_TESTING"
+        }
         symbols "on"
 
     filter "configurations:Release"
-        defines "DW_RELEASE"
+        defines {
+            "DW_RELEASE",
+            -- "ENABLE_VISUAL_TESTING"
+        }
         optimize "on"
 
     filter "configurations:Dist"

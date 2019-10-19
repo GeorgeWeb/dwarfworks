@@ -25,7 +25,9 @@ void LayerStack::PushOverlay(Layer* overlay) {
 }
 
 void LayerStack::PopLayer(Layer* layer) {
-  if (auto it = DW_FIND(m_Layers, layer); it != m_Layers.end()) {
+  auto it =
+      std::find(m_Layers.begin(), m_Layers.begin() + m_LayerInsertIndex, layer);
+  if (it != m_Layers.begin() + m_LayerInsertIndex) {
     layer->OnDetach();
     m_Layers.erase(it);
     m_LayerInsertIndex--;
@@ -33,7 +35,9 @@ void LayerStack::PopLayer(Layer* layer) {
 }
 
 void LayerStack::PopOverlay(Layer* overlay) {
-  if (auto it = DW_FIND(m_Layers, overlay); it != m_Layers.end()) {
+  auto it =
+      std::find(m_Layers.begin() + m_LayerInsertIndex, m_Layers.end(), overlay);
+  if (it != m_Layers.end()) {
     overlay->OnDetach();
     m_Layers.erase(it);
   }

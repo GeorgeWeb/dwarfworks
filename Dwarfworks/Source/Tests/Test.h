@@ -2,7 +2,7 @@
 #define TEST_H_
 
 #include "Dwarfworks/Core/Core.h"
-#include "Dwarfworks/Core/Events/Event.h"
+// #include "Dwarfworks/Core/Events/Event.h"
 #include "Dwarfworks/Core/Layers/Layer.h"
 
 #include "imgui.h"
@@ -49,6 +49,16 @@ void Tests::TestMenu::RegisterTest(const std::string& name) {
 // --- TESTS --------------------------------------------------------
 // ------------------------------------------------------------------
 
+class OpenGLInfoTest final : public Test {
+ public:
+  OpenGLInfoTest() = default;
+
+  void OnDebugUIRender() override final;
+
+ private:
+  std::array<float, 4> m_ClearColor;
+};
+
 class OpenGLClearColorTest final : public Test {
  public:
   OpenGLClearColorTest();
@@ -64,13 +74,10 @@ class OpenGLRenderTriangleTest final : public Test {
  public:
   OpenGLRenderTriangleTest();
 
-  void OnUpdate() override final;
   void OnRender() override final;
-  void OnDebugUIRender() override final;
 
  private:
-  unsigned int m_VertexArray{0}, m_VertexBuffer{0}, m_IndexBuffer{0};
-  std::array<float, 9> m_Vertices;  // 3D Coords: 3 * 3
+  unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
 };
 
 }  // namespace Tests

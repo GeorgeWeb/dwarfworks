@@ -128,18 +128,6 @@
 
 #define DW_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-/// \def DW_FIND(cont, el)
-///
-/// \brief A macro that defines find
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param cont The container.
-/// \param el   The el.
-
-#define DW_FIND(cont, el) std::find(cont.begin(), cont.end(), el)
-
 namespace Dwarfworks {
 
 /// \struct CRTP

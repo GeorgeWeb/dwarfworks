@@ -39,6 +39,7 @@ Application::Application() {
   // Create Test Menu
   m_TestMenu = CreateRef<Tests::TestMenu>(m_CurrentTest);
   // Register Tests
+  m_TestMenu->RegisterTest<Tests::OpenGLInfoTest>("OpenGL Info");
   m_TestMenu->RegisterTest<Tests::OpenGLClearColorTest>("OpenGL Clear Color");
   m_TestMenu->RegisterTest<Tests::OpenGLRenderTriangleTest>(
       "OpenGL Render Triangle");
@@ -73,7 +74,7 @@ void Application::Run() {
   // the main loop
   while (IsRunning()) {
     // Test OpenGL clear color buffer
-    glClearColor(0.2f, 0.2, 0.2, 1);
+    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     /** Disable threading for now
@@ -133,9 +134,6 @@ void Application::Run() {
     }
 #endif
     m_DebugUILayer->End();
-
-    // TODO: Graphics Rendering
-    // Note: When Renderer is implemented
 
     // Update Window
     m_Window->OnUpdate();

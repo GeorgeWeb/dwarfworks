@@ -178,6 +178,7 @@ class DW_API Application {
   Ref<Tests::TestMenu> m_TestMenu;
 #endif
 
+ private:  // singleton-related variable members
   static std::atomic<Application*> s_Instance;
   static std::mutex s_Mutex;
 };

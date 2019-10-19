@@ -14,6 +14,7 @@ class Test : public Dwarfworks::Layer {
   Test() : Layer("TestLayer") {}
   virtual ~Test() = default;
 
+  // virtual void OnEvent(Dwarfworks::Event& event) override {}
   virtual void OnUpdate() override {}
   virtual void OnRender() override {}  // TODO: Integrate with Renderer
   virtual void OnDebugUIRender() override {}
@@ -48,22 +49,28 @@ void Tests::TestMenu::RegisterTest(const std::string& name) {
 // --- TESTS --------------------------------------------------------
 // ------------------------------------------------------------------
 
-class BasicTest final : public Test {
+class OpenGLClearColorTest final : public Test {
  public:
-  BasicTest() = default;
-
-  void OnDebugUIRender() override final;
-};
-
-class ClearColorTest final : public Test {
- public:
-  ClearColorTest();
+  OpenGLClearColorTest();
 
   void OnRender() override final;
   void OnDebugUIRender() override final;
 
  private:
   std::array<float, 4> m_ClearColor;
+};
+
+class OpenGLRenderTriangleTest final : public Test {
+ public:
+  OpenGLRenderTriangleTest();
+
+  void OnUpdate() override final;
+  void OnRender() override final;
+  void OnDebugUIRender() override final;
+
+ private:
+  unsigned int m_VertexArray{0}, m_VertexBuffer{0}, m_IndexBuffer{0};
+  std::array<float, 9> m_Vertices;  // 3D Coords: 3 * 3
 };
 
 }  // namespace Tests

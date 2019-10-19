@@ -22,19 +22,12 @@ void TestMenu::OnDebugUIRender() {
 // --- TESTS --------------------------------------------------------
 // ------------------------------------------------------------------
 
-// BasicTest
+// OpenGLClearColorTest
 
-void BasicTest::OnDebugUIRender() {
-  ImGui::Begin("Basic Test");
-  ImGui::Text("Hello from Basic Test!");
-  ImGui::End();
-}
+OpenGLClearColorTest::OpenGLClearColorTest()
+    : m_ClearColor{0.2f, 0.3f, 0.8f, 1.0f} {}
 
-// ClearColorTest
-
-ClearColorTest::ClearColorTest() : m_ClearColor{0.2f, 0.3f, 0.8f, 1.0f} {}
-
-void ClearColorTest::OnRender() {
+void OpenGLClearColorTest::OnRender() {
   // set clear color
   glClearColor(
       // red
@@ -49,8 +42,30 @@ void ClearColorTest::OnRender() {
   glClear(GL_COLOR_BUFFER_BIT);
 }
 
-void ClearColorTest::OnDebugUIRender() {
+void OpenGLClearColorTest::OnDebugUIRender() {
   ImGui::ColorEdit4("Clear Color", m_ClearColor.data());
 }
+
+// OpenGLRenderTriangleColorTest
+
+OpenGLRenderTriangleTest::OpenGLRenderTriangleTest() {
+  glGenVertexArrays(1, &m_VertexArray);
+  glBindVertexArray(m_VertexArray);
+
+  glGenBuffers(1, &m_VertexBuffer);
+  glBindBuffer(GL_ARRAY_BUFFER, m_VertexBuffer);
+
+  m_Vertices = {
+      -0.5f, -0.5f, 0.0f,  // left
+      0.5f,  -0.5f, 0.0f,  // right
+      -0.0f, -0.5f, 0.0f,  // top
+  };
+}
+
+void OpenGLRenderTriangleTest::OnUpdate() {}
+
+void OpenGLRenderTriangleTest::OnRender() {}
+
+void OpenGLRenderTriangleTest::OnDebugUIRender() {}
 
 }  // namespace Tests

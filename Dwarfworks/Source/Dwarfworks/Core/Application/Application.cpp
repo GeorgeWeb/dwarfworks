@@ -36,25 +36,25 @@ Application::Application() {
   PushOverlay(m_DebugUILayer.get());
 
 #ifdef ENABLE_VISUAL_TESTING
+  // Create Test Menu
   m_TestMenu = CreateRef<Tests::TestMenu>(m_CurrentTest);
+  // Register Tests
+  m_TestMenu->RegisterTest<Tests::OpenGLClearColorTest>("OpenGL Clear Color");
+  m_TestMenu->RegisterTest<Tests::OpenGLRenderTriangleTest>(
+      "OpenGL Render Triangle");
+  // Set Current Test Layer to Test Menu
   m_CurrentTest = m_TestMenu.get();
   m_LayerStack.PushLayer(m_CurrentTest);
 #endif
 }
 
 #ifdef ENABLE_VISUAL_TESTING
-Application::~Application() = default;
+Application::~Application() = default;  // TODO!
 #else
 Application::~Application() = default;
 #endif
 
 void Application::Run() {
-#ifdef ENABLE_VISUAL_TESTING
-  // Register Tests
-  m_TestMenu->RegisterTest<Tests::BasicTest>("Basic Test");
-  m_TestMenu->RegisterTest<Tests::ClearColorTest>("OpenGL Clear Color Test");
-#endif
-
   /** Disable threading for now
   ThreadManager threadManager;
   threadManager.CreateTaskLists();
@@ -155,10 +155,19 @@ void Application::OnEvent(Event& event) {
       DW_BIND_EVENT_FN(Application::OnWindowClosed));
 
   // call events in reverse order from most top to most bottom layer
-  std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](Layer* layer) {
+#ifdef ENABLE_VISUAL_TESTING
+  std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
+    if (layer != m_CurrentTest && layer != m_TestMenu.get()) {
+      layer->OnEvent(event);
+      if (event.IsHandled) return;
+    }
+  });
+#else
+  std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
     layer->OnEvent(event);
     if (event.IsHandled) return;
   });
+#endif
 }
 
 void Application::PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
@@ -169,13 +178,19 @@ bool Application::OnWindowClosed(WindowCloseEvent& event) {
 #ifdef ENABLE_VISUAL_TESTING
   // free Test layers
   if (m_CurrentTest) {
+    // ... desc
     m_LayerStack.PopLayer(m_CurrentTest);
+    // ... desc
+    if (m_CurrentTest != m_TestMenu.get()) {
+      delete m_CurrentTest;
+    }
     m_CurrentTest = nullptr;
+    // ... desc
+    m_LayerStack.PopLayer(m_TestMenu.get());
   }
 #endif
   // free DebugUI Overlay
   m_LayerStack.PopOverlay(m_DebugUILayer.get());
-  m_DebugUILayer = nullptr;
   // stop running
   m_IsRunning = false;
   return true;

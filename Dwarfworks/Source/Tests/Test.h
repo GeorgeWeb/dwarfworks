@@ -4,6 +4,7 @@
 #include "Dwarfworks/Core/Core.h"
 // #include "Dwarfworks/Core/Events/Event.h"
 #include "Dwarfworks/Core/Layers/Layer.h"
+#include "Dwarfworks/Graphics/Shader.h"
 
 #include "imgui.h"
 
@@ -78,6 +79,7 @@ class OpenGLRenderTriangleTest final : public Test {
 
  private:
   unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+  Dwarfworks::Scope<Dwarfworks::Shader> m_Shader;
 };
 
 }  // namespace Tests

@@ -103,8 +103,8 @@ std::vector<std::string> ShaderManager::GetAllProgramNames() const {
   return allProgramNames;
 }
 
-void ShaderManager::Ping() {
-  DW_INFO("Shader Manager online ping.");
+void ShaderManager::InfoPing() {
+  DW_INFO("Shader Manager is online.");
   DW_INFO(" Program count: {0}", m_ShaderPrograms.size());
 }
 

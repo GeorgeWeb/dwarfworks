@@ -40,6 +40,7 @@ Application::Application() {
   // Create Test Menu
   m_TestMenu = CreateRef<Tests::TestMenu>(m_CurrentTest);
   // Register Tests
+  m_TestMenu->RegisterTest<Tests::ShaderManagerTest>("Shader manager");
   m_TestMenu->RegisterTest<Tests::OpenGLInfoTest>("OpenGL Info");
   m_TestMenu->RegisterTest<Tests::OpenGLClearColorTest>("OpenGL Clear Color");
   m_TestMenu->RegisterTest<Tests::OpenGLRenderTriangleTest>("Render Triangle");

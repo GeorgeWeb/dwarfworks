@@ -6,5 +6,6 @@
 #include "OpenGLClearColorTest.h"
 #include "OpenGLInfoTest.h"
 #include "OpenGLRenderTriangleTest.h"
+#include "ShaderManagerTest.h"
 
 #endif  // !_TESTS_TPCH_H

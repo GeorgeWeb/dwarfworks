@@ -12,18 +12,19 @@
 namespace Dwarfworks {
 class DW_API ShaderManager {
  public:
-  ShaderManager() = default;
+  ShaderManager() {}
   ~ShaderManager();
 
   // Singleton access
-  // static ShaderManager& GetInstance() {
-  //  static ShaderManager instance;  // Guaranteed to be destroyed.
-  // Instantiated on first use.
-  //   return instance;
-  // }
+  static ShaderManager& GetInstance() {
+    static ShaderManager instance;  // Guaranteed to be destroyed.
+                                    // Instantiated on first use.
+    return instance;
+  }
+
   // Remove constructor and assignments
-  // ShaderManager(ShaderManager const&) = delete;
-  // void operator=(ShaderManager const&) = delete;
+  ShaderManager(ShaderManager const&) = delete;
+  void operator=(ShaderManager const&) = delete;
 
   // Program operations
   void CreateProgram(const std::string& programName,
@@ -37,7 +38,7 @@ class DW_API ShaderManager {
   std::string GetActiveProgramName() const;
   std::vector<std::string> GetAllProgramNames() const;
 
-  void Ping();
+  void InfoPing();
 
  private:
   // Creates a shader program

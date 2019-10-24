@@ -13,7 +13,8 @@
 */
 
 #ifdef ENABLE_VISUAL_TESTING
-#include "Tests/Test.h"
+
+#include "Tests/TestMenu.h"
 #endif
 
 namespace Dwarfworks {
@@ -41,8 +42,7 @@ Application::Application() {
   // Register Tests
   m_TestMenu->RegisterTest<Tests::OpenGLInfoTest>("OpenGL Info");
   m_TestMenu->RegisterTest<Tests::OpenGLClearColorTest>("OpenGL Clear Color");
-  m_TestMenu->RegisterTest<Tests::OpenGLRenderTriangleTest>(
-      "OpenGL Render Triangle");
+  m_TestMenu->RegisterTest<Tests::OpenGLRenderTriangleTest>("Render Triangle");
   // Set Current Test Layer to Test Menu
   m_CurrentTest = m_TestMenu.get();
   m_LayerStack.PushLayer(m_CurrentTest);

@@ -1,13 +1,13 @@
 #ifndef _GRAPHICS_SHADER_MANAGER_H
 #define _GRAPHICS_SHADER_MANAGER_H
 
-#include "Dwarfworks/Core/Core.h"
-
 #include <glad/glad.h>
 
 #include <map>
 #include <string>
 #include <vector>
+
+#include "Dwarfworks/Core/Core.h"
 
 namespace Dwarfworks {
 class DW_API ShaderManager {
@@ -17,8 +17,8 @@ class DW_API ShaderManager {
 
   // Singleton access
   static ShaderManager& GetInstance() {
-    static ShaderManager instance;  // Guaranteed to be destroyed.
-                                    // Instantiated on first use.
+    // Guaranteed to be destroyed and instantiated on first use.
+    static ShaderManager instance;
     return instance;
   }
 

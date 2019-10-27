@@ -5,18 +5,13 @@
 #include "ShaderManagerTest.h"
 
 namespace Tests {
-#define SMGetInstance() Dwarfworks::ShaderManager::GetInstance()
-ShaderManagerTest::ShaderManagerTest() {
+ShaderManagerTest::ShaderManagerTest()
+    : m_ShaderManager{Dwarfworks::ShaderManager::GetInstance()} {
   // Create Shaders
-  //	"3.3.shader.vs", "3.3.shader.fs"
-  // SM = Dwarfworks::ShaderManager();
-
-  DW_WARN("{0}", glGetString(GL_VERSION));
-
-  SMGetInstance().CreateProgram(
+  m_ShaderManager.CreateProgram(
       m_Program1, "../Dwarfworks/Source/Tests/TestShaders/TestShader1.vert",
       "../Dwarfworks/Source/Tests/TestShaders/TestShader1.frag");
-  SMGetInstance().CreateProgram(
+  m_ShaderManager.CreateProgram(
       m_Program2, "../Dwarfworks/Source/Tests/TestShaders/TestShader2.vert",
       "../Dwarfworks/Source/Tests/TestShaders/TestShader2.frag");
 
@@ -40,26 +35,26 @@ ShaderManagerTest::ShaderManagerTest() {
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 
   unsigned int indices[3] = {0, 1, 2};
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(uint32_t), indices,
                GL_STATIC_DRAW);
 
   // bind normal shader
-  SMGetInstance().BindProgram(m_Program1);
+  m_ShaderManager.BindProgram(m_Program1);
 }
 
 void ShaderManagerTest::OnRender() {
-  SMGetInstance().BindProgram(SMGetInstance().GetActiveProgramName());
+  m_ShaderManager.BindProgram(m_ShaderManager.GetActiveProgramName());
   glBindVertexArray(m_VertexArray);
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
-  SMGetInstance().UnbindProgram();
+  m_ShaderManager.UnbindProgram();
 }
 
 void ShaderManagerTest::OnDebugUIRender() {
-  for (auto& programName : SMGetInstance().GetAllProgramNames()) {
+  for (auto& programName : m_ShaderManager.GetAllProgramNames()) {
     if (ImGui::Button(programName.c_str())) {
-      SMGetInstance().BindProgram(programName);
+      m_ShaderManager.BindProgram(programName);
     }
   }
 }
-#undef SMGetInstance()
+
 }  // namespace Tests

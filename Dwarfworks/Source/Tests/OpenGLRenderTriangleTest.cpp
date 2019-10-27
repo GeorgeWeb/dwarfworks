@@ -29,8 +29,8 @@ OpenGLRenderTriangleTest::OpenGLRenderTriangleTest() {
   glGenBuffers(1, &m_IndexBuffer);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBuffer);
 
-  unsigned int indices[3] = {0, 1, 2};
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+  uint32_t indices[3] = {0, 1, 2};
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, 3 * sizeof(uint32_t), indices,
                GL_STATIC_DRAW);
 
   // vertex shader

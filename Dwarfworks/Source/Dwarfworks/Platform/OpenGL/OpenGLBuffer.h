@@ -8,19 +8,25 @@ namespace Dwarfworks {
 class DW_API OpenGLVertexBuffer : public VertexBuffer {
  public:
   OpenGLVertexBuffer(float* vertices, uint32_t size);
-  virtual ~OpenGLVertexBuffer() override;
+  ~OpenGLVertexBuffer() override;
 
   virtual void Bind() const override;
   virtual void Unbind() const override;
 
+  virtual const BufferLayout& GetLayout() const override { return m_Layout; }
+  virtual void SetLayout(const BufferLayout& layout) override {
+    m_Layout = layout;
+  }
+
  private:
   uint32_t m_RendererId;
+  BufferLayout m_Layout;
 };
 
 class DW_API OpenGLIndexBuffer : public IndexBuffer {
  public:
   OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
-  virtual ~OpenGLIndexBuffer() override;
+  ~OpenGLIndexBuffer() override;
 
   virtual void Bind() const override;
   virtual void Unbind() const override;

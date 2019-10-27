@@ -1,17 +1,19 @@
 #pragma once
 
-#include <functional>
-#include <memory>
-#include <utility>
-// #include <optional>
-// #include <stdexcept>
-
 #include <array>
+#include <atomic>
+#include <cstdint>
+#include <functional>
 #include <iostream>
+#include <memory>
+#include <mutex>
+#include <optional>
 #include <sstream>
+#include <stdexcept>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
+#include <utility>
 #include <vector>
 
 #ifdef DW_PLATFORM_WINDOWS

@@ -13,8 +13,11 @@
 // Events
 #include "Dwarfworks/Core/Events/ApplicationEvent.h"
 
-#include <atomic>
-#include <mutex>
+// RendererAPI
+#include "Dwarfworks/Graphics/Buffer.h"
+#include "Dwarfworks/Graphics/Renderer.h"
+#include "Dwarfworks/Graphics/Shader.h"
+#include "Dwarfworks/Graphics/VertexArray.h"
 
 #ifdef ENABLE_VISUAL_TESTING
 // forward decl.
@@ -173,6 +176,13 @@ class DW_API Application {
   bool m_IsRunning{true};
   LayerStack m_LayerStack;
 
+  Ref<Shader> m_Shader;
+  Ref<VertexArray> m_VertexArray;
+
+  Ref<Shader> m_BlueShader;
+  Ref<VertexArray> m_SquareVA;
+
+ private:  // testing on/off
 #ifdef ENABLE_VISUAL_TESTING
   inline static Tests::Test* m_CurrentTest = nullptr;
   Ref<Tests::TestMenu> m_TestMenu;

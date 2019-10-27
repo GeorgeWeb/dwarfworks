@@ -17,7 +17,7 @@ class ShaderManagerTest final : public Test {
   unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
   std::string m_Program1 = "Normal Shader Program";
   std::string m_Program2 = "Dark Multicolor Program";
-  // Dwarfworks::ShaderManager SM;
+  Dwarfworks::ShaderManager& m_ShaderManager;
 };
 
 }  // namespace Tests

@@ -8,10 +8,6 @@
 #include "Dwarfworks/Core/Input/Input.h"
 #include "Dwarfworks/Math/Math.h"
 
-/** Disable threading for now
-#include "Dwarfworks/Core/Threading/TaskGenerator.h"
-*/
-
 #ifdef ENABLE_VISUAL_TESTING
 #include "Tests/OpenGLClearColorTest.h"
 #include "Tests/OpenGLInfoTest.h"
@@ -61,30 +57,11 @@ Application::~Application() = default;
 #endif
 
 void Application::Run() {
-  /** Disable threading for now
-  ThreadManager threadManager;
-  threadManager.CreateTaskLists();
-  threadManager.RunThreads();
-
-  TaskGenerator taskGenerator(&threadManager);
-  taskGenerator.CreateTasks();
-  taskGenerator.CreateTasks();
-  taskGenerator.CreateTasks();
-  taskGenerator.CreateTasks();
-
-  // threadManager.ThreadProcess();
-  threadManager.UnpauseThreads();
-  */
-
   // the main loop
   while (IsRunning()) {
     // Test OpenGL clear color buffer
     glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    /** Disable threading for now
-    taskGenerator.CreateTasks();
-    */
 
     // Update layers
 #ifdef ENABLE_VISUAL_TESTING
@@ -143,11 +120,6 @@ void Application::Run() {
     // Update Window
     m_Window->OnUpdate();
   }
-
-  /** Disable threading for now
-  threadManager.PauseThreads();
-  threadManager.JoinThreads();
-  */
 }  // namespace Dwarfworks
 
 void Application::OnEvent(Event& event) {

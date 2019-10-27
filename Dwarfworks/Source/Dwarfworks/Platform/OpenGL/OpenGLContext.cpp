@@ -1,8 +1,9 @@
+// begin PCH
 #include "dwpch.h"
-
-#include "OpenGLContext.h"
+// end PCH
 
 #include "Dwarfworks/Core/Log/Log.h"
+#include "OpenGLContext.h"
 
 // GLFW
 #include <GLFW/glfw3.h>

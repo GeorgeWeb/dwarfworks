@@ -174,7 +174,7 @@ class DW_API Application {
   LayerStack m_LayerStack;
 
 #ifdef ENABLE_VISUAL_TESTING
-  static inline Tests::Test* m_CurrentTest = nullptr;
+  inline static Tests::Test* m_CurrentTest = nullptr;
   Ref<Tests::TestMenu> m_TestMenu;
 #endif
 

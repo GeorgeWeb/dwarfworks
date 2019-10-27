@@ -1,7 +1,7 @@
-#ifndef _TESTS_TESTMENU_H
-#define _TESTS_TESTMENU_H
+#ifndef TEST_MENU_H_
+#define TEST_MENU_H_
 
-#include "tpch.h"
+#include "Test.h"
 
 namespace Tests {
 
@@ -33,4 +33,4 @@ void Tests::TestMenu::RegisterTest(const std::string& name) {
   DW_CORE_INFO("Registering test: {0}", name);
   m_TestList.push_back({name, [] { return new T(); }});
 }
-#endif  // !_TESTS_TESTMENU_H
+#endif  // TESTS_TEST_MENU_H_

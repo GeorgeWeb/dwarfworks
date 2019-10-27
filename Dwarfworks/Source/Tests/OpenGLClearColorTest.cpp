@@ -1,6 +1,8 @@
+// begin PCH
 #include "dwpch.h"
+// end PCH
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 #include "OpenGLClearColorTest.h"
 

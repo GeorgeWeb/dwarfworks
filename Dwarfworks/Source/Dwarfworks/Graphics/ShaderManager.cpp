@@ -1,10 +1,12 @@
+// begin PCH
 #include "dwpch.h"
-
-#include "ShaderManager.h"
-
-#include "Dwarfworks/Core/Log/Log.h"
+// end PCH
 
 #include <fstream>
+
+#include "Dwarfworks/Core/Log/Log.h"
+#include "ShaderManager.h"
+
 namespace Dwarfworks {
 
 ShaderManager::~ShaderManager() {

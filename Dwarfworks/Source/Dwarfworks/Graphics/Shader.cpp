@@ -1,10 +1,11 @@
+// begin PCH
 #include "dwpch.h"
-
-#include "Shader.h"
-
-#include "Dwarfworks/Core/Log/Log.h"
+// end PCH
 
 #include <glad/glad.h>
+
+#include "Dwarfworks/Core/Log/Log.h"
+#include "Shader.h"
 
 namespace Dwarfworks {
 

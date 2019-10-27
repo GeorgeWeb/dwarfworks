@@ -1,11 +1,11 @@
+// begin PCH
 #include "dwpch.h"
-
-#include "Application.h"
+// end PCH
 
 #include <glad/glad.h>
 
+#include "Application.h"
 #include "Dwarfworks/Core/Input/Input.h"
-
 #include "Dwarfworks/Math/Math.h"
 
 /** Disable threading for now
@@ -13,7 +13,11 @@
 */
 
 #ifdef ENABLE_VISUAL_TESTING
-
+#include "Tests/OpenGLClearColorTest.h"
+#include "Tests/OpenGLInfoTest.h"
+#include "Tests/OpenGLRenderTriangleTest.h"
+#include "Tests/ShaderManagerTest.h"
+#include "Tests/Test.h"
 #include "Tests/TestMenu.h"
 #endif
 

@@ -1,10 +1,12 @@
+// begin PCH
 #include "dwpch.h"
-
-#include "ThreadManager.h"
-
-#include "Dwarfworks/Core/Log/Log.h"
+// end PCH
 
 #include <chrono>
+
+#include "Dwarfworks/Core/Log/Log.h"
+#include "ThreadManager.h"
+
 namespace Dwarfworks {
 
 ThreadManager::ThreadManager() {

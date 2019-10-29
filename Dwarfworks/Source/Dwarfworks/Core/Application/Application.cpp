@@ -2,10 +2,9 @@
 #include "dwpch.h"
 // end PCH
 
-#include <glad/glad.h>
-
 #include "Application.h"
 #include "Dwarfworks/Core/Input/Input.h"
+#include "Dwarfworks/Graphics/Renderer.h"
 #include "Dwarfworks/Math/Math.h"
 
 #ifdef ENABLE_VISUAL_TESTING
@@ -13,7 +12,6 @@
 #include "Tests/OpenGLInfoTest.h"
 #include "Tests/OpenGLRenderTriangleTest.h"
 #include "Tests/ShaderManagerTest.h"
-#include "Tests/Test.h"
 #include "Tests/TestMenu.h"
 #endif
 
@@ -38,12 +36,12 @@ Application::Application() {
 
 #ifdef ENABLE_VISUAL_TESTING
   // Create Test Menu
-  m_TestMenu = CreateRef<Tests::TestMenu>(m_CurrentTest);
+  INIT_TEST_MENU(m_TestMenu, m_CurrentTest);
   // Register Tests
-  m_TestMenu->RegisterTest<Tests::OpenGLInfoTest>("OpenGL Info");
-  m_TestMenu->RegisterTest<Tests::OpenGLClearColorTest>("OpenGL Clear Color");
-  m_TestMenu->RegisterTest<Tests::OpenGLRenderTriangleTest>("Render Triangle");
-  m_TestMenu->RegisterTest<Tests::ShaderManagerTest>("Shader manager");
+  REGISTER_TEST(Tests::OpenGLInfoTest, "OpenGL Info", m_TestMenu);
+  REGISTER_TEST(Tests::OpenGLClearColorTest, "OpenGL Clear Color", m_TestMenu);
+  REGISTER_TEST(Tests::OpenGLRenderTriangleTest, "Render Triangle", m_TestMenu);
+  REGISTER_TEST(Tests::ShaderManagerTest, "Shader manager", m_TestMenu);
   // Set Current Test Layer to Test Menu
   m_CurrentTest = m_TestMenu.get();
   m_LayerStack.PushLayer(m_CurrentTest);
@@ -189,25 +187,27 @@ Application::~Application() = default;
 void Application::Run() {
   // the main loop
   while (IsRunning()) {
-    // clear color buffer
-    glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+    // lower level render commands
 
-    // bind blue shader
+    // clear color (and depth) buffer
+    RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
+    RenderCommand::Clear();
+
+    // higher level renderer calls
+
+    // render scene
+    Renderer::BeginScene();
+
     m_BlueShader->Bind();
-    // bind square vertex array
-    m_SquareVA->Bind();
-    // draw elements
-    glDrawElements(GL_TRIANGLES, m_SquareVA->GetIndexBuffer()->GetCount(),
-                   GL_UNSIGNED_INT, nullptr);
+    Renderer::Submit(m_SquareVA);
 
-    // bind shader
     m_Shader->Bind();
-    // bind vertex array
-    m_VertexArray->Bind();
-    // draw elements
-    glDrawElements(GL_TRIANGLES, m_VertexArray->GetIndexBuffer()->GetCount(),
-                   GL_UNSIGNED_INT, nullptr);
+    Renderer::Submit(m_VertexArray);
+
+    Renderer::EndScene();
+
+    // TODO:
+    // Renderer::Flush();
 
     // update layers
 #ifdef ENABLE_VISUAL_TESTING

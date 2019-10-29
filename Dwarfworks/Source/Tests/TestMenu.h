@@ -26,11 +26,16 @@ class TestMenu final : public Test {
 
 }  // namespace Tests
 
-// Template is in Header file as solution to linking problems
-// Note: may bloat codee of our executable file
 template <class T>
 void Tests::TestMenu::RegisterTest(const std::string& name) {
   DW_CORE_INFO("Registering test: {0}", name);
   m_TestList.push_back({name, [] { return new T(); }});
 }
+
+#define INIT_TEST_MENU(menu, test) \
+  { menu = CreateRef<Tests::TestMenu>(test); }
+
+#define REGISTER_TEST(ttype, tname, menu) \
+  { menu->RegisterTest<ttype>(tname); }
+
 #endif  // TESTS_TEST_MENU_H_

@@ -1,7 +1,6 @@
 #ifndef GRAPHICS_BUFFER_H_
 #define GRAPHICS_BUFFER_H_
 
-#include "Dwarfworks/Core/Core.h"
 #include "Dwarfworks/Core/Log/Log.h"
 
 namespace Dwarfworks {

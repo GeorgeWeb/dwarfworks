@@ -9,11 +9,11 @@
 namespace Dwarfworks {
 
 VertexArray* VertexArray::Create() {
-  switch (Renderer::GetCurrentAPI()) {
-    case RendererAPI::None:
+  switch (Renderer::GetAPI()) {
+    case RendererAPI::API::None:
       DW_CORE_ASSERT(false, "RendererAPI::None is not supported.");
       return nullptr;
-    case RendererAPI::OpenGL:
+    case RendererAPI::API::OpenGL:
       return new OpenGLVertexArray();
   }
 

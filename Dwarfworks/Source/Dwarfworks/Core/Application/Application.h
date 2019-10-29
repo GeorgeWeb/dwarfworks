@@ -15,7 +15,6 @@
 
 // RendererAPI
 #include "Dwarfworks/Graphics/Buffer.h"
-#include "Dwarfworks/Graphics/Renderer.h"
 #include "Dwarfworks/Graphics/Shader.h"
 #include "Dwarfworks/Graphics/VertexArray.h"
 

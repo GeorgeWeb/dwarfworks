@@ -2,18 +2,17 @@
 #include "dwpch.h"
 // end PCH
 
-#include "Buffer.h"
 #include "Dwarfworks/Graphics/Renderer.h"
 #include "Dwarfworks/Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Dwarfworks {
 
 VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size) {
-  switch (Renderer::GetCurrentAPI()) {
-    case RendererAPI::None:
+  switch (Renderer::GetAPI()) {
+    case RendererAPI::API::None:
       DW_CORE_ASSERT(false, "RendererAPI::None is not supported.");
       return nullptr;
-    case RendererAPI::OpenGL:
+    case RendererAPI::API::OpenGL:
       return new OpenGLVertexBuffer(vertices, size);
   }
 
@@ -22,11 +21,11 @@ VertexBuffer* VertexBuffer::Create(float* vertices, uint32_t size) {
 }
 
 IndexBuffer* IndexBuffer::Create(uint32_t* indices, uint32_t count) {
-  switch (Renderer::GetCurrentAPI()) {
-    case RendererAPI::None:
+  switch (Renderer::GetAPI()) {
+    case RendererAPI::API::None:
       DW_CORE_ASSERT(false, "RendererAPI::None is not supported.");
       return nullptr;
-    case RendererAPI::OpenGL:
+    case RendererAPI::API::OpenGL:
       return new OpenGLIndexBuffer(indices, count);
   }
 

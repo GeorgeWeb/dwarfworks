@@ -1,7 +1,6 @@
 #ifndef GRAPHICS_VERTEX_ARRAY_H_
 #define GRAPHICS_VERTEX_ARRAY_H_
 
-#include "Dwarfworks/Core/Core.h"
 #include "Dwarfworks/Graphics/Buffer.h"
 
 namespace Dwarfworks {

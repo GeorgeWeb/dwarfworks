@@ -1,19 +1,12 @@
 #ifndef PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
 #define PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
 
-#include "../../Core/Window/IWindow.h"
+#include "Dwarfworks/Core/Window/IWindow.h"
 
-/// \struct GLFWwindow
-///
-/// \brief Form for viewing the GLFWwindow.
-///
-/// \author Georg
-/// \date 07/10/2019
+#include "Dwarfworks/Graphics/GraphicsContext.h"
 
-struct GLFWwindow;
-// Note: This forward declaration is used so we avoid include the glfw3.h header
-// just for declaring a GLFWwindow* member of the WindowsWindow class and also
-// avoid errors for the order of inclusion of their headers (glad.h is first).
+#include <GLFW/glfw3.h>
+// struct GLFWwindow;
 
 namespace Dwarfworks {
 
@@ -147,6 +140,7 @@ class DW_API WindowsWindow : public IWindow {
 
   /// \brief The window handle (pointer to GLFWwindow).
   GLFWwindow* m_Window;
+  GraphicsContext* m_Context;
 
   /// \struct WindowData
   ///

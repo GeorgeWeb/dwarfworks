@@ -2,14 +2,12 @@
 
 #include "WindowsWindow.h"
 
-#include "../../Core/Events/ApplicationEvent.h"
-#include "../../Core/Events/KeyEvent.h"
-#include "../../Core/Events/MouseEvent.h"
+// events
+#include "Dwarfworks/Core/Events/ApplicationEvent.h"
+#include "Dwarfworks/Core/Events/KeyEvent.h"
+#include "Dwarfworks/Core/Events/MouseEvent.h"
 
-// Glad
-#include <glad/glad.h>
-// glfw
-#include <GLFW/glfw3.h>
+#include "Dwarfworks/Platform/OpenGL/OpenGLContext.h"
 
 namespace Dwarfworks {
 
@@ -25,7 +23,9 @@ WindowsWindow::~WindowsWindow() { Shutdown(); };
 
 void WindowsWindow::OnUpdate() {
   glfwPollEvents();
-  glfwSwapBuffers(m_Window);
+  // TODO: In the future, change the API so this is called like:
+  // m_Context->GetSwapChain().Flush();
+  m_Context->SwapBuffers();
 }
 
 void WindowsWindow::SetEventCallback(const EventCallbackFn& callback) {
@@ -47,8 +47,7 @@ void WindowsWindow::Initialize(const WindowProps& props) {
   m_Data.Width = props.Width;
   m_Data.Height = props.Height;
 
-  DW_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width,
-               props.Height);
+  DW_CORE_INFO("Window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
   if (!s_IsGLFWInitialized) {
     // TODO: glfwTerminate() on system shutdown (not on window close!)
@@ -66,13 +65,8 @@ void WindowsWindow::Initialize(const WindowProps& props) {
                               static_cast<int>(props.Height),
                               m_Data.Title.c_str(), nullptr, nullptr);
 
-  // set the current context to the created window
-  glfwMakeContextCurrent(m_Window);
-
-  // load OpenGL through the Glad GL Loader
-  auto status =
-      gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-  DW_CORE_ASSERT(status, "Failed to initialize Glad!");
+  m_Context = new OpenGLContext(m_Window);
+  m_Context->Initialize();
 
   // set the custom window data to the GLFWwindow
   glfwSetWindowUserPointer(m_Window, &m_Data);
@@ -177,6 +171,13 @@ void WindowsWindow::Initialize(const WindowProps& props) {
   });
 }
 
-void WindowsWindow::Shutdown() { glfwDestroyWindow(m_Window); }
+void WindowsWindow::Shutdown() {
+  // delete graphics context
+  if (m_Context) {
+    delete m_Context;
+  }
+  // delete window handle
+  glfwDestroyWindow(m_Window);
+}
 
 }  // namespace Dwarfworks

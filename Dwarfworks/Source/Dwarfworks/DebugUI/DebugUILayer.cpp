@@ -1,12 +1,15 @@
+// begin PCH
 #include "dwpch.h"
+// end PCH
 
-#include "DebugUILayer.h"
-
+// imgui
 #include "imgui.h"
-
+// implement opengl and glfw imgui
 #include "examples/imgui_impl_glfw.h"
 #include "examples/imgui_impl_opengl3.h"
 
+// debug layer
+#include "DebugUILayer.h"
 #include "Dwarfworks/Core/Application/Application.h"
 
 // TEMPORARY UNTIL Drawrfworks::Input is setup

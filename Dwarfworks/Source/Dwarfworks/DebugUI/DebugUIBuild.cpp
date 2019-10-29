@@ -1,4 +1,6 @@
+// begin PCH
 #include "dwpch.h"
+// end PCH
 
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
 // enable rendering opengl3

@@ -128,18 +128,6 @@
 
 #define DW_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
 
-/// \def DW_FIND(cont, el)
-///
-/// \brief A macro that defines find
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param cont The container.
-/// \param el   The el.
-
-#define DW_FIND(cont, el) std::find(cont.begin(), cont.end(), el)
-
 namespace Dwarfworks {
 
 /// \struct CRTP
@@ -218,52 +206,6 @@ template <typename T, typename... Params>
 
 constexpr Ref<T> CreateRef(Params&&... params) {
   return std::make_shared<T>(std::forward<Params>(params)...);
-}
-
-/// \brief A weak pointer that serves to observe an object's state
-template <typename T>
-using Observable = std::weak_ptr<T>;  // Observe/able ?
-
-/// \fn template <typename T> constexpr bool CanObserve(Observable<T>
-/// observable)
-///
-/// \brief Determine if we can observe
-///
-/// \tparam T Generic type parameter.
-/// \param observable The observable.
-///
-/// \returns True if we can observe, false if not.
-
-template <typename T>
-constexpr bool CanObserve(Observable<T> observable) {
-  // check for nullptr in the event the object is assigned
-  auto ref = observable.lock();
-  return ref != nullptr;
-}
-
-/// \fn template <typename T, typename Callback> constexpr auto
-/// Observe(Observable<T> observable, const Callback& callback)
-///
-/// \brief Observes
-///
-/// \tparam T		 Generic type parameter.
-/// \tparam Callback Type of the callback.
-/// \param observable The observable.
-/// \param callback   The callback.
-///
-/// \returns An auto.
-
-template <typename T, typename Callback>
-constexpr void Observe(Observable<T> observable, const Callback& callback) {
-  if (CanObserve(observable)) {
-    auto ref = observable.lock();
-    auto object = static_cast<T>((*ref));
-    // observe the inner object
-    callback(object);
-  } else {
-    DW_CORE_WARN("Cannot observe a non-owning pointer that points to nothing");
-    return;
-  }
 }
 
 }  // namespace Dwarfworks

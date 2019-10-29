@@ -2,9 +2,6 @@
 #define MATH_MATH_H_
 
 #include <glm/glm.hpp>
-
-// namespace Dwarfworks {
-namespace Math = glm;
-// }
+// all glm includes we'd need
 
 #endif  // MATH_MATH_H_

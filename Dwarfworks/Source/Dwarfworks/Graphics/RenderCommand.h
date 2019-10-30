@@ -20,7 +20,8 @@ class DW_API RenderCommand {
 
  private:
   // TODO: set dynamically (in the future)
-  inline static RendererAPI* s_RendererAPI = new OpenGLRendererAPI;
+  inline static Scope<RendererAPI> s_RendererAPI =
+      CreateScope<OpenGLRendererAPI>();
 };
 
 }  // namespace Dwarfworks

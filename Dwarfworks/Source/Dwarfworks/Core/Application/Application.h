@@ -15,6 +15,7 @@
 
 // RendererAPI
 #include "Dwarfworks/Graphics/Buffer.h"
+#include "Dwarfworks/Graphics/Camera.h"
 #include "Dwarfworks/Graphics/Shader.h"
 #include "Dwarfworks/Graphics/VertexArray.h"
 
@@ -37,36 +38,13 @@ namespace Dwarfworks {
 
 class DW_API Application {
  public:
-  /// \fn Application::Application();
-  ///
-  /// \brief Default constructor.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-
   Application();
-
-  /// \fn virtual Application::~Application();
-  ///
-  /// \brief Destructor.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-
   virtual ~Application();
 
   Application(const Application&) = delete;
   Application& operator=(const Application&) = delete;
 
-  /// \fn inline static Application& Application::Get()
-  ///
-  /// \brief Gets the Application singleton instance
-  ///
-  /// \author Georg
-  /// \date 12/10/2019
-  ///
-  /// \returns A reference to an Application.
-
+  // Gets the Application singleton instance
   inline static Application& Get() {
     // Acquire-Release semantic for C++ atomics (standard thread-safe guarantee)
     // https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
@@ -90,82 +68,26 @@ class DW_API Application {
     return *instance;
   }
 
-  /// \fn void Application::Run();
-  ///
-  /// \summary the application/game main loop.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-
+  // The application/game main loop
   void Run();
 
-  /// \fn void Application::OnEvent(Event& event);
-  ///
-  /// \brief Executes the event action
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \param [in,out] event The event.
-
+  // Executes the event action
   void OnEvent(Event& event);
 
-  /// \fn inline bool Application::IsRunning() const noexcept
-  ///
-  /// \brief Query if this object is running.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns True if running, false if not.
-
+  // Query if the application is running
   inline bool IsRunning() const noexcept { return m_IsRunning; }
 
-  /// \fn void Application::PushLayer(Layer* layer);
-  ///
-  /// \brief Pushes a layer
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \param [in,out] layer If non-null, the layer.
-
+  // Pushes a layer
   void PushLayer(Layer* layer);
-
-  /// \fn void Application::PushOverlay(Layer* layer);
-  ///
-  /// \brief Pushes an overlay
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \param [in,out] layer If non-null, the layer.
-
+  // Pushes an overlay
   void PushOverlay(Layer* layer);
 
-  /// \fn inline Window& Application::GetWindow() const
-  ///
-  /// \brief Gets the window
-  ///
-  /// \author Georg
-  /// \date 12/10/2019
-  ///
-  /// \returns The window.
-
+  // Gets the window for the user's platform
   inline IWindow& GetWindow() const { return *m_Window; }
 
  private:
-  /// \fn bool Application::OnWindowClosed(WindowCloseEvent& event);
-  ///
-  /// \brief Executes the window closed action
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \param [in,out] event The event.
-  ///
-  /// \returns True if it succeeds, false if it fails.
-
+  // Executes the window closed action
+  // True if it succeeds, false if it fails.
   bool OnWindowClosed(WindowCloseEvent& event);
 
  private:
@@ -180,6 +102,8 @@ class DW_API Application {
 
   Ref<Shader> m_BlueShader;
   Ref<VertexArray> m_SquareVA;
+
+  OrthographicCamera m_Camera;
 
  private:  // testing on/off
 #ifdef ENABLE_VISUAL_TESTING

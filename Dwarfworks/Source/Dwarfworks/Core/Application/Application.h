@@ -13,12 +13,6 @@
 // Events
 #include "Dwarfworks/Core/Events/ApplicationEvent.h"
 
-// RendererAPI
-#include "Dwarfworks/Graphics/Buffer.h"
-#include "Dwarfworks/Graphics/Camera.h"
-#include "Dwarfworks/Graphics/Shader.h"
-#include "Dwarfworks/Graphics/VertexArray.h"
-
 #ifdef ENABLE_VISUAL_TESTING
 // forward decl.
 namespace Tests {
@@ -96,14 +90,6 @@ class DW_API Application {
 
   bool m_IsRunning{true};
   LayerStack m_LayerStack;
-
-  Ref<Shader> m_Shader;
-  Ref<VertexArray> m_VertexArray;
-
-  Ref<Shader> m_BlueShader;
-  Ref<VertexArray> m_SquareVA;
-
-  OrthographicCamera m_Camera;
 
  private:  // testing on/off
 #ifdef ENABLE_VISUAL_TESTING

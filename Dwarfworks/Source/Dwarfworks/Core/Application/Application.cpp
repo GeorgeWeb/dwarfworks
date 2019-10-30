@@ -20,8 +20,9 @@ namespace Dwarfworks {
 std::atomic<Application*> Application::s_Instance = nullptr;
 std::mutex Application::s_Mutex;
 
-Application::Application() {
-  // set the Single Instance to point to this class only
+Application::Application() : m_Camera(-1.6f, 1.6f, -0.9f, 0.9f) {
+  DW_CORE_ASSERT(!s_Instance, "Instance of Application already exists!");
+  // set the single instance to point to the existing application
   s_Instance = this;
 
   // Create the Application Window
@@ -130,11 +131,15 @@ Application::Application() {
 	layout (location = 0) in vec3 a_Position;
 	layout (location = 1) in vec4 a_Color;
 
+	uniform mat4 u_ViewProjection;
+
 	out vec4 v_Color;
 
 	void main() {
 	  v_Color = a_Color;
-	  gl_Position = vec4(a_Position, 1.0);
+
+	  vec4 vertexPosition = vec4(a_Position, 1.0);
+	  gl_Position = u_ViewProjection * vertexPosition;
 	}
   )";
 
@@ -159,8 +164,11 @@ Application::Application() {
 
 	layout (location = 0) in vec3 a_Position;
 
+	uniform mat4 u_ViewProjection;
+
 	void main() {
-	  gl_Position = vec4(a_Position, 1.0);
+	  vec4 vertexPosition = vec4(a_Position, 1.0);
+	  gl_Position = u_ViewProjection * vertexPosition;
 	}
   )";
 
@@ -195,14 +203,14 @@ void Application::Run() {
 
     // higher level renderer calls
 
+    m_Camera.SetPosition({0.5f, 0.5f, 0.0f});
+    m_Camera.SetRotation(45.0f);
+
     // render scene
-    Renderer::BeginScene();
+    Renderer::BeginScene(m_Camera);
 
-    m_BlueShader->Bind();
-    Renderer::Submit(m_SquareVA);
-
-    m_Shader->Bind();
-    Renderer::Submit(m_VertexArray);
+    Renderer::Submit(m_BlueShader, m_SquareVA);
+    Renderer::Submit(m_Shader, m_VertexArray);
 
     Renderer::EndScene();
 
@@ -299,14 +307,14 @@ bool Application::OnWindowClosed(WindowCloseEvent& event) {
 #ifdef ENABLE_VISUAL_TESTING
   // free Test layers
   if (m_CurrentTest) {
-    // ... desc
+    // TODO: Describe!
     m_LayerStack.PopLayer(m_CurrentTest);
-    // ... desc
+    // TODO: Describe!
     if (m_CurrentTest != m_TestMenu.get()) {
       delete m_CurrentTest;
     }
     m_CurrentTest = nullptr;
-    // ... desc
+    // TODO: Describe!
     m_LayerStack.PopLayer(m_TestMenu.get());
   }
 #endif

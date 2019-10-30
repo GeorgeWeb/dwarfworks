@@ -128,4 +128,57 @@ void Shader::Bind() const { glUseProgram(m_RendererId); }
 
 void Shader::Unbind() const { glUseProgram(0); }
 
+void Shader::UploadUniformBool(std::string_view name, bool val) const {
+  glUniform1i(GetUniformLocation(name), static_cast<int>(val));
+}
+
+void Shader::UploadUniformInt(std::string_view name, int val) const {
+  glUniform1i(GetUniformLocation(name), val);
+}
+
+void Shader::UploadUniformFloat(std::string_view name, float val) const {
+  glUniform1f(GetUniformLocation(name), val);
+}
+
+void Shader::UploadUniformFloat2(std::string_view name,
+                                 const glm::vec2& vec) const {
+  glUniform2fv(GetUniformLocation(name), 1, glm::value_ptr(vec));
+}
+
+void Shader::UploadUniformFloat3(std::string_view name,
+                                 const glm::vec3& vec) const {
+  glUniform3fv(GetUniformLocation(name), 1, glm::value_ptr(vec));
+}
+
+void Shader::UploadUniformFloat4(std::string_view name,
+                                 const glm::vec4& vec) const {
+  glUniform4fv(GetUniformLocation(name), 1, glm::value_ptr(vec));
+}
+
+void Shader::UploadUniformMat2(std::string_view name,
+                               const glm::mat2& mat) const {
+  glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE,
+                     glm::value_ptr(mat));
+}
+
+void Shader::UploadUniformMat3(std::string_view name,
+                               const glm::mat3& mat) const {
+  glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE,
+                     glm::value_ptr(mat));
+}
+
+void Shader::UploadUniformMat4(std::string_view name,
+                               const glm::mat4& mat) const {
+  glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE,
+                     glm::value_ptr(mat));
+}
+
+int Shader::GetUniformLocation(std::string_view name) const {
+  auto location = glGetUniformLocation(m_RendererId, name.data());
+  if (location == -1) {
+    DW_CORE_ERROR("Uniform location not found!");
+  }
+  return location;
+}
+
 }  // namespace Dwarfworks

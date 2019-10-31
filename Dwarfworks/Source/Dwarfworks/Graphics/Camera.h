@@ -31,6 +31,9 @@ class DW_API OrthographicCamera {
   OrthographicCamera(float left, float right, float bottom, float top,
                      float near = -1.0f, float far = 1.0f);
 
+  void SetProjection(float left, float right, float bottom, float top,
+                     float near = -1.0f, float far = 1.0f);
+
   inline const glm::vec3& GetPosition() const { return m_Position; }
   inline void SetPosition(const glm::vec3& position) {
     m_Position = position;

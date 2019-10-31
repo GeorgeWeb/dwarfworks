@@ -52,6 +52,7 @@
 #include "Dwarfworks/Graphics/VertexArray.h"
 // ...
 #include "Dwarfworks/Graphics/Camera.h"
+#include "Dwarfworks/Graphics/CameraController.h"
 // ---------------------------------------------------------------
 
 // -- Entry point ------------------------------------------------

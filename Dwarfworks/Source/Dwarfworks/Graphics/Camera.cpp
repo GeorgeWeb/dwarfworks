@@ -15,6 +15,14 @@ OrthographicCamera::OrthographicCamera(float left, float right, float bottom,
     : m_ViewProjection(glm::ortho(left, right, bottom, top, near, far),
                        glm::mat4(1.0f)) {}
 
+void OrthographicCamera::SetProjection(float left, float right, float bottom,
+                                       float top, float near, float far) {
+  m_ViewProjection.ProjectionMatrix =
+      glm::ortho(left, right, bottom, top, near, far);
+  m_ViewProjection.ViewProjectionMatrix =
+      m_ViewProjection.ProjectionMatrix * m_ViewProjection.ViewMatrix;
+}
+
 void OrthographicCamera::RecalculateViewMatrix() {
   // create transform matrix (rotated by 'z' axis)
   glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position);

@@ -147,7 +147,7 @@ class Playground : public Dwarfworks::Layer {
     m_BlueShader.reset(new Dwarfworks::Shader(blueVertSrc, blueFragSrc));
   }
 
-  virtual void OnUpdate() override {
+  virtual void OnUpdate(Dwarfworks::Timestep deltaTime) override {
     // clear buffers (TODO: Move to a function that takes care of this!)
     Dwarfworks::RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
     Dwarfworks::RenderCommand::Clear();
@@ -159,25 +159,25 @@ class Playground : public Dwarfworks::Layer {
     // horizontal movement
     if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::LEFT) ||
         Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::A)) {
-      m_CameraPosition.x -= m_CameraMoveSpeed;
+      m_CameraPosition.x -= m_CameraMoveSpeed * deltaTime;
     } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::RIGHT) ||
                Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::D)) {
-      m_CameraPosition.x += m_CameraMoveSpeed;
+      m_CameraPosition.x += m_CameraMoveSpeed * deltaTime;
     }
     // vertical movement
     if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::UP) ||
         Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::W)) {
-      m_CameraPosition.y += m_CameraMoveSpeed;
+      m_CameraPosition.y += m_CameraMoveSpeed * deltaTime;
     } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::DOWN) ||
                Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::S)) {
-      m_CameraPosition.y -= m_CameraMoveSpeed;
+      m_CameraPosition.y -= m_CameraMoveSpeed * deltaTime;
     }
 
     // rotation (z-axis)
     if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::Q)) {
-      m_CameraRotation += m_CameraRotateSpeed;
+      m_CameraRotation += m_CameraRotateSpeed * deltaTime;
     } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::E)) {
-      m_CameraRotation -= m_CameraRotateSpeed;
+      m_CameraRotation -= m_CameraRotateSpeed * deltaTime;
     }
 
     // ------------- //
@@ -185,7 +185,7 @@ class Playground : public Dwarfworks::Layer {
     // ------------- //
 
     // camera transformation
-    m_Camera.SetPosition(glm::vec3(m_CameraPosition, 0.0f));
+    m_Camera.SetPosition(m_CameraPosition);
     m_Camera.SetRotation(m_CameraRotation);
   }
 
@@ -200,7 +200,7 @@ class Playground : public Dwarfworks::Layer {
   }
 
   virtual void OnDebugUIRender() override {
-    ImGui::Begin(std::string{}.append(GetName()).append(" menu").c_str());
+    ImGui::Begin((GetName() + " menu").c_str());
     ImGui::Text("Add stuff here ...");
     ImGui::End();
   }
@@ -235,11 +235,11 @@ class Playground : public Dwarfworks::Layer {
   Dwarfworks::OrthographicCamera m_Camera;
 
  private:
-  glm::vec2 m_CameraPosition = {0.0f, 0.0f};
-  float m_CameraMoveSpeed = 0.01f;
+  glm::vec3 m_CameraPosition = {0.0f, 0.0f, 0.0f};
+  float m_CameraMoveSpeed = 1.0f;
 
   float m_CameraRotation = 0.0f;
-  float m_CameraRotateSpeed = 1.0f;
+  float m_CameraRotateSpeed = 90.0f;
 };
 
 class Sandbox final : public Dwarfworks::Application {

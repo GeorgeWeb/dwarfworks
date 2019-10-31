@@ -3,6 +3,7 @@
 // end PCH
 
 #include "Application.h"
+#include "Dwarfworks/Core/Timestep.h"
 #include "Dwarfworks/Math/Math.h"
 
 // imgui
@@ -14,6 +15,9 @@
 #include "Testing/OpenGLTests/OpenGLRenderTriangleTest.h"
 #include "Testing/OpenGLTests/OpenGLShaderManagerTest.h"
 #endif
+
+// TEMPORARY!
+#include <glfw/glfw3.h>
 
 namespace Dwarfworks {
 
@@ -59,11 +63,15 @@ Application::~Application() = default;
 #endif
 
 void Application::Run() {
-  // the main loop
   while (IsRunning()) {
+    // frame time calculation
+    float time = static_cast<float>(glfwGetTime());  // TODO:Platform::GetTime()
+    Timestep deltaTime = time - m_LastFrameTime;
+    m_LastFrameTime = time;
+
     // update layers
     for (auto appLayer : m_LayerStack) {
-      appLayer->OnUpdate();
+      appLayer->OnUpdate(deltaTime);
     }
 
     // render layers

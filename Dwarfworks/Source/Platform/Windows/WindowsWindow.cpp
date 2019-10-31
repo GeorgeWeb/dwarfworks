@@ -1,4 +1,6 @@
+// begin PCH
 #include "dwpch.h"
+// end PCH
 
 #include "WindowsWindow.h"
 
@@ -6,7 +8,6 @@
 #include "Dwarfworks/Events/ApplicationEvent.h"
 #include "Dwarfworks/Events/KeyEvent.h"
 #include "Dwarfworks/Events/MouseEvent.h"
-
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Dwarfworks {

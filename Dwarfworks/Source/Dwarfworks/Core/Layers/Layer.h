@@ -2,6 +2,7 @@
 #define CORE_LAYERS_LAYER_H_
 
 #include "Dwarfworks/Core/Core.h"
+#include "Dwarfworks/Core/Timestep.h"
 #include "Dwarfworks/Events/Event.h"
 
 namespace Dwarfworks {
@@ -25,7 +26,7 @@ class DW_API Layer {
 
   // virtual void OnFixedUpdate() {}
 
-  virtual void OnUpdate() {}
+  virtual void OnUpdate(Timestep deltaTime) {}
 
   // This is useful to order script execution. For example a follow camera
   // should always be implemented in LateUpdate because it tracks objects that

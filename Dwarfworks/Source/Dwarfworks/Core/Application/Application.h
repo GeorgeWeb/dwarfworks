@@ -87,6 +87,9 @@ class DW_API Application {
   bool m_IsRunning{true};
   LayerStack m_LayerStack;
 
+  // timestep
+  float m_LastFrameTime = 0.0f;
+
  private:  // testing on/off
 #ifdef ENABLE_VISUAL_TESTING
   inline static Testing::Test* m_CurrentTest = nullptr;

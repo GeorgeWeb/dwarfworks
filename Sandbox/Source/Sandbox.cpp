@@ -147,14 +147,54 @@ class Playground : public Dwarfworks::Layer {
     m_BlueShader.reset(new Dwarfworks::Shader(blueVertSrc, blueFragSrc));
   }
 
-  void OnUpdate() override {
-    // clear color (and depth) buffer
+  virtual void OnFixedUpdate() override {
+    // Input polling ...
+
+    // horizontal movement
+    if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::LEFT) ||
+        Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::A)) {
+      m_CameraPosition.x -= m_CameraMoveSpeed;
+    } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::RIGHT) ||
+               Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::D)) {
+      m_CameraPosition.x += m_CameraMoveSpeed;
+    }
+    // vertical movement
+    if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::UP) ||
+        Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::W)) {
+      m_CameraPosition.y += m_CameraMoveSpeed;
+    } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::DOWN) ||
+               Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::S)) {
+      m_CameraPosition.y -= m_CameraMoveSpeed;
+    }
+
+    // rotation (z-axis)
+    if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::Q)) {
+      m_CameraRotation += m_CameraRotateSpeed;
+    } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::E)) {
+      m_CameraRotation -= m_CameraRotateSpeed;
+    }
+  }
+
+  virtual void OnUpdate() override {
+    // clear buffers (TODO: Move to a function that takes care of this!)
     Dwarfworks::RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
     Dwarfworks::RenderCommand::Clear();
 
-    m_Camera.SetPosition({0.5f, 0.5f, 0.0f});
-    m_Camera.SetRotation(45.0f);
+    // animate scene
+    // ...
+  }
 
+  // This is useful to order script execution. For example a follow camera
+  // should always be implemented in LateUpdate because it tracks objects that
+  // might have moved inside Update
+  virtual void OnLateUpdate() override {
+    // camera transformation
+    // Note: this camera isn't actually a follow camera...
+    m_Camera.SetPosition(glm::vec3(m_CameraPosition, 0.0f));
+    m_Camera.SetRotation(m_CameraRotation);
+  }
+
+  virtual void OnRender() override {
     // render scene
     Dwarfworks::Renderer::BeginScene(m_Camera);
 
@@ -164,14 +204,30 @@ class Playground : public Dwarfworks::Layer {
     Dwarfworks::Renderer::EndScene();
   }
 
-  void OnDebugUIRender() override {
-    ImGui::Begin("Hello");
-    ImGui::Text("Hello World!");
-    ImGui::End();
+  virtual void OnDebugUIRender() override {
+    // ImGui::Begin("Hello");
+    // ImGui::Text("Hello World!");
+    // ImGui::End();
   }
 
-  void OnEvent(Dwarfworks::Event& event) override {
+  virtual void OnEvent(Dwarfworks::Event& event) override {
+    // if (event.GetEventType() == Dwarfworks::EventType::KeyPressed)
+    // auto& keyEvent = static_cast<Dwarfworks::KeyPressedEvent&>(event);
     // ...
+    Dwarfworks::EventManager eventManager(event);
+    eventManager.Dispatch<Dwarfworks::KeyPressedEvent>([&](auto& keyEvent) {
+      switch (keyEvent.GetKeyCode()) {
+        // exit layer
+        case Dwarfworks::KeyCodes::ESCAPE: {
+          DW_INFO("Pressed 'ESC'");
+          break;
+        }
+        default:
+          DW_TRACE("Pressed {0}", static_cast<char>(keyEvent.GetKeyCode()));
+          break;
+      }
+      return false;  // blocking, true for non-blocking
+    });
   }
 
  private:
@@ -182,12 +238,26 @@ class Playground : public Dwarfworks::Layer {
   Dwarfworks::Ref<Dwarfworks::VertexArray> m_SquareVA;
 
   Dwarfworks::OrthographicCamera m_Camera;
+
+ private:
+  glm::vec2 m_CameraPosition = {0.0f, 0.0f};
+  float m_CameraMoveSpeed = 0.01f;
+
+  float m_CameraRotation = 0.0f;
+  float m_CameraRotateSpeed = 1.0f;
 };
 
 class Sandbox final : public Dwarfworks::Application {
  public:
-  Sandbox() : Dwarfworks::Application() { PushLayer(new Playground()); }
+  Sandbox() : Application(), m_Playground(new Playground) {
+    PushLayer(m_Playground);
+    DW_INFO("Added {0} layer", m_Playground->GetName());
+  }
+
   virtual ~Sandbox() override = default;
+
+ private:
+  Dwarfworks::Layer* m_Playground;
 };
 
 Dwarfworks::Scope<Dwarfworks::Application> Dwarfworks::CreateApplication() {

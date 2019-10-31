@@ -126,13 +126,6 @@ class DW_API AppFixedUpdateEvent : public Event {
   EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 
-/// \class AppUpdateEvent
-///
-/// \brief An api.
-///
-/// \author Georg
-/// \date 07/10/2019
-
 class DW_API AppUpdateEvent : public Event {
  public:
   /// \fn AppUpdateEvent::AppUpdateEvent() = default;
@@ -145,6 +138,28 @@ class DW_API AppUpdateEvent : public Event {
   AppUpdateEvent() = default;
 
   EVENT_CLASS_TYPE(AppUpdate)
+  EVENT_CLASS_CATEGORY(EventCategoryApplication)
+};
+
+/// \class AppUpdateEvent
+///
+/// \brief An api.
+///
+/// \author Georg
+/// \date 07/10/2019
+
+class DW_API AppLateUpdateEvent : public Event {
+ public:
+  /// \fn AppUpdateEvent::AppUpdateEvent() = default;
+  ///
+  /// \brief Default constructor.
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+
+  AppLateUpdateEvent() = default;
+
+  EVENT_CLASS_TYPE(AppLateUpdate)
   EVENT_CLASS_CATEGORY(EventCategoryApplication)
 };
 

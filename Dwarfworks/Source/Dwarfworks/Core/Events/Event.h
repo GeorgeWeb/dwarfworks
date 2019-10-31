@@ -1,10 +1,9 @@
 #ifndef CORE_EVENT_SYSTEM_EVENT_H_
 #define CORE_EVENT_SYSTEM_EVENT_H_
 
-#include "dwpch.h"
-
 #include "../Core.h"
 #include "../Log/Log.h"
+#include "dwpch.h"
 
 namespace Dwarfworks {
 
@@ -53,6 +52,7 @@ enum class EventType {
   // Application Events
   AppFixedUpdate,
   AppUpdate,
+  AppLateUpdate,
   AppRender,
   // Input: Keyboard Events
   KeyPressed,
@@ -159,6 +159,7 @@ class DW_API Event {
   ///
   /// \returns True if in category, false if not.
 
+  // TODO: Rework the current design that uses unscoped enum!
   inline bool IsInCategory(EventCategory category) const {
     return GetCategoryFlags() & category;
   }

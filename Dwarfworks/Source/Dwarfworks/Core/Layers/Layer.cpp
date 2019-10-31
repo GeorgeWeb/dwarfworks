@@ -6,10 +6,14 @@
 
 namespace Dwarfworks {
 
-Layer::Layer() = default;
+Layer::Layer() {
+  // ...
+}
 
 Layer::Layer(const std::string& name) : m_DebugName(name) {}
 
-Layer::~Layer() {}
+Layer::~Layer() {
+  // ...
+}
 
 }  // namespace Dwarfworks

@@ -56,30 +56,33 @@ Application::~Application() = default;
 void Application::Run() {
   // the main loop
   while (IsRunning()) {
-    // update layers
-#ifdef ENABLE_VISUAL_TESTING
-    if (m_CurrentTest) {
-      m_CurrentTest->OnUpdate();
-    }
+    // fixed update layers
     for (auto appLayer : m_LayerStack) {
-      if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
-        appLayer->OnUpdate();
-      }
+      appLayer->OnFixedUpdate();
     }
-#else
+
+    // update layers
     for (auto appLayer : m_LayerStack) {
       appLayer->OnUpdate();
     }
-#endif
+
+    // late update layers
+    for (auto appLayer : m_LayerStack) {
+      appLayer->OnLateUpdate();
+    }
 
     // render layers
 #ifdef ENABLE_VISUAL_TESTING
+    // jump into the test layer and hide app layers
     if (m_CurrentTest) {
       m_CurrentTest->OnRender();
     }
-    for (auto appLayer : m_LayerStack) {
-      if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
-        appLayer->OnRender();
+    // back in test menu (where all app layers are visible)
+    if (m_CurrentTest == m_TestMenu.get()) {
+      for (auto appLayer : m_LayerStack) {
+        if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
+          appLayer->OnRender();
+        }
       }
     }
 #else
@@ -91,6 +94,7 @@ void Application::Run() {
     // render DebugUI layer
     m_DebugUILayer->Begin();
 #ifdef ENABLE_VISUAL_TESTING
+    // jump into the test layer and hide app layers
     if (m_CurrentTest) {
       if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("<< Back")) {
         delete m_CurrentTest;
@@ -98,9 +102,12 @@ void Application::Run() {
       }
       m_CurrentTest->OnDebugUIRender();
     }
-    for (auto appLayer : m_LayerStack) {
-      if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
-        appLayer->OnDebugUIRender();
+    // back in test menu (where all app layers are visible)
+    if (m_CurrentTest == m_TestMenu.get()) {
+      for (auto appLayer : m_LayerStack) {
+        if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
+          appLayer->OnDebugUIRender();
+        }
       }
     }
 #else
@@ -110,7 +117,7 @@ void Application::Run() {
 #endif
     m_DebugUILayer->End();
 
-    // update window
+    // update window (events polling)
     m_Window->OnUpdate();
   }
 }  // namespace Dwarfworks

@@ -1,9 +1,9 @@
 #ifndef _TESTS_OPENGLCLEARCOLORTEST_H
 #define _TESTS_OPENGLCLEARCOLORTEST_H
 
-#include "Test.h"
+#include "Testing/Test.h"
 
-namespace Tests {
+namespace Testing {
 
 class OpenGLClearColorTest final : public Test {
  public:
@@ -16,5 +16,5 @@ class OpenGLClearColorTest final : public Test {
   std::array<float, 4> m_ClearColor;
 };
 
-}  // namespace Tests
+}  // namespace Testing
 #endif  // !_TESTS_OPENGLCLEARCOLORTEST_H

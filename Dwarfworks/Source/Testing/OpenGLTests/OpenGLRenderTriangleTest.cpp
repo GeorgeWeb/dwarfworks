@@ -2,11 +2,14 @@
 #include "dwpch.h"
 // end PCH
 
-#include <glad/glad.h>
-
 #include "OpenGLRenderTriangleTest.h"
 
-namespace Tests {
+// glad
+#include <glad/glad.h>
+// imgui
+#include "imgui.h"
+
+namespace Testing {
 
 // OpenGLRenderTriangleTest
 
@@ -71,4 +74,4 @@ void OpenGLRenderTriangleTest::OnRender() {
   m_Shader->Unbind();
 }
 
-}  // namespace Tests
+}  // namespace Testing

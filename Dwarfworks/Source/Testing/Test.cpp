@@ -2,9 +2,13 @@
 #include "dwpch.h"
 // end PCH
 
-#include "TestMenu.h"
+#include "Test.h"
 
-namespace Tests {
+// imgui
+#include "imgui.h"
+
+namespace Testing {
+
 TestMenu::TestMenu(Test*& currentTestPointer)
     : m_CurrentTest(currentTestPointer) {}
 
@@ -17,4 +21,4 @@ void TestMenu::OnDebugUIRender() {
   }
 }
 
-}  // namespace Tests
+}  // namespace Testing

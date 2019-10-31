@@ -1,12 +1,10 @@
 #ifndef _TESTS_OPENGLRENDERTRIANGLETEST_H
 #define _TESTS_OPENGLRENDERTRIANGLETEST_H
 
-#include "Test.h"
-#include "glad/glad.h"
-
 #include "Dwarfworks/Graphics/Shader.h"
+#include "Testing/Test.h"
 
-namespace Tests {
+namespace Testing {
 
 class OpenGLRenderTriangleTest final : public Test {
  public:
@@ -19,5 +17,5 @@ class OpenGLRenderTriangleTest final : public Test {
   Dwarfworks::Scope<Dwarfworks::Shader> m_Shader;
 };
 
-}  // namespace Tests
+}  // namespace Testing
 #endif  // !_TESTS_OPENGLRENDERTRIANGLETEST_H

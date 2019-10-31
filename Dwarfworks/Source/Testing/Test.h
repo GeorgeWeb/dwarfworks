@@ -1,9 +1,21 @@
-#ifndef TEST_MENU_H_
-#define TEST_MENU_H_
+#ifndef TEST_H_
+#define TEST_H_
 
-#include "Test.h"
+#include "Dwarfworks/Core/Core.h"
+#include "Dwarfworks/Core/Layers/Layer.h"
 
-namespace Tests {
+namespace Testing {
+
+class Test : public Dwarfworks::Layer {
+ public:
+  Test() : Layer() {}
+  // Test(const std::string& name) : Layer(name) {}
+
+  virtual ~Test() = default;
+
+  virtual void OnRender() override {}
+  virtual void OnDebugUIRender() override {}
+};
 
 class TestMenu final : public Test {
   using createTestFunc_t = std::function<Test*()>;
@@ -24,18 +36,18 @@ class TestMenu final : public Test {
   std::vector<std::pair<std::string, createTestFunc_t>> m_TestList;
 };
 
-}  // namespace Tests
+}  // namespace Testing
 
 template <class T>
-void Tests::TestMenu::RegisterTest(const std::string& name) {
+void Testing::TestMenu::RegisterTest(const std::string& name) {
   DW_CORE_INFO("Registering test: {0}", name);
   m_TestList.push_back({name, [] { return new T(); }});
 }
 
 #define INIT_TEST_MENU(menu, test) \
-  { menu = CreateRef<Tests::TestMenu>(test); }
+  { menu = CreateRef<Testing::TestMenu>(test); }
 
 #define REGISTER_TEST(ttype, tname, menu) \
   { menu->RegisterTest<ttype>(tname); }
 
-#endif  // TESTS_TEST_MENU_H_
+#endif  // TEST_H_

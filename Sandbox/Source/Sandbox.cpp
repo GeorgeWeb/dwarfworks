@@ -147,8 +147,14 @@ class Playground : public Dwarfworks::Layer {
     m_BlueShader.reset(new Dwarfworks::Shader(blueVertSrc, blueFragSrc));
   }
 
-  virtual void OnFixedUpdate() override {
-    // Input polling ...
+  virtual void OnUpdate() override {
+    // clear buffers (TODO: Move to a function that takes care of this!)
+    Dwarfworks::RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
+    Dwarfworks::RenderCommand::Clear();
+
+    // ------------- //
+    // Input polling //
+    // ------------- //
 
     // horizontal movement
     if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::LEFT) ||
@@ -173,23 +179,12 @@ class Playground : public Dwarfworks::Layer {
     } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::E)) {
       m_CameraRotation -= m_CameraRotateSpeed;
     }
-  }
 
-  virtual void OnUpdate() override {
-    // clear buffers (TODO: Move to a function that takes care of this!)
-    Dwarfworks::RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
-    Dwarfworks::RenderCommand::Clear();
+    // ------------- //
+    // animate scene //
+    // ------------- //
 
-    // animate scene
-    // ...
-  }
-
-  // This is useful to order script execution. For example a follow camera
-  // should always be implemented in LateUpdate because it tracks objects that
-  // might have moved inside Update
-  virtual void OnLateUpdate() override {
     // camera transformation
-    // Note: this camera isn't actually a follow camera...
     m_Camera.SetPosition(glm::vec3(m_CameraPosition, 0.0f));
     m_Camera.SetRotation(m_CameraRotation);
   }
@@ -205,9 +200,9 @@ class Playground : public Dwarfworks::Layer {
   }
 
   virtual void OnDebugUIRender() override {
-    // ImGui::Begin("Hello");
-    // ImGui::Text("Hello World!");
-    // ImGui::End();
+    ImGui::Begin(std::string{}.append(GetName()).append(" menu").c_str());
+    ImGui::Text("Add stuff here ...");
+    ImGui::End();
   }
 
   virtual void OnEvent(Dwarfworks::Event& event) override {

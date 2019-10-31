@@ -11,14 +11,10 @@
 #include "Dwarfworks/DebugUI/DebugUILayer.h"
 
 // Events
-#include "Dwarfworks/Core/Events/ApplicationEvent.h"
+#include "Dwarfworks/Events/ApplicationEvent.h"
 
 #ifdef ENABLE_VISUAL_TESTING
-// forward decl.
-namespace Tests {
-class Test;
-class TestMenu;
-}  // namespace Tests
+#include "Testing/Test.h"
 #endif
 
 namespace Dwarfworks {
@@ -93,8 +89,8 @@ class DW_API Application {
 
  private:  // testing on/off
 #ifdef ENABLE_VISUAL_TESTING
-  inline static Tests::Test* m_CurrentTest = nullptr;
-  Ref<Tests::TestMenu> m_TestMenu;
+  inline static Testing::Test* m_CurrentTest = nullptr;
+  Ref<Testing::TestMenu> m_TestMenu;
 #endif
 
  private:  // singleton-related variable members

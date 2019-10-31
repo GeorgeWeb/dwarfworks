@@ -3,7 +3,7 @@
 // end PCH
 
 #include "Dwarfworks/Graphics/Renderer.h"
-#include "Dwarfworks/Platform/OpenGL/OpenGLBuffer.h"
+#include "Platform/OpenGL/OpenGLBuffer.h"
 
 namespace Dwarfworks {
 

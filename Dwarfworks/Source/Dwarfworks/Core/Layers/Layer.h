@@ -2,16 +2,16 @@
 #define CORE_LAYERS_LAYER_H_
 
 #include "Dwarfworks/Core/Core.h"
-#include "Dwarfworks/Core/Events/Event.h"
+#include "Dwarfworks/Events/Event.h"
 
 namespace Dwarfworks {
 
 class DW_API Layer {
  public:
-  Layer();
+  Layer() = default;
   explicit Layer(const std::string& name);
 
-  virtual ~Layer();
+  virtual ~Layer() = default;
 
   // The virtual members are optional for overriding by
   // the derived layer implementation
@@ -23,11 +23,16 @@ class DW_API Layer {
   // virtual void OnAwake() {} // (?)
   // virtual void OnStart() {} // (?)
 
-  virtual void OnFixedUpdate() {}  // TODO: Add Timestep!
+  // TODO: Add FixedTimestep (fixedDeltaTime)!
+  // virtual void OnFixedUpdate() {}
 
-  virtual void OnUpdate() {}  // TODO: Add Timestep!
+  // TODO: Add Timestep (deltaTime)!
+  virtual void OnUpdate() {}
 
-  virtual void OnLateUpdate() {}  // TODO: Add Timestep!
+  // This is useful to order script execution. For example a follow camera
+  // should always be implemented in LateUpdate because it tracks objects that
+  // might have moved inside Update. TODO: Add Timestep!
+  // virtual void OnLateUpdate() {}
 
   virtual void OnRender() {}
 

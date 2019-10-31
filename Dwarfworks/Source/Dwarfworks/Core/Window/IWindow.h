@@ -4,7 +4,7 @@
 #include "dwpch.h"
 
 #include "Dwarfworks/Core/Core.h"
-#include "Dwarfworks/Core/Events/EventManager.h"
+#include "Dwarfworks/Events/EventManager.h"
 
 namespace Dwarfworks {
 

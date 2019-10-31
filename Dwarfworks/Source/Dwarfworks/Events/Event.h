@@ -1,9 +1,12 @@
 #ifndef CORE_EVENT_SYSTEM_EVENT_H_
 #define CORE_EVENT_SYSTEM_EVENT_H_
 
-#include "../Core.h"
-#include "../Log/Log.h"
+#include "Dwarfworks/Core/Core.h"
+#include "Dwarfworks/Core/Log/Log.h"
+
+// begin PCH
 #include "dwpch.h"
+// end PCH
 
 namespace Dwarfworks {
 

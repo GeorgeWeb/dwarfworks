@@ -1,7 +1,7 @@
 #ifndef GRAPHICS_RENDER_COMMAND_H_
 #define GRAPHICS_RENDER_COMMAND_H_
 
-#include "Dwarfworks/Platform/OpenGL/OpenGLRendererAPI.h"
+#include "Platform/OpenGL/OpenGLRendererAPI.h"
 // #include "RendererAPI.h"
 
 namespace Dwarfworks {

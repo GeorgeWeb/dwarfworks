@@ -2,11 +2,14 @@
 #include "dwpch.h"
 // end PCH
 
-#include <glad/glad.h>
-
 #include "OpenGLClearColorTest.h"
 
-namespace Tests {
+// glad
+#include <glad/glad.h>
+// imgui
+#include "imgui.h"
+
+namespace Testing {
 
 // OpenGLClearColorTest
 
@@ -27,4 +30,4 @@ void OpenGLClearColorTest::OnDebugUIRender() {
   ImGui::ColorEdit4("Clear Color", m_ClearColor.data());
 }
 
-}  // namespace Tests
+}  // namespace Testing

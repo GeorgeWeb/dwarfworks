@@ -3,11 +3,11 @@
 #include "WindowsWindow.h"
 
 // events
-#include "Dwarfworks/Core/Events/ApplicationEvent.h"
-#include "Dwarfworks/Core/Events/KeyEvent.h"
-#include "Dwarfworks/Core/Events/MouseEvent.h"
+#include "Dwarfworks/Events/ApplicationEvent.h"
+#include "Dwarfworks/Events/KeyEvent.h"
+#include "Dwarfworks/Events/MouseEvent.h"
 
-#include "Dwarfworks/Platform/OpenGL/OpenGLContext.h"
+#include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Dwarfworks {
 

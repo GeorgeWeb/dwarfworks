@@ -2,9 +2,9 @@
 #define SHADER_MANAGER_TEST_
 
 #include "Dwarfworks/Graphics/ShaderManager.h"
-#include "Test.h"
+#include "Testing/Test.h"
 
-namespace Tests {
+namespace Testing {
 
 class ShaderManagerTest final : public Test {
  public:
@@ -20,6 +20,6 @@ class ShaderManagerTest final : public Test {
   Dwarfworks::ShaderManager& m_ShaderManager;
 };
 
-}  // namespace Tests
+}  // namespace Testing
 
 #endif  // SHADER_MANAGER_TEST_

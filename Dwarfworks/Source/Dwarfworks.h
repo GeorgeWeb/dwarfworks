@@ -11,14 +11,22 @@
 #include "Dwarfworks/Core/Log/Log.h"
 // ---------------------------------------------------------------
 
-// -- Application ------------------------------------------------
-#include "Dwarfworks/Core/Application/Application.h"
+// -- Events ------------------------------------------------
+#include "Dwarfworks/Events/ApplicationEvent.h"
+#include "Dwarfworks/Events/KeyEvent.h"
+#include "Dwarfworks/Events/MouseEvent.h"
+// ...
+#include "Dwarfworks/Events/EventManager.h"
 // ---------------------------------------------------------------
 
 // -- Input ------------------------------------------------------
 #include "Dwarfworks/Core/Input/Input.h"
 #include "Dwarfworks/Core/Input/KeyCodes.h"
 #include "Dwarfworks/Core/Input/MouseButtonCodes.h"
+// ---------------------------------------------------------------
+
+// -- Application ------------------------------------------------
+#include "Dwarfworks/Core/Application/Application.h"
 // ---------------------------------------------------------------
 
 // -- Layers -----------------------------------------------------

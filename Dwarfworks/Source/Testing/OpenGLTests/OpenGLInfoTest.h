@@ -1,9 +1,9 @@
 #ifndef _TESTS_OPENGLINFOTEST_H
 #define _TESTS_OPENGLINFOTEST_H
 
-#include "Test.h"
+#include "Testing/Test.h"
 
-namespace Tests {
+namespace Testing {
 
 class OpenGLInfoTest final : public Test {
  public:
@@ -15,6 +15,6 @@ class OpenGLInfoTest final : public Test {
   std::array<float, 4> m_ClearColor;
 };
 
-}  // namespace Tests
+}  // namespace Testing
 
 #endif  // !_TESTS_OPENGLINFOTEST_H

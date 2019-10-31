@@ -4,16 +4,23 @@
 
 #include "ShaderManagerTest.h"
 
-namespace Tests {
+// glad
+#include <glad/glad.h>
+// imgui
+#include "imgui.h"
+
+namespace Testing {
 ShaderManagerTest::ShaderManagerTest()
     : m_ShaderManager{Dwarfworks::ShaderManager::GetInstance()} {
   // Create Shaders
   m_ShaderManager.CreateProgram(
-      m_Program1, "../Dwarfworks/Source/Tests/TestShaders/TestShader1.vert",
-      "../Dwarfworks/Source/Tests/TestShaders/TestShader1.frag");
+      m_Program1,
+      "../Dwarfworks/Source/Testing/OpenGLTests/GLSLShaders/TestShader1.vert",
+      "../Dwarfworks/Source/Testing/OpenGLTests/GLSLShaders/TestShader1.frag");
   m_ShaderManager.CreateProgram(
-      m_Program2, "../Dwarfworks/Source/Tests/TestShaders/TestShader2.vert",
-      "../Dwarfworks/Source/Tests/TestShaders/TestShader2.frag");
+      m_Program2,
+      "../Dwarfworks/Source/Testing/OpenGLTests/GLSLShaders/TestShader2.vert",
+      "../Dwarfworks/Source/Testing/OpenGLTests/GLSLShaders/TestShader2.frag");
 
   // Generate triangle
   glGenVertexArrays(1, &m_VertexArray);
@@ -57,4 +64,4 @@ void ShaderManagerTest::OnDebugUIRender() {
   }
 }
 
-}  // namespace Tests
+}  // namespace Testing

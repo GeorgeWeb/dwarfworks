@@ -2,11 +2,14 @@
 #include "dwpch.h"
 // end PCH
 
-#include <glad/glad.h>
-
 #include "OpenGLInfoTest.h"
 
-namespace Tests {
+// glad
+#include <glad/glad.h>
+// imgui
+#include "imgui.h"
+
+namespace Testing {
 
 void OpenGLInfoTest::OnDebugUIRender() {
   using namespace std::string_literals;
@@ -21,4 +24,4 @@ void OpenGLInfoTest::OnDebugUIRender() {
   ImGui::End();
 }
 
-}  // namespace Tests
+}  // namespace Testing

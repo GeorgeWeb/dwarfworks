@@ -3,7 +3,7 @@
 // end PCH
 
 #include "Dwarfworks/Graphics/Renderer.h"
-#include "Dwarfworks/Platform/OpenGL/OpenGLVertexArray.h"
+#include "Platform/OpenGL/OpenGLVertexArray.h"
 #include "VertexArray.h"
 
 namespace Dwarfworks {

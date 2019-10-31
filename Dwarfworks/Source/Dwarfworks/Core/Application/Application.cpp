@@ -5,12 +5,14 @@
 #include "Application.h"
 #include "Dwarfworks/Math/Math.h"
 
+// imgui
+#include "imgui.h"
+
 #ifdef ENABLE_VISUAL_TESTING
-#include "Tests/OpenGLClearColorTest.h"
-#include "Tests/OpenGLInfoTest.h"
-#include "Tests/OpenGLRenderTriangleTest.h"
-#include "Tests/ShaderManagerTest.h"
-#include "Tests/TestMenu.h"
+#include "Testing/OpenGLTests/OpenGLClearColorTest.h"
+#include "Testing/OpenGLTests/OpenGLInfoTest.h"
+#include "Testing/OpenGLTests/OpenGLRenderTriangleTest.h"
+#include "Testing/OpenGLTests/ShaderManagerTest.h"
 #endif
 
 namespace Dwarfworks {
@@ -37,10 +39,12 @@ Application::Application() {
   // Create Test Menu
   INIT_TEST_MENU(m_TestMenu, m_CurrentTest);
   // Register Tests
-  REGISTER_TEST(Tests::OpenGLInfoTest, "OpenGL Info", m_TestMenu);
-  REGISTER_TEST(Tests::OpenGLClearColorTest, "OpenGL Clear Color", m_TestMenu);
-  REGISTER_TEST(Tests::OpenGLRenderTriangleTest, "Render Triangle", m_TestMenu);
-  REGISTER_TEST(Tests::ShaderManagerTest, "Shader manager", m_TestMenu);
+  REGISTER_TEST(Testing::OpenGLInfoTest, "OpenGL Info", m_TestMenu);
+  REGISTER_TEST(Testing::OpenGLClearColorTest, "OpenGL Clear Color",
+                m_TestMenu);
+  REGISTER_TEST(Testing::OpenGLRenderTriangleTest, "Render Triangle",
+                m_TestMenu);
+  REGISTER_TEST(Testing::ShaderManagerTest, "Shader manager", m_TestMenu);
   // Set Current Test Layer to Test Menu
   m_CurrentTest = m_TestMenu.get();
   m_LayerStack.PushLayer(m_CurrentTest);
@@ -56,19 +60,9 @@ Application::~Application() = default;
 void Application::Run() {
   // the main loop
   while (IsRunning()) {
-    // fixed update layers
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnFixedUpdate();
-    }
-
     // update layers
     for (auto appLayer : m_LayerStack) {
       appLayer->OnUpdate();
-    }
-
-    // late update layers
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnLateUpdate();
     }
 
     // render layers

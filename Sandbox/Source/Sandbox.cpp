@@ -94,6 +94,7 @@ class Playground : public Dwarfworks::Layer {
 	layout (location = 1) in vec4 a_Color;
 
 	uniform mat4 u_ViewProjection;
+	uniform mat4 u_Transform;
 
 	out vec4 v_Color;
 
@@ -101,7 +102,7 @@ class Playground : public Dwarfworks::Layer {
 	  v_Color = a_Color;
 
 	  vec4 vertexPosition = vec4(a_Position, 1.0);
-	  gl_Position = u_ViewProjection * vertexPosition;
+	  gl_Position = u_ViewProjection * u_Transform * vertexPosition;
 	}
   )";
 
@@ -127,10 +128,11 @@ class Playground : public Dwarfworks::Layer {
 	layout (location = 0) in vec3 a_Position;
 
 	uniform mat4 u_ViewProjection;
+	uniform mat4 u_Transform;
 
 	void main() {
 	  vec4 vertexPosition = vec4(a_Position, 1.0);
-	  gl_Position = u_ViewProjection * vertexPosition;
+	  gl_Position = u_ViewProjection * u_Transform * vertexPosition;
 	}
   )";
 
@@ -153,13 +155,11 @@ class Playground : public Dwarfworks::Layer {
     Dwarfworks::RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
     Dwarfworks::RenderCommand::Clear();
 
-    // ------------- //
-    // Input polling //
-    // ------------- //
+    // Poll user input
+    // ---------------
 
-    // ------------- //
-    // animate scene //
-    // ------------- //
+    // Animate objects
+    // ---------------
 
     // update camera
     m_CameraController.OnUpdate(deltaTime);
@@ -176,7 +176,7 @@ class Playground : public Dwarfworks::Layer {
   }
 
   virtual void OnDebugUIRender() override {
-    ImGui::Begin((GetName() + " menu").c_str());
+    ImGui::Begin((GetName() + " editor").c_str());
     ImGui::Text("Add stuff here ...");
     ImGui::End();
   }

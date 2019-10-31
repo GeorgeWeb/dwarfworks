@@ -1,5 +1,5 @@
-#ifndef CORE_EVENT_SYSTEM_EVENT_H_
-#define CORE_EVENT_SYSTEM_EVENT_H_
+#ifndef EVENTS_EVENT_H_
+#define EVENTS_EVENT_H_
 
 #include "Dwarfworks/Core/Core.h"
 #include "Dwarfworks/Core/Log/Log.h"
@@ -224,4 +224,4 @@ inline std::ostream& operator<<(std::ostream& os, const Event& event) {
 
 }  // namespace Dwarfworks
 
-#endif  // CORE_EVENT_SYSTEM_EVENT_H_
+#endif  // EVENTS_EVENT_H_

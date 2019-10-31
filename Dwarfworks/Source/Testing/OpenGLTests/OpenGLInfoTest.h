@@ -1,5 +1,5 @@
-#ifndef _TESTS_OPENGLINFOTEST_H
-#define _TESTS_OPENGLINFOTEST_H
+#ifndef TESTING_OPENGL_OPENGL_INFO_TEST_H_
+#define TESTING_OPENGL_OPENGL_INFO_TEST_H_
 
 #include "Testing/Test.h"
 
@@ -9,7 +9,7 @@ class OpenGLInfoTest final : public Test {
  public:
   OpenGLInfoTest() = default;
 
-  void OnDebugUIRender() override final;
+  virtual void OnDebugUIRender() override final;
 
  private:
   std::array<float, 4> m_ClearColor;
@@ -17,4 +17,4 @@ class OpenGLInfoTest final : public Test {
 
 }  // namespace Testing
 
-#endif  // !_TESTS_OPENGLINFOTEST_H
+#endif  // TESTING_OPENGL_OPENGL_INFO_TEST_H_

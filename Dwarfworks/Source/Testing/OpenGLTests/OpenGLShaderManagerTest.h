@@ -1,17 +1,17 @@
-#ifndef SHADER_MANAGER_TEST_
-#define SHADER_MANAGER_TEST_
+#ifndef TESTING_OPENGL_OPENGL_SHADER_MANAGER_TEST_H_
+#define TESTING_OPENGL_OPENGL_SHADER_MANAGER_TEST_H_
 
 #include "Dwarfworks/Graphics/ShaderManager.h"
 #include "Testing/Test.h"
 
 namespace Testing {
 
-class ShaderManagerTest final : public Test {
+class OpenGLShaderManagerTest final : public Test {
  public:
-  ShaderManagerTest();
+  OpenGLShaderManagerTest();
 
-  void OnRender() override final;
-  void OnDebugUIRender() override final;
+  virtual void OnRender() override final;
+  virtual void OnDebugUIRender() override final;
 
  private:
   unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
@@ -22,4 +22,4 @@ class ShaderManagerTest final : public Test {
 
 }  // namespace Testing
 
-#endif  // SHADER_MANAGER_TEST_
+#endif  // TESTING_OPENGL_OPENGL_SHADER_MANAGER_TEST_H_

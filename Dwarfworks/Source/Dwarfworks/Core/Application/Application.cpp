@@ -12,7 +12,7 @@
 #include "Testing/OpenGLTests/OpenGLClearColorTest.h"
 #include "Testing/OpenGLTests/OpenGLInfoTest.h"
 #include "Testing/OpenGLTests/OpenGLRenderTriangleTest.h"
-#include "Testing/OpenGLTests/ShaderManagerTest.h"
+#include "Testing/OpenGLTests/OpenGLShaderManagerTest.h"
 #endif
 
 namespace Dwarfworks {
@@ -42,9 +42,10 @@ Application::Application() {
   REGISTER_TEST(Testing::OpenGLInfoTest, "OpenGL Info", m_TestMenu);
   REGISTER_TEST(Testing::OpenGLClearColorTest, "OpenGL Clear Color",
                 m_TestMenu);
-  REGISTER_TEST(Testing::OpenGLRenderTriangleTest, "Render Triangle",
+  REGISTER_TEST(Testing::OpenGLRenderTriangleTest, "OpenGL Render Triangle",
                 m_TestMenu);
-  REGISTER_TEST(Testing::ShaderManagerTest, "Shader manager", m_TestMenu);
+  REGISTER_TEST(Testing::OpenGLShaderManagerTest, "OpenGL Shader Manager",
+                m_TestMenu);
   // Set Current Test Layer to Test Menu
   m_CurrentTest = m_TestMenu.get();
   m_LayerStack.PushLayer(m_CurrentTest);

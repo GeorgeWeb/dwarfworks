@@ -23,15 +23,13 @@ class DW_API Layer {
   // virtual void OnAwake() {} // (?)
   // virtual void OnStart() {} // (?)
 
-  // TODO: Add FixedTimestep (fixedDeltaTime)!
   // virtual void OnFixedUpdate() {}
 
-  // TODO: Add Timestep (deltaTime)!
   virtual void OnUpdate() {}
 
   // This is useful to order script execution. For example a follow camera
   // should always be implemented in LateUpdate because it tracks objects that
-  // might have moved inside Update. TODO: Add Timestep!
+  // might have moved inside Update.
   // virtual void OnLateUpdate() {}
 
   virtual void OnRender() {}

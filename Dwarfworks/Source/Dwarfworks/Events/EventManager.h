@@ -1,5 +1,5 @@
-#ifndef CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
-#define CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
+#ifndef EVENTS_EVENT_MANAGER_H_
+#define EVENTS_EVENT_MANAGER_H_
 
 #include "Event.h"
 
@@ -78,4 +78,4 @@ class DW_API EventManager {
 
 }  // namespace Dwarfworks
 
-#endif  // CORE_EVENT_SYSTEM_EVENT_DISPATCHER_H_
+#endif  // EVENTS_EVENT_MANAGER_H_

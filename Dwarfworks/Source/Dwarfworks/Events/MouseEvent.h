@@ -1,5 +1,5 @@
-#ifndef CORE_EVENTS_MOUSE_EVENT_H_
-#define CORE_EVENTS_MOUSE_EVENT_H_
+#ifndef EVENTS_MOUSE_EVENT_H_
+#define EVENTS_MOUSE_EVENT_H_
 
 #include "Event.h"
 
@@ -256,4 +256,4 @@ class DW_API MouseButtonReleasedEvent : public MouseButtonEvent {
 
 }  // namespace Dwarfworks
 
-#endif  // CORE_EVENTS_MOUSE_EVENT_H_
+#endif  // EVENTS_MOUSE_EVENT_H_

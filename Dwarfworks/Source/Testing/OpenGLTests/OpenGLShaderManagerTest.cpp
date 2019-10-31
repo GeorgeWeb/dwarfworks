@@ -2,7 +2,7 @@
 #include "dwpch.h"
 // end PCH
 
-#include "ShaderManagerTest.h"
+#include "OpenGLShaderManagerTest.h"
 
 // glad
 #include <glad/glad.h>
@@ -10,7 +10,8 @@
 #include "imgui.h"
 
 namespace Testing {
-ShaderManagerTest::ShaderManagerTest()
+
+OpenGLShaderManagerTest::OpenGLShaderManagerTest()
     : m_ShaderManager{Dwarfworks::ShaderManager::GetInstance()} {
   // Create Shaders
   m_ShaderManager.CreateProgram(
@@ -49,14 +50,14 @@ ShaderManagerTest::ShaderManagerTest()
   m_ShaderManager.BindProgram(m_Program1);
 }
 
-void ShaderManagerTest::OnRender() {
+void OpenGLShaderManagerTest::OnRender() {
   m_ShaderManager.BindProgram(m_ShaderManager.GetActiveProgramName());
   glBindVertexArray(m_VertexArray);
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
   m_ShaderManager.UnbindProgram();
 }
 
-void ShaderManagerTest::OnDebugUIRender() {
+void OpenGLShaderManagerTest::OnDebugUIRender() {
   for (auto& programName : m_ShaderManager.GetAllProgramNames()) {
     if (ImGui::Button(programName.c_str())) {
       m_ShaderManager.BindProgram(programName);

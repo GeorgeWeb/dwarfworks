@@ -1,5 +1,5 @@
-#ifndef CORE_EVENTS_APPLICATION_EVENT_H_
-#define CORE_EVENTS_APPLICATION_EVENT_H_
+#ifndef EVENTS_APPLICATION_EVENT_H_
+#define EVENTS_APPLICATION_EVENT_H_
 
 #include "Event.h"
 
@@ -187,4 +187,4 @@ class DW_API AppRenderEvent : public Event {
 
 }  // namespace Dwarfworks
 
-#endif  // CORE_EVENTS_APPLICATION_EVENT_H_
+#endif  // EVENTS_APPLICATION_EVENT_H_

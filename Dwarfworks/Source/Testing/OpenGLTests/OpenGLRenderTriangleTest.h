@@ -1,5 +1,5 @@
-#ifndef _TESTS_OPENGLRENDERTRIANGLETEST_H
-#define _TESTS_OPENGLRENDERTRIANGLETEST_H
+#ifndef TESTING_OPENGL_OPENGLRENDERTRIANGLETEST_H
+#define TESTING_OPENGL_OPENGLRENDERTRIANGLETEST_H
 
 #include "Dwarfworks/Graphics/Shader.h"
 #include "Testing/Test.h"
@@ -10,7 +10,7 @@ class OpenGLRenderTriangleTest final : public Test {
  public:
   OpenGLRenderTriangleTest();
 
-  void OnRender() override final;
+  virtual void OnRender() override final;
 
  private:
   unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;

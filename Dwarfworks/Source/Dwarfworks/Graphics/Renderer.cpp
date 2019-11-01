@@ -12,17 +12,22 @@ void Renderer::BeginScene(OrthographicCamera& camera) {
 
 void Renderer::EndScene() {}
 
-void Renderer::Submit(const Ref<Shader>& shader,
+void Renderer::Submit(const Ref<MaterialInstance>& materialInstance,
                       const Ref<VertexArray>& vertexArray,
-                      const glm::mat4& transform /*=identity*/) {
+                      const glm::mat4& transform) {
   // TODO: Submit to a queue, then eval the render command, bind, then draw
-  shader->Bind();
+  materialInstance->GetMaterial()->GetShader()->Bind();
   // submit the view-projection matrix
-  shader->UploadUniformMat4("u_ViewProjection",
-                            m_SceneData->ViewProjectionMatrix);
+  materialInstance->GetMaterial()->GetShader()->UploadUniformMat4(
+      "u_ViewProjection", m_SceneData->ViewProjectionMatrix);
   // submit the model matrix
-  shader->UploadUniformMat4("u_Transform", transform);
+  materialInstance->GetMaterial()->GetShader()->UploadUniformMat4("u_Transform",
+                                                                  transform);
 
+  // bind material uniforms
+  materialInstance->Bind();
+
+  // draw mesh
   vertexArray->Bind();
   RenderCommand::DrawIndexed(vertexArray);
 }

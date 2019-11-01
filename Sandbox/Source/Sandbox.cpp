@@ -109,6 +109,7 @@ class Playground : public Dwarfworks::Layer {
     // fragment shader
     std::string fragSrc = R"(
 	#version 330 core
+
 	layout(location = 0) out vec4 color;
    
 	in vec4 v_Color;
@@ -122,7 +123,7 @@ class Playground : public Dwarfworks::Layer {
     m_Shader.reset(new Dwarfworks::Shader(vertSrc, fragSrc));
 
     // blue square vertex shader
-    std::string blueVertSrc = R"(
+    std::string flatVertSrc = R"(
 	#version 330 core
 
 	layout (location = 0) in vec3 a_Position;
@@ -137,41 +138,86 @@ class Playground : public Dwarfworks::Layer {
   )";
 
     // blue square fragment shader
-    std::string blueFragSrc = R"(
+    std::string flatFragSrc = R"(
 	#version 330 core
+
 	layout(location = 0) out vec4 color;
 
+	uniform vec3 u_Color;
+
 	void main() {
-	  color = vec4(0.2, 0.3, 0.7, 1.0);
+	  color = vec4(u_Color, 1.0f);
 	}
   )";
 
     // blue square shader program
-    m_BlueShader.reset(new Dwarfworks::Shader(blueVertSrc, blueFragSrc));
+    m_FlatColorShader.reset(new Dwarfworks::Shader(flatVertSrc, flatFragSrc));
   }
 
   virtual void OnUpdate(Dwarfworks::Timestep deltaTime) override {
     // clear buffers (TODO: Move to a function that takes care of this!)
-    Dwarfworks::RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
+    Dwarfworks::RenderCommand::SetClearColor({0.15f, 0.15f, 0.15f, 1.0f});
     Dwarfworks::RenderCommand::Clear();
 
-    // Poll user input
-    // ---------------
-
-    // Animate objects
-    // ---------------
+    // move square horizontally
+    if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::LEFT)) {
+      m_TrianglePosition.x -= m_TriangleMoveSpeed * deltaTime;
+    } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::RIGHT)) {
+      m_TrianglePosition.x += m_TriangleMoveSpeed * deltaTime;
+    }
+    // move square vertically
+    if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::UP)) {
+      m_TrianglePosition.y += m_TriangleMoveSpeed * deltaTime;
+    } else if (Dwarfworks::Input::IsKeyPressed(Dwarfworks::KeyCodes::DOWN)) {
+      m_TrianglePosition.y -= m_TriangleMoveSpeed * deltaTime;
+    }
 
     // update camera
     m_CameraController.OnUpdate(deltaTime);
   }
 
   virtual void OnRender() override {
-    // render scene
+    // begin scene rendering
     Dwarfworks::Renderer::BeginScene(m_CameraController.GetCamera());
 
-    Dwarfworks::Renderer::Submit(m_BlueShader, m_SquareVA);
-    Dwarfworks::Renderer::Submit(m_Shader, m_VertexArray);
+    static glm::mat4 transform;  // the transform (model) matrix
+    static glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
+    // square
+    static glm::vec3 redColor(0.8f, 0.2f, 0.3f);
+    static glm::vec3 blueColor(0.2f, 0.3f, 0.8f);
+
+    auto flatColorMaterial = Dwarfworks::Material::Create(m_FlatColorShader);
+    auto blueMaterialInstance =
+        Dwarfworks::MaterialInstance::Create(flatColorMaterial);
+
+    blueMaterialInstance->SetFloat3("u_Color", blueColor);
+    // m_SquareMesh->SetMaterial(flatColorMaterialInstance);
+
+    constexpr float spanX = 0.175f;
+    constexpr float spanY = 0.175f;
+    for (auto y = 0; y < 20; ++y) {
+      for (auto x = 0; x < 20; ++x) {
+        glm::vec3 position(x * spanX, y * spanY, 0.0f);
+        glm::mat4 translate = glm::translate(glm::mat4(1.0f), position);
+        transform = translate * scale;  // TRS: T * R * S
+                                        // submit the square for rendering
+
+        Dwarfworks::Renderer::Submit(blueMaterialInstance, m_SquareVA,
+                                     transform);
+      }
+    }
+
+    // triangle
+    auto redMaterialInstance =
+        Dwarfworks::MaterialInstance::Create(flatColorMaterial);
+    // m_TriangleMesh->SetMaterial(redMaterialInstance);
+
+    redMaterialInstance->SetFloat3("u_Color", redColor);
+    transform = glm::translate(glm::mat4(1.0f), m_TrianglePosition);
+    Dwarfworks::Renderer::Submit(redMaterialInstance, m_VertexArray, transform);
+
+    // end scene rendering
     Dwarfworks::Renderer::EndScene();
   }
 
@@ -202,13 +248,18 @@ class Playground : public Dwarfworks::Layer {
   }
 
  private:
+  Dwarfworks::OrthographicCameraController m_CameraController;
+
+  // TEMPORARY
+  // ---------
   Dwarfworks::Ref<Dwarfworks::Shader> m_Shader;
   Dwarfworks::Ref<Dwarfworks::VertexArray> m_VertexArray;
 
-  Dwarfworks::Ref<Dwarfworks::Shader> m_BlueShader;
+  Dwarfworks::Ref<Dwarfworks::Shader> m_FlatColorShader;
   Dwarfworks::Ref<Dwarfworks::VertexArray> m_SquareVA;
 
-  Dwarfworks::OrthographicCameraController m_CameraController;
+  glm::vec3 m_TrianglePosition = {0.0f, 0.0f, 0.0f};
+  const float m_TriangleMoveSpeed = 1.0f;
 };
 
 class Sandbox final : public Dwarfworks::Application {

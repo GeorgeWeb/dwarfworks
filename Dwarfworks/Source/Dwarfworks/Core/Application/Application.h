@@ -67,6 +67,8 @@ class DW_API Application {
   // Query if the application is running
   inline bool IsRunning() const noexcept { return m_IsRunning; }
 
+  // return the frames per second calculated in the Run loop
+
   // Pushes a layer
   void PushLayer(Layer* layer);
   // Pushes an overlay

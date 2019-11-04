@@ -13,6 +13,8 @@ bin-int/
 # exclude cppcheck config files
 *.cppcheck
 
+# Makefiles
+*Makefile*
 
 # Visual Studio solution & project files
 *.sln

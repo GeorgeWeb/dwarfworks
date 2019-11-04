@@ -89,7 +89,6 @@ project "Dwarfworks"
         links { 
             "Xrandr",
 			"Xi",
-			-- "GLEW",
 			"GLU",
 			"GL",
 			"X11"
@@ -192,7 +191,6 @@ project "Sandbox"
             "ImGui",
             "Xrandr",
             "Xi",
-            -- "GLEW",
             "GLU",
             "GL",
             "X11",

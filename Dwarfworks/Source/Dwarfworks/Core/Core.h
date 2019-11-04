@@ -4,6 +4,9 @@
 #include <memory>
 #include <utility>
 
+// cross-platform break into the debugger, programmatically
+#include "debugbreak.h"
+
 // Platform detection using predefined macros
 #ifdef _WIN32
 /* Windows x64/x86 */
@@ -39,7 +42,6 @@
 #error "Android is not supported!"
 #elif defined(__linux__)
 #define DW_PLATFORM_LINUX
-#error "Linux is not supported!"
 #else
 /* Unknown compiler/platform */
 #error "Unknown platform!"
@@ -56,8 +58,18 @@
 #else
 #define DW_API
 #endif
+#elif defined(DW_PLATFORM_LINUX)
+#if DW_DYNAMIC_LINK
+#ifdef DW_BUILD_DLL
+#define DW_API __attribute__((visibility("default")))
 #else
-#error Hazel only supports Windows!
+#define DW_API
+#endif
+#else
+#define DW_API
+#endif
+#else
+#error Unsupported platform!
 #endif  // End of DLL support
 
 #ifdef DW_DEBUG
@@ -80,7 +92,7 @@
   {                                                   \
     if (!(x)) {                                       \
       DW_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-      __debugbreak();                                 \
+      debug_break();                                  \
     }                                                 \
   }
 
@@ -98,7 +110,7 @@
   {                                                        \
     if (!(x)) {                                            \
       DW_CORE_ERROR("Assertion Failed: {0}", __VA_ARGS__); \
-      __debugbreak();                                      \
+      debug_break();                                       \
     }                                                      \
   }
 #else

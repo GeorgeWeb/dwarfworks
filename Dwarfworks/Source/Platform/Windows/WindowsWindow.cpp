@@ -61,6 +61,10 @@ void WindowsWindow::Initialize(const WindowProps& props) {
     s_IsGLFWInitialized = true;
   }
 
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
   // create the window
   m_Window = glfwCreateWindow(static_cast<int>(props.Width),
                               static_cast<int>(props.Height),

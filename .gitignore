@@ -25,3 +25,6 @@ Sandbox/*.vcxproj.*
 
 # ImGui generated files
 Sandbox/imgui.ini
+
+#
+packages/*

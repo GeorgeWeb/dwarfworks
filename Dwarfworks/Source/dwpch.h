@@ -1,4 +1,5 @@
-#pragma once
+#ifndef DWARFWORKS_PRECOMPILED_HEADER_H_
+#define DWARFWORKS_PRECOMPILED_HEADER_H_
 
 #include <array>
 #include <atomic>
@@ -20,3 +21,5 @@
 #ifdef DW_PLATFORM_WINDOWS
 #include <Windows.h>
 #endif
+
+#endif // DWARFWORKS_PRECOMPILED_HEADER_H_

@@ -14,13 +14,14 @@ namespace Testing {
 void OpenGLInfoTest::OnDebugUIRender() {
   using namespace std::string_literals;
 
+  auto OpenGLVendor = "Vendor: "s + (const char*)glGetString(GL_VENDOR);
+  auto OpenGLRenderer = "Renderer: "s + (const char*)glGetString(GL_RENDERER);
+  auto OpenGLVersion = "Version: "s + (const char*)glGetString(GL_VERSION);
+  
   ImGui::Begin("OpenGL Info");
-  const auto vendor = "Vendor: "s + (const char*)glGetString(GL_VENDOR);
-  const auto renderer = "Renderer: "s + (const char*)glGetString(GL_RENDERER);
-  const auto version = "Version: "s + (const char*)glGetString(GL_VERSION);
-  ImGui::Text(vendor.c_str());
-  ImGui::Text(renderer.c_str());
-  ImGui::Text(version.c_str());
+  ImGui::Text(OpenGLVendor.c_str());
+  ImGui::Text(OpenGLRenderer.c_str());
+  ImGui::Text(OpenGLVersion.c_str());
   ImGui::End();
 }
 

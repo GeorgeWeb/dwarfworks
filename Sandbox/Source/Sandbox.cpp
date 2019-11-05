@@ -8,5 +8,6 @@ Sandbox::Sandbox() : Application(), m_Playground(new Playground) {
 Sandbox::~Sandbox() {}
 
 Dwarfworks::Scope<Dwarfworks::Application> Dwarfworks::CreateApplication() {
+  Dwarfworks::RendererAPI::SetAPI(RendererAPI::API::OpenGL);
   return Dwarfworks::CreateScope<Sandbox>();
 }

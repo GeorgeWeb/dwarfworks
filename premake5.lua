@@ -49,8 +49,10 @@ project "Dwarfworks"
 
     -- set project source files
     files {
-        SourceDir .. "/**.h",
-        SourceDir .. "/**.cpp",
+        SourceDir .. "/Dwarfworks/**.h",
+        SourceDir .. "/Dwarfworks/**.cpp",
+        SourceDir .. "/Platform/OpenGL/**.h",
+        SourceDir .. "/Platform/OpenGL/**.cpp",
     }
 
     -- silence external "noise"
@@ -85,6 +87,12 @@ project "Dwarfworks"
     filter "system:linux"
         systemversion "latest"
 
+        -- Linux specific
+        files {
+            SourceDir .. "/Platform/Linux/**.h",
+            SourceDir .. "/Platform/Linux/**.cpp",
+        }
+
         -- 
         links { 
             "Xrandr",
@@ -104,6 +112,12 @@ project "Dwarfworks"
     filter "system:windows"
         systemversion "latest"
         
+        -- Windows specific
+        files {
+            SourceDir .. "/Platform/Windows/**.h",
+            SourceDir .. "/Platform/Windows/**.cpp",
+        }
+
         -- 
         links {
             "opengl32.lib"

@@ -37,7 +37,7 @@ class DW_API WindowsWindow : public IWindow {
   /// \author Georg
   /// \date 07/10/2019
 
-  ~WindowsWindow();
+  virtual ~WindowsWindow() override;
 
   /// \fn void WindowsWindow::OnUpdate() override;
   ///

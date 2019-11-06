@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_H_
-#define DWARFWORKS_H_
+#ifndef DWARFWORKS_PUBLIC_API_H_
+#define DWARFWORKS_PUBLIC_API_H_
 
 // For use by Dwarfworks applications
 
@@ -62,4 +62,4 @@
 #include "Dwarfworks/Core/EntryPoint.h"
 // ---------------------------------------------------------------
 
-#endif  // DWARFWORKS_H_
+#endif  // DWARFWORKS_PUBLIC_API_H_

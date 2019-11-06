@@ -1,11 +1,12 @@
 workspace "Dwarfworks"
     architecture "x64"
+    startproject "Sandbox"
+
     configurations {
         "Debug",      -- Full on debug code enabled with all information available
         "Release",    -- Stripped out a lot of debug info, but some (like Logging) is kept
         "Dist"        -- build to be distributed to the public with all debug info stripped
     }
-    startproject "Sandbox"
 
 -- platform-independent output directory definition
 OutputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
@@ -17,6 +18,7 @@ IncludeDir["Glad"] = "Dwarfworks/Vendor/glad/include"
 IncludeDir["ImGui"] = "Dwarfworks/Vendor/imgui"
 IncludeDir["glm"] = "Dwarfworks/Vendor/glm"
 IncludeDir["spdlog"] = "Dwarfworks/Vendor/spdlog/include"
+IncludeDir["debugbreak"] = "Dwarfworks/Vendor/debugbreak"
 
 -- define project external dependencies
 group "Dependencies"
@@ -47,8 +49,10 @@ project "Dwarfworks"
 
     -- set project source files
     files {
-        SourceDir .. "/**.h",
-        SourceDir .. "/**.cpp",
+        SourceDir .. "/Dwarfworks/**.h",
+        SourceDir .. "/Dwarfworks/**.cpp",
+        SourceDir .. "/Platform/OpenGL/**.h",
+        SourceDir .. "/Platform/OpenGL/**.cpp",
     }
 
     -- silence external "noise"
@@ -58,6 +62,8 @@ project "Dwarfworks"
     includedirs {
         -- the project source folder
         SourceDir,
+        -- Cross-platform break into source-line debugger
+        "%{IncludeDir.debugbreak}",
         -- External Logging lib - spdlog
         "%{IncludeDir.spdlog}",
         -- SIMD Mathematics
@@ -73,16 +79,53 @@ project "Dwarfworks"
     links {
         "GLFW",
         "Glad",
-        "ImGui",
-        "opengl32.lib"
+        "ImGui"
     }
 
     -- set project target properties
     
-    filter "system:windows"
+    filter "system:linux"
         systemversion "latest"
+
+        -- Linux specific
+        files {
+            SourceDir .. "/Platform/Linux/**.h",
+            SourceDir .. "/Platform/Linux/**.cpp",
+        }
+
+        -- 
+        links { 
+            "Xrandr",
+			"Xi",
+			"GLU",
+			"GL",
+			"X11"
+        }
+        
         -- preprocessor definitions
         defines {
+            -- "DW_PALTFORM_LINUX",
+            "HZ_BUILD_DLL",
+            "GLFW_INCLUDE_NONE"
+        }
+
+    filter "system:windows"
+        systemversion "latest"
+        
+        -- Windows specific
+        files {
+            SourceDir .. "/Platform/Windows/**.h",
+            SourceDir .. "/Platform/Windows/**.cpp",
+        }
+
+        -- 
+        links {
+            "opengl32.lib"
+        }
+
+        -- preprocessor definitions
+        defines {
+            -- "DW_PLATFORM_WINDOWS",
             "HZ_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
         }
@@ -92,13 +135,6 @@ project "Dwarfworks"
             -- ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
         -- }
 
-    filter "system:linux"
-        systemversion "latest"
-        -- preprocessor definitions
-        defines {
-            "HZ_BUILD_DLL",
-            "GLFW_INCLUDE_NONE"
-        }
 
     print("%{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
 
@@ -112,8 +148,7 @@ project "Dwarfworks"
 
     filter "configurations:Release"
         defines {
-            "DW_RELEASE",
-            "ENABLE_VISUAL_TESTING"
+            "DW_RELEASE"
         }
         optimize "on"
 
@@ -147,6 +182,8 @@ project "Sandbox"
         -- The Game Engine - Dwarfworks
         "Dwarfworks/Source",
         "Dwarfworks/Vendor",
+        -- Cross-platform break into source-line debugger
+        "%{IncludeDir.debugbreak}",
         -- External Logging lib - spdlog
         "%{IncludeDir.spdlog}",
         -- External Mathematics lib - glm
@@ -160,15 +197,34 @@ project "Sandbox"
 
     -- set project target properties
 
-    filter "system:windows"
-        systemversion "latest"
-        -- preprocessor definitions
-        -- defines "DW_DYNAMIC_LINK"
+    filter "system:linux"
+        links {
+            "GLFW",
+            "Glad",
+            "ImGui",
+            "Xrandr",
+            "Xi",
+            "GLU",
+            "GL",
+            "X11",
+            "dl",
+            "pthread"
+        }
+
+        defines {
+            -- "HZ_PLATFORM_LINUX",
+            -- "DW_DYNAMIC_LINK"
+        }
 
     filter "system:windows"
         systemversion "latest"
-        -- preprocessor definitions
-        -- defines "DW_DYNAMIC_LINK"
+
+        links {}
+
+        defines {
+            -- "HZ_PLATFORM_WINDOWS",
+            -- "DW_DYNAMIC_LINK"
+        }
 
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
@@ -176,15 +232,17 @@ project "Sandbox"
             "DW_DEBUG",
             "ENABLE_VISUAL_TESTING"
         }
+        runtime "Debug"
         symbols "on"
 
     filter "configurations:Release"
         defines {
-            "DW_RELEASE",
-            "ENABLE_VISUAL_TESTING"
+            "DW_RELEASE"
         }
+        runtime "Release"
         optimize "on"
 
     filter "configurations:Dist"
         defines "DW_DIST"
+        runtime "Release"
         optimize "on"

@@ -26,6 +26,13 @@ class DW_API WindowsWindow : public IWindow {
   WindowsWindow(WindowsWindow&&) = default;
   WindowsWindow& operator=(WindowsWindow&&) = default;
 
+  /// \fn void WindowsWindow::OnUpdate() override;
+  ///
+  /// \brief Executes the update action.
+  ///
+  /// \author Georg
+  /// \date 07/10/2019
+
   void OnUpdate() override;
 
   unsigned int GetWidth() const override { return m_Data.Width; }

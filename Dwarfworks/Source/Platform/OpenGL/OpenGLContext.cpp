@@ -9,8 +9,6 @@
 #include <GLFW/glfw3.h>
 // Glad
 #include <glad/glad.h>
-// OpenGL
-#include <GL/GL.h>
 
 namespace Dwarfworks {
 
@@ -24,10 +22,14 @@ void OpenGLContext::Initialize() {
   auto status = gladLoadGLLoader((GLADloadproc)(glfwGetProcAddress));
   DW_CORE_ASSERT(status, "Failed to initialize Glad!");
 
+  auto OpenGLVendor = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
+  auto OpenGLRenderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+  auto OpenGLVersion = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+  
   DW_CORE_INFO("OpenGL Info:");
-  DW_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
-  DW_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
-  DW_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
+  DW_CORE_INFO("  Vendor: {0}", OpenGLVendor);
+  DW_CORE_INFO("  Renderer: {0}", OpenGLRenderer);
+  DW_CORE_INFO("  Version: {0}", OpenGLVersion);
 
 #ifdef DW_ENABLE_ASSERTS
   int versionMajor;

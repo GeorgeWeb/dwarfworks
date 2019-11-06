@@ -2,7 +2,7 @@
 #include "dwpch.h"
 // end PCH
 
-#include "WindowsWindow.h"
+#include "LinuxWindow.h"
 
 // events
 #include "Dwarfworks/Events/ApplicationEvent.h"
@@ -15,25 +15,25 @@ namespace Dwarfworks {
 static bool s_IsGLFWInitialized{false};
 
 IWindow* IWindow::Create(const WindowProps& props) {
-  return new WindowsWindow(props);
+  return new LinuxWindow(props);
 }
 
-WindowsWindow::WindowsWindow(const WindowProps& props) { Initialize(props); }
+LinuxWindow::LinuxWindow(const WindowProps& props) { Initialize(props); }
 
-WindowsWindow::~WindowsWindow() { Shutdown(); };
+LinuxWindow::~LinuxWindow() { Shutdown(); };
 
-void WindowsWindow::OnUpdate() {
+void LinuxWindow::OnUpdate() {
   glfwPollEvents();
   // TODO: In the future, change the API so this is called like:
   // m_Context->GetSwapChain().Flush();
   m_Context->SwapBuffers();
 }
 
-void WindowsWindow::SetEventCallback(const EventCallbackFn& callback) {
+void LinuxWindow::SetEventCallback(const EventCallbackFn& callback) {
   m_Data.EventCallback = callback;
 }
 
-void WindowsWindow::SetVSync(bool isEnabled) {
+void LinuxWindow::SetVSync(bool isEnabled) {
   // set the interval synchronisation time for a frame to be
   // called for rendering depending on v-sync being enabled
   const auto interval = isEnabled ? 1 : 0;  // 1 is default, could be changed
@@ -41,9 +41,9 @@ void WindowsWindow::SetVSync(bool isEnabled) {
   m_Data.VSync = isEnabled;
 }
 
-bool WindowsWindow::IsVSync() const { return m_Data.VSync; }
+bool LinuxWindow::IsVSync() const { return m_Data.VSync; }
 
-void WindowsWindow::Initialize(const WindowProps& props) {
+void LinuxWindow::Initialize(const WindowProps& props) {
   m_Data.Title = props.Title;
   m_Data.Width = props.Width;
   m_Data.Height = props.Height;
@@ -176,7 +176,7 @@ void WindowsWindow::Initialize(const WindowProps& props) {
   });
 }
 
-void WindowsWindow::Shutdown() {
+void LinuxWindow::Shutdown() {
   // delete graphics context
   if (m_Context) {
     delete m_Context;

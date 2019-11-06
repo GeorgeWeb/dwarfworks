@@ -9,7 +9,6 @@ namespace Testing {
 class Test : public Dwarfworks::Layer {
  public:
   Test() : Layer() {}
-  // Test(const std::string& name) : Layer(name) {}
 
   virtual ~Test() = default;
 

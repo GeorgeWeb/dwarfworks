@@ -31,8 +31,11 @@ class DW_API Application {
   Application();
   virtual ~Application();
 
+  // Application is non-copyable and non-movable(for now)
   Application(const Application&) = delete;
   Application& operator=(const Application&) = delete;
+  Application(Application&&) = delete;
+  Application& operator=(Application&&) = delete;
 
   // Gets the Application singleton instance
   inline static Application& Get() {
@@ -58,14 +61,23 @@ class DW_API Application {
     return *instance;
   }
 
-  // The application/game main loop
-  void Run();
+  // The application/game loop
+  virtual void GameLoop();
+  
+  // The application/game loop with built-in
+  // TestMenu Layer for graphics testing purposes
+  void DebugGameLoop();
 
   // Executes the event action
-  void OnEvent(Event& event);
+  virtual void OnEvent(Event& event);
 
   // Query if the application is running
   inline bool IsRunning() const noexcept { return m_IsRunning; }
+  // Set the application running state
+  inline void SetRunning(bool isRunning) { m_IsRunning = isRunning; }
+
+  // ...
+  inline float GetLastFrameTime() const noexcept { return m_LastFrameTime; }
 
   // return the frames per second calculated in the Run loop
 
@@ -77,18 +89,18 @@ class DW_API Application {
   // Gets the window for the user's platform
   inline IWindow& GetWindow() const { return *m_Window; }
 
- private:
+ protected:
   // Executes the window closed action
   // True if it succeeds, false if it fails.
-  bool OnWindowClosed(WindowCloseEvent& event);
+  virtual bool OnWindowClosed(WindowCloseEvent& event);
 
- private:
+ protected:
   Scope<IWindow> m_Window;
   Ref<DebugUILayer> m_DebugUILayer;
-
-  bool m_IsRunning{true};
   LayerStack m_LayerStack;
-
+  
+private:
+  bool m_IsRunning = true;
   // timestep
   float m_LastFrameTime = 0.0f;
 
@@ -98,21 +110,12 @@ class DW_API Application {
   Ref<Testing::TestMenu> m_TestMenu;
 #endif
 
- private:  // singleton-related variable members
+  // singleton-related variable members
   static std::atomic<Application*> s_Instance;
   static std::mutex s_Mutex;
 };
 
-/// \fn Dwarfworks::Application* CreateApplication();
-///
-/// \brief Creates the application.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \returns Null if it fails, else the new application.
-
-Scope<Dwarfworks::Application> CreateApplication();
+Dwarfworks::Application* CreateApplication();
 
 }  // namespace Dwarfworks
 

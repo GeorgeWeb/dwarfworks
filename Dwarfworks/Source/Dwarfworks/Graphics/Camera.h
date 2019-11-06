@@ -8,7 +8,7 @@ namespace Dwarfworks {
 
 // 2D Orthographic Camera
 
-struct ViewProjection {
+struct DW_API ViewProjection {
   glm::mat4 ProjectionMatrix;
   glm::mat4 ViewMatrix;
 
@@ -75,7 +75,9 @@ class DW_API OrthographicCamera {
 };
 
 // 3D Perspective Camera
-// TODO: Implement!
+class DW_API OrbitalCamera {
+ public:
+};
 
 }  // namespace Dwarfworks
 

@@ -79,6 +79,8 @@ class DW_API Application {
   // ...
   inline float GetLastFrameTime() const noexcept { return m_LastFrameTime; }
 
+  // return the frames per second calculated in the Run loop
+
   // Pushes a layer
   void PushLayer(Layer* layer);
   // Pushes an overlay

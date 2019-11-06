@@ -53,6 +53,9 @@
 // ...
 #include "Dwarfworks/Graphics/Camera.h"
 #include "Dwarfworks/Graphics/CameraController.h"
+// ...
+#include "Dwarfworks/Graphics/Material.h"
+#include "Dwarfworks/Graphics/Mesh.h"
 // ---------------------------------------------------------------
 
 // -- Entry point ------------------------------------------------

@@ -8,8 +8,12 @@ namespace Dwarfworks {
 class DW_API OpenGLVertexArray : public VertexArray {
  public:
   OpenGLVertexArray();
-
   virtual ~OpenGLVertexArray() override = default;
+
+  OpenGLVertexArray(const OpenGLVertexArray&) = default;
+  OpenGLVertexArray& operator=(const OpenGLVertexArray&) = default;
+  OpenGLVertexArray(OpenGLVertexArray&&) = default;
+  OpenGLVertexArray& operator=(OpenGLVertexArray&&) = default;
 
   virtual void Bind() const override;
   virtual void Unbind() const override;

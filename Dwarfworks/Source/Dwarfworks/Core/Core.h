@@ -200,7 +200,7 @@ constexpr Scope<T> CreateScope(Params&&... params) {
   return std::make_unique<T>(std::forward<Params>(params)...);
 }
 
-/// \brief A reference counting basde life-time pointer (std::shared_ptr)
+/// \brief A reference counting based life-time pointer (std::shared_ptr)
 template <typename T>
 using Ref = std::shared_ptr<T>;
 template <typename T, typename... Params>

@@ -8,7 +8,12 @@ namespace Dwarfworks {
 class DW_API OpenGLVertexBuffer : public VertexBuffer {
  public:
   OpenGLVertexBuffer(float* vertices, uint32_t size);
-  ~OpenGLVertexBuffer() override;
+  virtual ~OpenGLVertexBuffer() override;
+
+  OpenGLVertexBuffer(const OpenGLVertexBuffer&) = default;
+  OpenGLVertexBuffer& operator=(const OpenGLVertexBuffer&) = default;
+  OpenGLVertexBuffer(OpenGLVertexBuffer&&) = default;
+  OpenGLVertexBuffer& operator=(OpenGLVertexBuffer&&) = default;
 
   virtual void Bind() const override;
   virtual void Unbind() const override;

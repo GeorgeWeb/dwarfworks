@@ -8,13 +8,13 @@
 
 namespace Dwarfworks {
 
-VertexArray* VertexArray::Create() {
+Ref<VertexArray> VertexArray::Create() {
   switch (Renderer::GetAPI()) {
     case RendererAPI::API::None:
       DW_CORE_ASSERT(false, "RendererAPI::None is not supported.");
       return nullptr;
     case RendererAPI::API::OpenGL:
-      return new OpenGLVertexArray();
+      return CreateRef<OpenGLVertexArray>();
   }
 
   DW_CORE_ASSERT(false, "Unknown RendererAPI!");

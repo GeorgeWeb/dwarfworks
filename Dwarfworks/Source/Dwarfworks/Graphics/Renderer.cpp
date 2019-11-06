@@ -14,15 +14,20 @@ void Renderer::EndScene() {}
 
 void Renderer::Submit(const Ref<Shader>& shader,
                       const Ref<VertexArray>& vertexArray,
-                      const glm::mat4& transform /*=identity*/) {
+                      const glm::mat4& transform) {
   // TODO: Submit to a queue, then eval the render command, bind, then draw
   shader->Bind();
   // submit the view-projection matrix
-  shader->UploadUniformMat4("u_ViewProjection",
-                            m_SceneData->ViewProjectionMatrix);
+  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4(
+      "u_ViewProjection", m_SceneData->ViewProjectionMatrix);
   // submit the model matrix
-  shader->UploadUniformMat4("u_Transform", transform);
+  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4(
+      "u_Transform", transform);
 
+  // bind material uniforms
+  // materialInstance->Bind();
+
+  // draw mesh
   vertexArray->Bind();
   RenderCommand::DrawIndexed(vertexArray);
 }

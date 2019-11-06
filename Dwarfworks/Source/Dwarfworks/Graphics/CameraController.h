@@ -1,6 +1,7 @@
 #ifndef GRAPHICS_CAMERA_CONTROLLER_H_
 #define GRAPHICS_CAMERA_CONTROLLER_H_
 
+#include "Dwarfworks/Core/Core.h"
 #include "Dwarfworks/Core/Timestep.h"
 #include "Dwarfworks/Events/ApplicationEvent.h"
 #include "Dwarfworks/Events/MouseEvent.h"
@@ -8,7 +9,7 @@
 
 namespace Dwarfworks {
 
-class OrthographicCameraController {
+class DW_API OrthographicCameraController {
  public:
   OrthographicCameraController(float aspectRatio, bool canRotate = false);
 
@@ -22,6 +23,7 @@ class OrthographicCameraController {
   void OnEvent(Event& event);
 
  private:
+  // bool OnMouseMoved(MouseMovedEvent& mouseEvent);
   bool OnMouseScrolled(MouseScrolledEvent& mouseEvent);
   bool OnWindowResized(WindowResizeEvent& windowEvent);
 
@@ -45,7 +47,14 @@ class OrthographicCameraController {
 };
 
 // 3D Perspective Camera Controller
-// TODO: Implement!
+class DW_API OrbitalCameraController {
+ public:
+  inline OrbitalCamera& GetCamera() { return m_Camera; }
+  inline const OrbitalCamera& GetCamera() const { return m_Camera; }
+
+ private:
+  OrbitalCamera m_Camera;
+};
 
 }  // namespace Dwarfworks
 

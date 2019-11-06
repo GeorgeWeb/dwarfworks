@@ -79,7 +79,7 @@ project "Dwarfworks"
     links {
         "GLFW",
         "Glad",
-        "ImGui",
+        "ImGui"
     }
 
     -- set project target properties
@@ -148,8 +148,7 @@ project "Dwarfworks"
 
     filter "configurations:Release"
         defines {
-            "DW_RELEASE",
-            "ENABLE_VISUAL_TESTING"
+            "DW_RELEASE"
         }
         optimize "on"
 
@@ -193,7 +192,7 @@ project "Sandbox"
 
     -- set project link targets
     links {
-        "Dwarfworks",
+        "Dwarfworks"
     }
 
     -- set project target properties
@@ -209,7 +208,7 @@ project "Sandbox"
             "GL",
             "X11",
             "dl",
-            "pthread",
+            "pthread"
         }
 
         defines {
@@ -238,8 +237,7 @@ project "Sandbox"
 
     filter "configurations:Release"
         defines {
-            "DW_RELEASE",
-            "ENABLE_VISUAL_TESTING"
+            "DW_RELEASE"
         }
         runtime "Release"
         optimize "on"

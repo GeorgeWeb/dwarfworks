@@ -56,31 +56,86 @@ Application::Application() {
 #endif
 }
 
-#ifdef ENABLE_VISUAL_TESTING
-Application::~Application() = default;  // TODO: cleanup
-#else
-Application::~Application() = default;
-#endif
+Application::~Application() {
+  // TODO: Cleanup!   
+}
 
-void Application::Run() {
+void Application::GameLoop() {
   while (IsRunning()) {
-    // frame time calculation
+    // -------------------------------- //
+    // -- Timestep calculation -------- //
+    // -------------------------------- //
+
     float time = static_cast<float>(glfwGetTime());  // TODO:Platform::GetTime()
     Timestep deltaTime = time - m_LastFrameTime;
     m_LastFrameTime = time;
 
-    // update layers
+    // -------------------------------- //
+    // -- Update layers --------------- //
+    // -------------------------------- //
+
     for (auto appLayer : m_LayerStack) {
       appLayer->OnUpdate(deltaTime);
     }
 
-    // render layers
-#ifdef ENABLE_VISUAL_TESTING
-    // jump into the test layer and hide app layers
+    // -------------------------------- //
+    // -- Render layers --------------- //
+    // -------------------------------- //
+
+    for (auto appLayer : m_LayerStack) {
+      appLayer->OnRender();
+    }
+
+    // -------------------------------- //
+    // -- Render DebugUI overlay ------ //
+    // -------------------------------- //
+
+    m_DebugUILayer->Begin();
+
+    for (auto appLayer : m_LayerStack) {
+      appLayer->OnDebugUIRender();
+    }
+
+    m_DebugUILayer->End();
+
+    // -------------------------------- //
+    // -- Poll window events ---------- //
+    // -------------------------------- //
+
+    m_Window->OnUpdate();
+  }
+}
+
+void Application::DebugGameLoop() {
+  #ifdef ENABLE_VISUAL_TESTING
+  while (IsRunning()) {
+    // -------------------------------- //
+    // -- Timestep calculation -------- //
+    // -------------------------------- //
+
+    float time = static_cast<float>(glfwGetTime());  // TODO:Platform::GetTime()
+    Timestep deltaTime = time - m_LastFrameTime;
+    m_LastFrameTime = time;
+
+    // -------------------------------- //
+    // -- Update layers --------------- //
+    // -------------------------------- //
+
+    for (auto appLayer : m_LayerStack) {
+      appLayer->OnUpdate(deltaTime);
+    }
+
+    // -------------------------------- //
+    // -- Render layers --------------- //
+    // -------------------------------- //
+
+    // if the current Test layer is active, render this layer.
     if (m_CurrentTest) {
       m_CurrentTest->OnRender();
     }
-    // back in test menu (where all app layers are visible)
+
+    // if the current Test layer is TestMenu, render all the 
+    // Application layers excluding the current Test layer.
     if (m_CurrentTest == m_TestMenu.get()) {
       for (auto appLayer : m_LayerStack) {
         if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
@@ -88,24 +143,26 @@ void Application::Run() {
         }
       }
     }
-#else
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnRender();
-    }
-#endif
 
-    // render DebugUI layer
+    // -------------------------------- //
+    // -- Render DebugUI overlay ------ //
+    // -------------------------------- //
+
     m_DebugUILayer->Begin();
-#ifdef ENABLE_VISUAL_TESTING
-    // jump into the test layer and hide app layers
+
+    // if the current Test layer is active, render DebugUI for this layer.
     if (m_CurrentTest) {
+      // if the current Test layer is not TestMenu, display a BACK button
+      // and set it to point to TestMenu upon clicking the BACK button.
       if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("<< Back")) {
         delete m_CurrentTest;
         m_CurrentTest = m_TestMenu.get();
       }
       m_CurrentTest->OnDebugUIRender();
     }
-    // back in test menu (where all app layers are visible)
+
+    // if the current Test layer is TestMenu, render DebugUI for 
+    // all Application layers excluding the current Test layer.
     if (m_CurrentTest == m_TestMenu.get()) {
       for (auto appLayer : m_LayerStack) {
         if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
@@ -113,17 +170,17 @@ void Application::Run() {
         }
       }
     }
-#else
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnDebugUIRender();
-    }
-#endif
+
     m_DebugUILayer->End();
 
-    // update window (events polling)
+    // -------------------------------- //
+    // -- Poll window events ---------- //
+    // -------------------------------- //
+
     m_Window->OnUpdate();
   }
-}  // namespace Dwarfworks
+  #endif
+}
 
 void Application::OnEvent(Event& event) {
   // listen for upcoming events and register them
@@ -133,20 +190,12 @@ void Application::OnEvent(Event& event) {
       DW_BIND_EVENT_FN(Application::OnWindowClosed));
 
   // call events in reverse order from most top to most bottom layer
-#ifdef ENABLE_VISUAL_TESTING
-  std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
-    if (layer != m_CurrentTest && layer != m_TestMenu.get()) {
-      layer->OnEvent(event);
-      if (event.IsHandled) return;
-    }
-  });
-#else
   std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
     layer->OnEvent(event);
     if (event.IsHandled) return;
   });
-#endif
 }
+
 
 void Application::PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
 
@@ -156,14 +205,14 @@ bool Application::OnWindowClosed(WindowCloseEvent& event) {
 #ifdef ENABLE_VISUAL_TESTING
   // free Test layers
   if (m_CurrentTest) {
-    // TODO: Describe!
+    // TODO: Provide explanation!
     m_LayerStack.PopLayer(m_CurrentTest);
-    // TODO: Describe!
+    // TODO: Provide explanation!
     if (m_CurrentTest != m_TestMenu.get()) {
       delete m_CurrentTest;
     }
     m_CurrentTest = nullptr;
-    // TODO: Describe!
+    // TODO: Provide explanation!
     m_LayerStack.PopLayer(m_TestMenu.get());
   }
 #endif
@@ -171,7 +220,8 @@ bool Application::OnWindowClosed(WindowCloseEvent& event) {
   m_LayerStack.PopOverlay(m_DebugUILayer.get());
   // stop running
   m_IsRunning = false;
-  return true;
+
+  return true; // block
 }
 
 }  // namespace Dwarfworks

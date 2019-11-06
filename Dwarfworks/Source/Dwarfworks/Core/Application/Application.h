@@ -73,6 +73,11 @@ class DW_API Application {
 
   // Query if the application is running
   inline bool IsRunning() const noexcept { return m_IsRunning; }
+  // Set the application running state
+  inline void SetRunning(bool isRunning) { m_IsRunning = isRunning; }
+
+  // ...
+  inline float GetLastFrameTime() const noexcept { return m_LastFrameTime; }
 
   // Pushes a layer
   void PushLayer(Layer* layer);
@@ -91,7 +96,8 @@ class DW_API Application {
   Scope<IWindow> m_Window;
   Ref<DebugUILayer> m_DebugUILayer;
   LayerStack m_LayerStack;
-  // ...
+  
+private:
   bool m_IsRunning = true;
   // timestep
   float m_LastFrameTime = 0.0f;

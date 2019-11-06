@@ -57,7 +57,25 @@ Application::Application() {
 }
 
 Application::~Application() {
-  // TODO: Cleanup!   
+  // cleanup Test layer resources
+  #ifdef ENABLE_VISUAL_TESTING
+  if (m_CurrentTest) {
+    // TODO: Provide explanation!
+    m_LayerStack.PopLayer(m_CurrentTest);
+    // TODO: Provide explanation!
+    if (m_CurrentTest != m_TestMenu.get()) {
+      delete m_CurrentTest;
+    }
+    m_CurrentTest = nullptr;
+    // TODO: Provide explanation!
+    m_LayerStack.PopLayer(m_TestMenu.get());
+  }
+  #endif
+
+  // cleanup DebugUI overlay resources
+  m_LayerStack.PopOverlay(m_DebugUILayer.get());
+
+  DW_CORE_INFO("Closed the Application!");
 }
 
 void Application::GameLoop() {
@@ -202,25 +220,8 @@ void Application::PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
 void Application::PushOverlay(Layer* layer) { m_LayerStack.PushOverlay(layer); }
 
 bool Application::OnWindowClosed(WindowCloseEvent& event) {
-#ifdef ENABLE_VISUAL_TESTING
-  // free Test layers
-  if (m_CurrentTest) {
-    // TODO: Provide explanation!
-    m_LayerStack.PopLayer(m_CurrentTest);
-    // TODO: Provide explanation!
-    if (m_CurrentTest != m_TestMenu.get()) {
-      delete m_CurrentTest;
-    }
-    m_CurrentTest = nullptr;
-    // TODO: Provide explanation!
-    m_LayerStack.PopLayer(m_TestMenu.get());
-  }
-#endif
-  // free DebugUI Overlay
-  m_LayerStack.PopOverlay(m_DebugUILayer.get());
   // stop running
-  m_IsRunning = false;
-
+  SetRunning(false);
   return true; // block
 }
 

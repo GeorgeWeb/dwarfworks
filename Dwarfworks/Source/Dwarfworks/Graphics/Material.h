@@ -3,6 +3,7 @@
 
 #include "Dwarfworks/Core/Core.h"
 #include "Dwarfworks/Graphics/Shader.h"
+#include "Dwarfworks/Math/Math.h"
 
 namespace Dwarfworks {
 

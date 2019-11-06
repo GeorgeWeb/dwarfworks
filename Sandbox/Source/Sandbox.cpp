@@ -11,7 +11,7 @@ class Playground : public Dwarfworks::Layer {
     // --------------------------------------- //
 
     // vertex array
-    m_VertexArray.reset(Dwarfworks::VertexArray::Create());
+    m_VertexArray = Dwarfworks::VertexArray::Create();
 
     // vertices
     float vertices[3 * 7] = {
@@ -27,11 +27,10 @@ class Playground : public Dwarfworks::Layer {
 
     // vertex buffer
     uint32_t vbSize = sizeof(vertices);
-    Dwarfworks::Ref<Dwarfworks::VertexBuffer> vertexBuffer;
-    vertexBuffer.reset(Dwarfworks::VertexBuffer::Create(vertices, vbSize));
+    auto vertexBuffer = Dwarfworks::VertexBuffer::Create(vertices, vbSize);
 
     // vertex buffer layout
-    Dwarfworks::BufferLayout vbLayout = {
+    auto vbLayout = Dwarfworks::BufferLayout{
         {Dwarfworks::ShaderDataType::Float3, "a_Position"},
         {Dwarfworks::ShaderDataType::Float4, "a_Color"}};
 
@@ -43,13 +42,12 @@ class Playground : public Dwarfworks::Layer {
 
     // index buffer
     const auto ibCount = sizeof(indices) / sizeof(uint32_t);
-    Dwarfworks::Ref<Dwarfworks::IndexBuffer> indexBuffer;
-    indexBuffer.reset(Dwarfworks::IndexBuffer::Create(indices, ibCount));
+    auto indexBuffer = Dwarfworks::IndexBuffer::Create(indices, ibCount);
 
     m_VertexArray->SetIndexBuffer(indexBuffer);
 
     // square vertex array
-    m_SquareVA.reset(Dwarfworks::VertexArray::Create());
+    m_SquareVA = Dwarfworks::VertexArray::Create();
 
     // square vertices
     float squareVertices[3 * 4] = {
@@ -60,12 +58,11 @@ class Playground : public Dwarfworks::Layer {
     };
 
     uint32_t squareVbSize = sizeof(squareVertices);
-    Dwarfworks::Ref<Dwarfworks::VertexBuffer> squareVB;
-    squareVB.reset(
-        Dwarfworks::VertexBuffer::Create(squareVertices, squareVbSize));
+    auto squareVB =
+        Dwarfworks::VertexBuffer::Create(squareVertices, squareVbSize);
 
     // vertex buffer layout
-    Dwarfworks::BufferLayout squareVbLayout = {
+    auto squareVbLayout = Dwarfworks::BufferLayout{
         {Dwarfworks::ShaderDataType::Float3, "a_Position"}};
 
     squareVB->SetLayout(squareVbLayout);
@@ -76,9 +73,8 @@ class Playground : public Dwarfworks::Layer {
 
     // square index buffer
     const auto squareIbCount = sizeof(squareIndices) / sizeof(uint32_t);
-    Dwarfworks::Ref<Dwarfworks::IndexBuffer> squareIB;
-    squareIB.reset(
-        Dwarfworks::IndexBuffer::Create(squareIndices, squareIbCount));
+    auto squareIB =
+        Dwarfworks::IndexBuffer::Create(squareIndices, squareIbCount);
 
     m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -120,7 +116,7 @@ class Playground : public Dwarfworks::Layer {
   )";
 
     // shader program
-    m_Shader.reset(new Dwarfworks::Shader(vertSrc, fragSrc));
+    m_Shader = Dwarfworks::Shader::Create(vertSrc, fragSrc);
 
     // blue square vertex shader
     std::string flatVertSrc = R"(
@@ -151,7 +147,7 @@ class Playground : public Dwarfworks::Layer {
   )";
 
     // blue square shader program
-    m_FlatColorShader.reset(new Dwarfworks::Shader(flatVertSrc, flatFragSrc));
+    m_FlatColorShader = Dwarfworks::Shader::Create(flatVertSrc, flatFragSrc);
   }
 
   virtual void OnUpdate(Dwarfworks::Timestep deltaTime) override {
@@ -187,12 +183,16 @@ class Playground : public Dwarfworks::Layer {
     static glm::vec3 redColor(0.8f, 0.2f, 0.3f);
     static glm::vec3 blueColor(0.2f, 0.3f, 0.8f);
 
-    auto flatColorMaterial = Dwarfworks::Material::Create(m_FlatColorShader);
-    auto blueMaterialInstance =
-        Dwarfworks::MaterialInstance::Create(flatColorMaterial);
-
-    blueMaterialInstance->SetFloat3("u_Color", blueColor);
+    // auto flatColorMaterial = Dwarfworks::Material::Create(m_FlatColorShader);
+    // auto blueMaterialInstance =
+    // Dwarfworks::MaterialInstance::Create(flatColorMaterial);
+    // blueMaterialInstance->SetFloat3("u_Color", blueColor);
     // m_SquareMesh->SetMaterial(flatColorMaterialInstance);
+
+    std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
+        ->Bind();
+    std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
+        ->UploadUniformFloat3("u_Color", m_SquareColor);
 
     constexpr float spanX = 0.175f;
     constexpr float spanY = 0.175f;
@@ -200,22 +200,21 @@ class Playground : public Dwarfworks::Layer {
       for (auto x = 0; x < 20; ++x) {
         glm::vec3 position(x * spanX, y * spanY, 0.0f);
         glm::mat4 translate = glm::translate(glm::mat4(1.0f), position);
-        transform = translate * scale;  // TRS: T * R * S
-                                        // submit the square for rendering
-
-        Dwarfworks::Renderer::Submit(blueMaterialInstance, m_SquareVA,
-                                     transform);
+        // TRS: T * R * S
+        transform = translate * scale;
+        // submit the square for rendering
+        Dwarfworks::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
       }
     }
 
     // triangle
-    auto redMaterialInstance =
-        Dwarfworks::MaterialInstance::Create(flatColorMaterial);
+    // auto redMaterialInstance =
+    // Dwarfworks::MaterialInstance::Create(flatColorMaterial);
     // m_TriangleMesh->SetMaterial(redMaterialInstance);
+    // redMaterialInstance->SetFloat3("u_Color", redColor);
 
-    redMaterialInstance->SetFloat3("u_Color", redColor);
     transform = glm::translate(glm::mat4(1.0f), m_TrianglePosition);
-    Dwarfworks::Renderer::Submit(redMaterialInstance, m_VertexArray, transform);
+    Dwarfworks::Renderer::Submit(m_Shader, m_VertexArray, transform);
 
     // end scene rendering
     Dwarfworks::Renderer::EndScene();
@@ -223,7 +222,9 @@ class Playground : public Dwarfworks::Layer {
 
   virtual void OnDebugUIRender() override {
     ImGui::Begin((GetName() + " editor").c_str());
-    ImGui::Text("Add stuff here ...");
+    ImGui::Text("Settings:");
+    // ...
+    ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
     ImGui::End();
   }
 
@@ -260,6 +261,9 @@ class Playground : public Dwarfworks::Layer {
 
   glm::vec3 m_TrianglePosition = {0.0f, 0.0f, 0.0f};
   const float m_TriangleMoveSpeed = 1.0f;
+
+  // default square color
+  glm::vec3 m_SquareColor = {0.2f, 0.3f, 0.8f};
 };
 
 class Sandbox final : public Dwarfworks::Application {

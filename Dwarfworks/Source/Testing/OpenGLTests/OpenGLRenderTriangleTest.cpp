@@ -3,6 +3,7 @@
 // end PCH
 
 #include "OpenGLRenderTriangleTest.h"
+#include "Platform/OpenGL/OpenGLShader.h"
 
 // glad
 #include <glad/glad.h>
@@ -64,14 +65,14 @@ OpenGLRenderTriangleTest::OpenGLRenderTriangleTest() {
 	}
   )";
 
-  m_Shader = Dwarfworks::CreateScope<Dwarfworks::Shader>(vertSrc, fragSrc);
+  m_Shader.reset(Dwarfworks::Shader::Create(vertSrc, fragSrc));
 }
 
 void OpenGLRenderTriangleTest::OnRender() {
-  m_Shader->Bind();
+  static_cast<Dwarfworks::OpenGLShader*>(&(*m_Shader))->Bind();
   glBindVertexArray(m_VertexArray);
   glDrawElements(GL_TRIANGLES, 3, GL_UNSIGNED_INT, nullptr);
-  m_Shader->Unbind();
+  static_cast<Dwarfworks::OpenGLShader*>(&(*m_Shader))->Unbind();
 }
 
 }  // namespace Testing

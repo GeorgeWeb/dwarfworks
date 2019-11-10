@@ -14,7 +14,7 @@ class Playground : public Dwarfworks::Layer {
     // --------------------------------------- //
 
     // vertex array
-    m_VertexArray.reset(Dwarfworks::VertexArray::Create());
+    m_VertexArray = Dwarfworks::VertexArray::Create();
 
     // vertices
     float vertices[3 * 7] = {
@@ -31,7 +31,7 @@ class Playground : public Dwarfworks::Layer {
     // vertex buffer
     uint32_t vbSize = sizeof(vertices);
     Dwarfworks::Ref<Dwarfworks::VertexBuffer> vertexBuffer;
-    vertexBuffer.reset(Dwarfworks::VertexBuffer::Create(vertices, vbSize));
+    vertexBuffer = Dwarfworks::VertexBuffer::Create(vertices, vbSize);
 
     // vertex buffer layout
     Dwarfworks::BufferLayout vbLayout = {
@@ -47,12 +47,12 @@ class Playground : public Dwarfworks::Layer {
     // index buffer
     const auto ibCount = sizeof(indices) / sizeof(uint32_t);
     Dwarfworks::Ref<Dwarfworks::IndexBuffer> indexBuffer;
-    indexBuffer.reset(Dwarfworks::IndexBuffer::Create(indices, ibCount));
+    indexBuffer = Dwarfworks::IndexBuffer::Create(indices, ibCount);
 
     m_VertexArray->SetIndexBuffer(indexBuffer);
 
     // square vertex array
-    m_SquareVA.reset(Dwarfworks::VertexArray::Create());
+    m_SquareVA = Dwarfworks::VertexArray::Create();
 
     // square vertices
     float squareVertices[3 * 4] = {
@@ -64,8 +64,7 @@ class Playground : public Dwarfworks::Layer {
 
     uint32_t squareVbSize = sizeof(squareVertices);
     Dwarfworks::Ref<Dwarfworks::VertexBuffer> squareVB;
-    squareVB.reset(
-        Dwarfworks::VertexBuffer::Create(squareVertices, squareVbSize));
+    squareVB = Dwarfworks::VertexBuffer::Create(squareVertices, squareVbSize);
 
     // vertex buffer layout
     Dwarfworks::BufferLayout squareVbLayout = {
@@ -80,8 +79,7 @@ class Playground : public Dwarfworks::Layer {
     // square index buffer
     const auto squareIbCount = sizeof(squareIndices) / sizeof(uint32_t);
     Dwarfworks::Ref<Dwarfworks::IndexBuffer> squareIB;
-    squareIB.reset(
-        Dwarfworks::IndexBuffer::Create(squareIndices, squareIbCount));
+    squareIB = Dwarfworks::IndexBuffer::Create(squareIndices, squareIbCount);
 
     m_SquareVA->SetIndexBuffer(squareIB);
 
@@ -112,17 +110,19 @@ class Playground : public Dwarfworks::Layer {
     // fragment shader
     std::string fragSrc = R"(
 	#version 330 core
+
 	layout(location = 0) out vec4 color;
    
 	in vec4 v_Color;
 
-	void main() {
+	void main()
+	{
 	  color = v_Color;
 	}
   )";
 
     // shader program
-    m_Shader.reset(new Dwarfworks::Shader(vertSrc, fragSrc));
+    m_Shader.reset(Dwarfworks::Shader::Create(vertSrc, fragSrc));
 
     // blue square vertex shader
     std::string blueVertSrc = R"(
@@ -133,7 +133,8 @@ class Playground : public Dwarfworks::Layer {
 	uniform mat4 u_ViewProjection;
 	uniform mat4 u_Transform;
 
-	void main() {
+	void main()
+	{
 	  vec4 vertexPosition = vec4(a_Position, 1.0);
 	  gl_Position = u_ViewProjection * u_Transform * vertexPosition;
 	}
@@ -142,15 +143,17 @@ class Playground : public Dwarfworks::Layer {
     // blue square fragment shader
     std::string blueFragSrc = R"(
 	#version 330 core
+
 	layout(location = 0) out vec4 color;
 
-	void main() {
+	void main()
+	{
 	  color = vec4(0.2, 0.3, 0.7, 1.0);
 	}
   )";
 
     // blue square shader program
-    m_BlueShader.reset(new Dwarfworks::Shader(blueVertSrc, blueFragSrc));
+    m_BlueShader.reset(Dwarfworks::Shader::Create(blueVertSrc, blueFragSrc));
   }
 
   virtual void OnUpdate(Dwarfworks::Timestep deltaTime) override {
@@ -191,7 +194,7 @@ class Playground : public Dwarfworks::Layer {
     Dwarfworks::EventManager eventManager(event);
     eventManager.Dispatch<Dwarfworks::KeyPressedEvent>([&](auto& keyEvent) {
       switch (keyEvent.GetKeyCode()) {
-        // exit layer
+          // exit layer
         case Dwarfworks::KeyCodes::ESCAPE: {
           DW_INFO("Pressed 'ESC'");
           break;
@@ -206,12 +209,12 @@ class Playground : public Dwarfworks::Layer {
 
  private:
   Dwarfworks::Ref<Dwarfworks::Shader> m_Shader;
-  Dwarfworks::Ref<Dwarfworks::VertexArray> m_VertexArray;
-
   Dwarfworks::Ref<Dwarfworks::Shader> m_BlueShader;
+
+  Dwarfworks::Ref<Dwarfworks::VertexArray> m_VertexArray;
   Dwarfworks::Ref<Dwarfworks::VertexArray> m_SquareVA;
 
   Dwarfworks::OrthographicCameraController m_CameraController;
 };
 
-#endif // PLAYGROUND_LAYER_H_
+#endif  // PLAYGROUND_LAYER_H_

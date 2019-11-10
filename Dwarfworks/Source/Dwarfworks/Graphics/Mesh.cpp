@@ -4,4 +4,7 @@
 
 #include "Mesh.h"
 
-namespace Dwarfworks {}
+namespace Dwarfworks {
+#if 0
+#endif
+}  // namespace Dwarfworks

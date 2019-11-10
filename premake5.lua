@@ -49,10 +49,12 @@ project "Dwarfworks"
 
     -- set project source files
     files {
+        SourceDir .. "/*.h",
+        SourceDir .. "/*.cpp",
         SourceDir .. "/Dwarfworks/**.h",
         SourceDir .. "/Dwarfworks/**.cpp",
         SourceDir .. "/Platform/OpenGL/**.h",
-        SourceDir .. "/Platform/OpenGL/**.cpp",
+        SourceDir .. "/Platform/OpenGL/**.cpp"
     }
 
     -- silence external "noise"
@@ -96,16 +98,16 @@ project "Dwarfworks"
         -- 
         links { 
             "Xrandr",
-			"Xi",
-			"GLU",
-			"GL",
-			"X11"
+            "Xi",
+            "GLU",
+            "GL",
+            "X11"
         }
         
         -- preprocessor definitions
         defines {
             -- "DW_PALTFORM_LINUX",
-            "HZ_BUILD_DLL",
+            -- "DW_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
         }
 
@@ -126,7 +128,7 @@ project "Dwarfworks"
         -- preprocessor definitions
         defines {
             -- "DW_PLATFORM_WINDOWS",
-            "HZ_BUILD_DLL",
+            -- "DW_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
         }
         -- copying DLLs and resoruces
@@ -140,16 +142,20 @@ project "Dwarfworks"
 
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
+        files {
+            SourceDir .. "/Testing/**.h",
+            SourceDir .. "/Testing/**.cpp"
+        }
+
         defines {
             "DW_DEBUG",
             "ENABLE_VISUAL_TESTING"
         }
+        
         symbols "on"
 
     filter "configurations:Release"
-        defines {
-            "DW_RELEASE"
-        }
+        defines "DW_RELEASE"
         optimize "on"
 
     filter "configurations:Dist"
@@ -236,9 +242,7 @@ project "Sandbox"
         symbols "on"
 
     filter "configurations:Release"
-        defines {
-            "DW_RELEASE"
-        }
+        defines "DW_RELEASE"
         runtime "Release"
         optimize "on"
 

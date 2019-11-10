@@ -17,10 +17,10 @@ class DW_API Shader {
 
   // virtual void UploadUniformBuffer() = 0;
 
-  static Ref<Shader> Create(const std::string& vertexSource,
-                            const std::string& fragmentSource);
+  static Shader* Create(const std::string& vertexSource,
+                        const std::string& fragmentSource);
 
- protected:
+  // protected:
   // virtual std::string ReadFile(const std::string& filepath) const {}
 };
 

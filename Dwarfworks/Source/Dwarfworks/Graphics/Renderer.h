@@ -5,8 +5,6 @@
 #include "Dwarfworks/Graphics/Material.h"
 #include "Dwarfworks/Graphics/RenderCommand.h"
 #include "Dwarfworks/Graphics/Shader.h"
-// TEMPORARY
-#include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Dwarfworks {
 

@@ -1,12 +1,12 @@
 #ifndef GRAPHICS_MATERIAL_H_
 #define GRAPHICS_MATERIAL_H_
 
-#include "Dwarfworks/Core/Core.h"
-#include "Dwarfworks/Graphics/Shader.h"
-#include "Dwarfworks/Math/Math.h"
+// #include "Dwarfworks/Core/Core.h"
+// #include "Dwarfworks/Graphics/Shader.h"
+// #include "Dwarfworks/Math/Math.h"
 
 namespace Dwarfworks {
-
+#if 0
 class DW_API Material {
  public:
   explicit Material(const Ref<Shader>& shader);
@@ -44,6 +44,7 @@ class DW_API MaterialInstance {
  private:
   Ref<Material> m_Material;
 };
+#endif
 
 }  // namespace Dwarfworks
 

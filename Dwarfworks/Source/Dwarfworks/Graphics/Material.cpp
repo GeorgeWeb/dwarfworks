@@ -5,12 +5,13 @@
 #include "Material.h"
 
 namespace Dwarfworks {
-
+#if 0
 // Material
 
 // temporary
 Ref<Material> Material::Create(const Ref<Shader>& shader) {
-  return CreateRef<Material>(shader);
+  // return CreateRef<Material>(shader);
+  return nullptr;
 }
 
 void Material::Bind() const { m_Shader->Bind(); }
@@ -70,5 +71,5 @@ void MaterialInstance::SetMat4(std::string_view name,
                                const glm::mat4& mat) const {
   // m_Material->GetShader()->UploadUniformMat4(name, mat);
 }
-
+#endif
 }  // namespace Dwarfworks

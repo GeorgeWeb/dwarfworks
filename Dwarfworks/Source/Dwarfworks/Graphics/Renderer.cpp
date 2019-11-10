@@ -4,6 +4,9 @@
 
 #include "Renderer.h"
 
+// TEMPORARY
+#include "Platform/OpenGL/OpenGLShader.h"
+
 namespace Dwarfworks {
 
 void Renderer::BeginScene(OrthographicCamera& camera) {
@@ -14,7 +17,7 @@ void Renderer::EndScene() {}
 
 void Renderer::Submit(const Ref<Shader>& shader,
                       const Ref<VertexArray>& vertexArray,
-                      const glm::mat4& transform) {
+                      const glm::mat4& transform /*=identity*/) {
   // TODO: Submit to a queue, then eval the render command, bind, then draw
   shader->Bind();
   // submit the view-projection matrix

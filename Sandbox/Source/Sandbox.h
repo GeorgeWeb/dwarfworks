@@ -3,7 +3,7 @@
 
 #include "Playground.h"
 
-class Sandbox final : public Dwarfworks::Application {
+class Sandbox : public Dwarfworks::Application {
  public:
   Sandbox();
   virtual ~Sandbox() override;
@@ -12,4 +12,4 @@ class Sandbox final : public Dwarfworks::Application {
   Dwarfworks::Layer* m_Playground;
 };
 
-#endif // SANDBOX_H_
+#endif  // SANDBOX_H_

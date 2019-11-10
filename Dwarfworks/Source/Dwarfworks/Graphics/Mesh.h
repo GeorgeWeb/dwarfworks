@@ -1,12 +1,12 @@
 #ifndef GRAPHICS_MESH_H_
 #define GRAPHICS_MESH_H_
 
-#include "Dwarfworks/Core/Core.h"
-#include "Dwarfworks/Graphics/Material.h"
-#include "Dwarfworks/Graphics/VertexArray.h"
+// #include "Dwarfworks/Core/Core.h"
+// #include "Dwarfworks/Graphics/Material.h"
+// #include "Dwarfworks/Graphics/VertexArray.h"
 
 namespace Dwarfworks {
-
+#if 0
 class DW_API Mesh {
  public:
   Mesh() = default;
@@ -31,7 +31,7 @@ class DW_API Mesh {
   Ref<VertexArray> m_VertexArray;
   Ref<MaterialInstance> m_MaterialInstance;
 };
-
+#endif
 }  // namespace Dwarfworks
 
 #endif  // GRAPHICS_MESH_H_

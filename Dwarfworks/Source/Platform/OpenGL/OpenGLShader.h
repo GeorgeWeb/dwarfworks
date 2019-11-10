@@ -12,10 +12,10 @@ class DW_API OpenGLShader : public Shader {
                const std::string& fragmentSource);
   virtual ~OpenGLShader() override;
 
-  OpenGLShader(const OpenGLShader&) = default;
-  OpenGLShader& operator=(const OpenGLShader&) = default;
-  OpenGLShader(OpenGLShader&&) = default;
-  OpenGLShader& operator=(OpenGLShader&&) = default;
+  // OpenGLShader(const OpenGLShader&) = default;
+  // OpenGLShader& operator=(const OpenGLShader&) = default;
+  // OpenGLShader(OpenGLShader&&) = default;
+  // OpenGLShader& operator=(OpenGLShader&&) = default;
 
   virtual void Bind() const override;
   virtual void Unbind() const override;

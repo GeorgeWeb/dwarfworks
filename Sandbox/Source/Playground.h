@@ -5,6 +5,9 @@
 
 #include "imgui/imgui.h"
 
+// Temporary
+#include "Platform/OpenGL/OpenGLShader.h"
+
 class Playground : public Dwarfworks::Layer {
  public:
   Playground()
@@ -125,7 +128,7 @@ class Playground : public Dwarfworks::Layer {
     m_Shader.reset(Dwarfworks::Shader::Create(vertSrc, fragSrc));
 
     // blue square vertex shader
-    std::string blueVertSrc = R"(
+    std::string flatColorVertSrc = R"(
 	#version 330 core
 
 	layout (location = 0) in vec3 a_Position;
@@ -141,19 +144,22 @@ class Playground : public Dwarfworks::Layer {
   )";
 
     // blue square fragment shader
-    std::string blueFragSrc = R"(
+    std::string flatColorFragSrc = R"(
 	#version 330 core
 
 	layout(location = 0) out vec4 color;
 
+	uniform vec3 u_Color;
+
 	void main()
 	{
-	  color = vec4(0.2, 0.3, 0.7, 1.0);
+	  color = vec4(u_Color, 1.0);
 	}
   )";
 
     // blue square shader program
-    m_BlueShader.reset(Dwarfworks::Shader::Create(blueVertSrc, blueFragSrc));
+    m_FlatColorShader.reset(
+        Dwarfworks::Shader::Create(flatColorVertSrc, flatColorFragSrc));
   }
 
   virtual void OnUpdate(Dwarfworks::Timestep deltaTime) override {
@@ -175,7 +181,23 @@ class Playground : public Dwarfworks::Layer {
     // render scene
     Dwarfworks::Renderer::BeginScene(m_CameraController.GetCamera());
 
-    Dwarfworks::Renderer::Submit(m_BlueShader, m_SquareVA);
+    static glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+
+    std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
+        ->Bind();
+    std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
+        ->UploadUniformFloat3("u_Color", m_SquareColor);
+
+    // (Square) Grid
+    for (int y = 0; y < 20; y++) {
+      for (int x = 0; x < 20; x++) {
+        glm::vec3 pos(x * .175f, y * .175f, 0.0f);
+        glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+        Dwarfworks::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
+      }
+    }
+
+    // Triangle
     Dwarfworks::Renderer::Submit(m_Shader, m_VertexArray);
 
     Dwarfworks::Renderer::EndScene();
@@ -184,6 +206,7 @@ class Playground : public Dwarfworks::Layer {
   virtual void OnDebugUIRender() override {
     ImGui::Begin((GetName() + " editor").c_str());
     ImGui::Text("Add stuff here ...");
+    ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
     ImGui::End();
   }
 
@@ -209,12 +232,14 @@ class Playground : public Dwarfworks::Layer {
 
  private:
   Dwarfworks::Ref<Dwarfworks::Shader> m_Shader;
-  Dwarfworks::Ref<Dwarfworks::Shader> m_BlueShader;
+  Dwarfworks::Ref<Dwarfworks::Shader> m_FlatColorShader;
 
   Dwarfworks::Ref<Dwarfworks::VertexArray> m_VertexArray;
   Dwarfworks::Ref<Dwarfworks::VertexArray> m_SquareVA;
 
   Dwarfworks::OrthographicCameraController m_CameraController;
+
+  glm::vec3 m_SquareColor = {0.2f, 0.3f, 0.7f};
 };
 
 #endif  // PLAYGROUND_LAYER_H_

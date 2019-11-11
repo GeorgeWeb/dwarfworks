@@ -3,6 +3,10 @@
 
 #include <memory>
 #include <utility>
+#include <unordered_set>
+#include <unordered_map>
+#include <set>
+#include <map>
 
 // cross-platform break into the debugger, programmatically
 #include "debugbreak.h"
@@ -51,8 +55,10 @@
 #ifdef DW_PLATFORM_WINDOWS
 #if DW_DYNAMIC_LINK
 #ifdef DW_BUILD_DLL
+#pragma message("Exporting...")
 #define DW_API __declspec(dllexport)
 #else
+#pragma message("Importing...")
 #define DW_API __declspec(dllimport)
 #endif
 #else
@@ -72,22 +78,13 @@
 #error Unsupported platform!
 #endif  // End of DLL support
 
+// Debug function macros
+
 #ifdef DW_DEBUG
 #define DW_ENABLE_ASSERTS
 #endif
 
 #ifdef DW_ENABLE_ASSERTS
-
-/// \def DW_ASSERT(x, ...)
-///
-/// \brief A macro that defines assert.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param x   A void to process.
-/// \param ... Variable arguments providing additional information.
-
 #define DW_ASSERT(x, ...)                             \
   {                                                   \
     if (!(x)) {                                       \
@@ -95,16 +92,6 @@
       debug_break();                                  \
     }                                                 \
   }
-
-/// \def DW_CORE_ASSERT(x, ...)
-///
-/// \brief A macro that defines core assert.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param x   A void to process.
-/// \param ... Variable arguments providing additional information.
 
 #define DW_CORE_ASSERT(x, ...)                             \
   {                                                        \
@@ -118,107 +105,59 @@
 #define DW_CORE_ASSERT(x, ...)
 #endif
 
-/// \def BIT(x)
-///
-/// \brief A macro that defines bit.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param x A void to process.
+// Helper function macros
 
 #define BIT(x) (1 << x)
 
-/// \def DW_BIND_EVENT_FN(fn)
-///
-/// \brief A macro that defines bind event Function.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param fn The function.
-
 #define DW_BIND_EVENT_FN(fn) std::bind(&fn, this, std::placeholders::_1)
+
+
+// Helper generic/meta functions and interfaces
 
 namespace Dwarfworks {
 
-/// \struct CRTP
-///
-/// \brief Curiously Recurring Template Pattern helper api. Helps getting
-/// rid of `static_cast` in our CRTP interfaces
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \typeparam ImplType Type of the implementation type.
 
+// Curiously Recurring Template Pattern helper api. Helps getting
+// rid of `static_cast` in our CRTP interfaces
 template <typename ImplType>
 struct DW_API CRTP {
-  /// \fn inline ImplType& Implementation()
-  ///
-  /// \brief Gets the implementation.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns A reference to an ImplType.
-
   inline ImplType& Implementation() { return static_cast<ImplType&>(*this); }
-
-  /// \fn inline ImplType const& Implementation() const
-  ///
-  /// \brief Gets the implementation. Deals with the case where the
-  /// implementation object is const.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns A reference to a const ImplType.
 
   inline ImplType const& Implementation() const {
     return static_cast<ImplType const&>(*this);
   }
 };
 
-/// \brief A scoped life-time pointer (std::unique_ptr)
 template <typename T>
 using Scope = std::unique_ptr<T>;
-
-/// \fn template <typename T, typename... Params> constexpr Scope<T>
-/// CreateScope(Params&&... params)
-///
-/// \brief Creates a scope
-///
-/// \tparam T	   Generic type parameter.
-/// \tparam Params Type of the parameters.
-/// \param params A variable-length parameters list containing parameters.
-///
-/// \returns The new scope.
 
 template <typename T, typename... Params>
 constexpr Scope<T> CreateScope(Params&&... params) {
   return std::make_unique<T>(std::forward<Params>(params)...);
 }
 
-/// \brief A reference counting based life-time pointer (std::shared_ptr)
 template <typename T>
 using Ref = std::shared_ptr<T>;
 template <typename T, typename... Params>
 
-/// \fn constexpr Ref<T> CreateRef(Params&&... params)
-///
-/// \brief Creates a reference
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param params A variable-length parameters list containing parameters.
-///
-/// \returns The new reference.
-
 constexpr Ref<T> CreateRef(Params&&... params) {
   return std::make_shared<T>(std::forward<Params>(params)...);
 }
+
+
+// Clearer names for containers
+
+template<typename T> 
+using HashSet = std::unordered_set<T>;
+
+template<typename K, typename V> 
+using HashMap = std::unordered_map<K, V>;
+
+template<typename T> 
+using TreeSet = std::set<T>;
+
+template<typename K, typename V> 
+using TreeMap = std::map<K, V>;
 
 }  // namespace Dwarfworks
 

@@ -125,7 +125,7 @@ class Playground : public Dwarfworks::Layer {
   )";
 
     // shader program
-    m_Shader.reset(Dwarfworks::Shader::Create(vertSrc, fragSrc));
+    m_Shader = Dwarfworks::Shader::Create(vertSrc, fragSrc);
 
     // blue square vertex shader
     std::string flatColorVertSrc = R"(
@@ -158,8 +158,7 @@ class Playground : public Dwarfworks::Layer {
   )";
 
     // blue square shader program
-    m_FlatColorShader.reset(
-        Dwarfworks::Shader::Create(flatColorVertSrc, flatColorFragSrc));
+    m_FlatColorShader = Dwarfworks::Shader::Create(flatColorVertSrc, flatColorFragSrc);
   }
 
   virtual void OnUpdate(Dwarfworks::Timestep deltaTime) override {

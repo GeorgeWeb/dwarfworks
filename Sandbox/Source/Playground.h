@@ -16,11 +16,13 @@ class Playground : public Dwarfworks::Layer {
     // Buffers (Vertex, Index) and VertexArray //
     // --------------------------------------- //
 
+	// BEGIN TRIANGLE
+
     // vertex array
-    m_VertexArray = Dwarfworks::VertexArray::Create();
+    m_TriangleVA = Dwarfworks::VertexArray::Create();
 
     // vertices
-    float vertices[3 * 7] = {
+    float triangleVertices[3 * 7] = {
         -0.5f, -0.5f, 0.0f,      // vertex: bottom left
         0.8f, 0.2f, 0.8f, 1.0f,  // color: bottom left
                                  // ---
@@ -32,27 +34,38 @@ class Playground : public Dwarfworks::Layer {
     };
 
     // vertex buffer
-    uint32_t vbSize = sizeof(vertices);
-    Dwarfworks::Ref<Dwarfworks::VertexBuffer> vertexBuffer;
-    vertexBuffer = Dwarfworks::VertexBuffer::Create(vertices, vbSize);
+    uint32_t tiangleVbSize = sizeof(triangleVertices);
+    Dwarfworks::Ref<Dwarfworks::VertexBuffer> triangleVB;
+	triangleVB = Dwarfworks::VertexBuffer::Create(triangleVertices, tiangleVbSize);
 
     // vertex buffer layout
+#define USE_INIT_LIST_LAYOUT 0
+#if USE_INIT_LIST_LAYOUT
     Dwarfworks::BufferLayout vbLayout = {
         {Dwarfworks::ShaderDataType::Float3, "a_Position"},
         {Dwarfworks::ShaderDataType::Float4, "a_Color"}};
+#else
+	Dwarfworks::BufferLayout vbLayout;
+	vbLayout.Append<Dwarfworks::ShaderDataType::Float3>("a_Position");
+	vbLayout.Append<Dwarfworks::ShaderDataType::Float4>("a_Color");
+#endif
 
-    vertexBuffer->SetLayout(vbLayout);
-    m_VertexArray->AddVertexBuffer(vertexBuffer);
+	triangleVB->SetLayout(vbLayout);
+    m_TriangleVA->AddVertexBuffer(triangleVB);
 
     // indices
-    uint32_t indices[3] = {0, 1, 2};
+    uint32_t triangleIndices[3] = {0, 1, 2};
 
     // index buffer
-    const auto ibCount = sizeof(indices) / sizeof(uint32_t);
-    Dwarfworks::Ref<Dwarfworks::IndexBuffer> indexBuffer;
-    indexBuffer = Dwarfworks::IndexBuffer::Create(indices, ibCount);
+    const auto ibCount = sizeof(triangleIndices) / sizeof(uint32_t);
+    Dwarfworks::Ref<Dwarfworks::IndexBuffer> triangleIB;
+	triangleIB = Dwarfworks::IndexBuffer::Create(triangleIndices, ibCount);
 
-    m_VertexArray->SetIndexBuffer(indexBuffer);
+    m_TriangleVA->SetIndexBuffer(triangleIB);
+
+	// END OF TRIANGLE
+
+	// BEGIN SQUARE
 
     // square vertex array
     m_SquareVA = Dwarfworks::VertexArray::Create();
@@ -85,6 +98,69 @@ class Playground : public Dwarfworks::Layer {
     squareIB = Dwarfworks::IndexBuffer::Create(squareIndices, squareIbCount);
 
     m_SquareVA->SetIndexBuffer(squareIB);
+
+	// END OF SQUARE
+
+	// BEGIN CUBE
+
+	// square vertex array
+	m_CubeVA = Dwarfworks::VertexArray::Create();
+
+	// square vertices
+	float cubeVertices[3 * 8] = {
+		// front
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		// back
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f
+	};
+
+	uint32_t cubeVbSize = sizeof(cubeVertices);
+	Dwarfworks::Ref<Dwarfworks::VertexBuffer> cubeVB;
+	cubeVB = Dwarfworks::VertexBuffer::Create(cubeVertices, cubeVbSize);
+
+	// vertex buffer layout
+	Dwarfworks::BufferLayout cubeVbLayout = {
+		{Dwarfworks::ShaderDataType::Float3, "a_Position"}};
+
+	cubeVB->SetLayout(cubeVbLayout);
+	m_CubeVA->AddVertexBuffer(cubeVB);
+
+	// square indices
+	uint32_t cubeIndices[3 * 12] = { 
+		// front
+		0, 1, 2,
+		2, 3, 0,
+		// right
+		1, 5, 6,
+		6, 2, 1,
+		// back
+		7, 6, 5,
+		5, 4, 7,
+		// left
+		4, 0, 3,
+		3, 7, 4,
+		// bottom
+		4, 5, 1,
+		1, 0, 4,
+		// top
+		3, 2, 6,
+		6, 7, 3
+	};
+
+	// square index buffer
+	const auto cubeIbCount = sizeof(cubeIndices) / sizeof(uint32_t);
+	Dwarfworks::Ref<Dwarfworks::IndexBuffer> cubeIB;
+	cubeIB = Dwarfworks::IndexBuffer::Create(cubeIndices, cubeIbCount);
+
+	m_CubeVA->SetIndexBuffer(cubeIB);
+
+	// END OF CUBE
 
     // --------------------------- //
     // Shaders and Shader Programs //
@@ -187,7 +263,7 @@ class Playground : public Dwarfworks::Layer {
     std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
         ->UploadUniformFloat3("u_Color", m_SquareColor);
 
-    // (Square) Grid
+    // Square Grid
     for (int y = 0; y < 20; y++) {
       for (int x = 0; x < 20; x++) {
         glm::vec3 pos(x * .175f, y * .175f, 0.0f);
@@ -196,8 +272,17 @@ class Playground : public Dwarfworks::Layer {
       }
     }
 
+	// Cube
+	std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
+		->Bind();
+	std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
+		->UploadUniformFloat3("u_Color", m_CubeColor);
+	Dwarfworks::Renderer::Submit(m_FlatColorShader, m_CubeVA);
+
     // Triangle
-    Dwarfworks::Renderer::Submit(m_Shader, m_VertexArray);
+	std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_Shader)
+		->Bind();
+    Dwarfworks::Renderer::Submit(m_Shader, m_TriangleVA);
 
     Dwarfworks::Renderer::EndScene();
   }
@@ -233,12 +318,14 @@ class Playground : public Dwarfworks::Layer {
   Dwarfworks::Ref<Dwarfworks::Shader> m_Shader;
   Dwarfworks::Ref<Dwarfworks::Shader> m_FlatColorShader;
 
-  Dwarfworks::Ref<Dwarfworks::VertexArray> m_VertexArray;
+  Dwarfworks::Ref<Dwarfworks::VertexArray> m_TriangleVA;
   Dwarfworks::Ref<Dwarfworks::VertexArray> m_SquareVA;
+  Dwarfworks::Ref<Dwarfworks::VertexArray> m_CubeVA;
 
   Dwarfworks::OrthographicCameraController m_CameraController;
 
   glm::vec3 m_SquareColor = {0.2f, 0.3f, 0.7f};
+  glm::vec3 m_CubeColor = { 0.3f, 0.6f, 0.3f };
 };
 
 #endif  // PLAYGROUND_LAYER_H_

@@ -17,8 +17,12 @@ void OpenGLRendererAPI::Clear() {
 }
 
 void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray) {
-  glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(),
-                 GL_UNSIGNED_INT, nullptr);
+  uint32_t elementCount = vertexArray->GetIndexBuffer()->GetCount();
+  if (static bool print = true; print) {
+	  DW_CORE_INFO("Drawing elements with {0} indices.", elementCount);
+	  print = false;
+  }
+  glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, nullptr);
 }
 
 }  // namespace Dwarfworks

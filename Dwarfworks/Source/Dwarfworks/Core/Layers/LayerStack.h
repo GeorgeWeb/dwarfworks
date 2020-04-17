@@ -127,50 +127,13 @@ class DW_API LayerStack {
 
   void PopOverlay(Layer* overlay);
 
-  /// \fn std::vector<Layer*>::iterator LayerStack::begin()
-  ///
-  /// \brief Gets the begin
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns Null if it fails, else a std::vector&lt;Layer*&gt;::iterator.
-
   std::vector<Layer*>::iterator begin() { return m_Layers.begin(); }
-
-  /// \fn std::vector<Layer*>::reverse_iterator LayerStack::rbegin()
-  ///
-  /// \brief Gets the rbegin
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns Null if it fails, else a
-  /// std::vector&lt;Layer*&gt;::reverse_iterator.
-
-  std::vector<Layer*>::reverse_iterator rbegin() { return m_Layers.rbegin(); }
-
-  /// \fn std::vector<Layer*>::iterator LayerStack::end()
-  ///
-  /// \brief Gets the end
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns Null if it fails, else a std::vector&lt;Layer*&gt;::iterator.
-
   std::vector<Layer*>::iterator end() { return m_Layers.end(); }
 
-  /// \fn std::vector<Layer*>::reverse_iterator LayerStack::rend()
-  ///
-  /// \brief Gets the rend
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns Null if it fails, else a
-  /// std::vector&lt;Layer*&gt;::reverse_iterator.
+  std::vector<Layer*>::const_iterator begin() const { return m_Layers.cbegin(); }
+  std::vector<Layer*>::const_iterator end() const { return m_Layers.cend(); }
 
+  std::vector<Layer*>::reverse_iterator rbegin() { return m_Layers.rbegin(); }
   std::vector<Layer*>::reverse_iterator rend() { return m_Layers.rend(); }
 
  private:

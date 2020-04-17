@@ -52,10 +52,17 @@ static uint32_t ShaderDataTypeSize(ShaderDataType type) {
 }
 
 struct DW_API BufferElement {
+  // TODO: Add index to serve as an ID for a proxy viewer
+
+  // must be defined on creation
   ShaderDataType Type;
   std::string Name;
+
+  // updated by the Layout logic
   uint32_t Size;
   uint32_t Offset;
+
+  // optional
   bool Normalized;
 
   BufferElement() = default;
@@ -66,8 +73,17 @@ struct DW_API BufferElement {
         Size{ShaderDataTypeSize(type)},
         Offset{0},
         Normalized{normalized} {}
+  // Allow explicit definition of all the data on construction
+  BufferElement(ShaderDataType type, const std::string& name,
+				uint32_t size, uint32_t offset, 
+				bool normalized = false)
+	  : Type{type},
+		Name{name},
+		Size{size},
+		Offset{offset},
+		Normalized{normalized} {}
 
-  uint32_t GetComponentCount() const {
+  uint32_t GetComponentCount() const noexcept {
     switch (Type) {
       case ShaderDataType::Float:
         return 1;
@@ -96,47 +112,102 @@ struct DW_API BufferElement {
     DW_CORE_ASSERT(false, "Unkown ShaderDataType!");
     return 0;
   }
-};  // namespace Dwarfworks
+
+  static size_t GetElementParamCount() noexcept {
+	  size_t count = 0;
+	  count += sizeof(Type) / sizeof(decltype(Type));
+	  count += sizeof(Name) / sizeof(decltype(Name));
+	  count += sizeof(Size) / sizeof(decltype(Size));
+	  count += sizeof(Offset) / sizeof(decltype(Offset));
+	  count += sizeof(Normalized) / sizeof(decltype(Normalized));
+	  return count;
+  }
+};
 
 class DW_API BufferLayout {
  public:
   BufferLayout() = default;
 
+  explicit BufferLayout(const std::vector<BufferElement>& elements)
+	  : m_Elements(elements) {
+	  Initialize();
+  }
+
   // implicit, because I want to be able to do this:
   // BufferLayout layout = { {type, name}, ... };
   BufferLayout(const std::initializer_list<BufferElement>& elements)
       : m_Elements(elements) {
-    CalculateOffsetsAndStride();
+	  Initialize();
   }
 
-  inline uint32_t GetStride() const { return m_Stride; }
-  inline const std::vector<BufferElement>& GetElements() const {
-    return m_Elements;
+  void Append(const BufferElement& element) {
+	  // add the element at the back of the layout
+	  m_Elements.push_back(element);
+	  // update the offset stride with the element's size
+	  auto& appendedElement = m_Elements.back();
+	  SetElementOffset(appendedElement);
+	  UpdateStride(appendedElement.Size);
+  }
+
+  template <ShaderDataType Type, class ... Params>
+  void Append(Params&& ... params) noexcept {
+	  // check if the number of Params does not exceed the max params that can be passed,
+	  // excluding Type because it is a template param outside of the ...Params pack
+	  DW_CORE_ASSERT(sizeof...(params) <= BufferElement::GetElementParamCount() - 1,
+					"Passed too many parameters.");
+	  // add the element at the back of the layout
+	  m_Elements.emplace_back(Type, std::forward<Params>(params)...);
+	  // update the offset stride with the element's size
+	  auto& appendedElement = m_Elements.back();
+	  SetElementOffset(appendedElement);
+	  UpdateStride(appendedElement.Size);
+  }
+
+  const std::vector<BufferElement>& GetElements() const {
+	  return m_Elements;
+  }
+
+  size_t GetElementCount() const noexcept {
+	  return m_Elements.size();
+  }
+
+  uint32_t GetStride() const { return m_Stride; }
+  void UpdateStride(uint32_t size) {
+	  m_Stride += size;
+  }
+  
+  void SetElementOffset(BufferElement& element) {
+	  element.Offset = m_Stride;
   }
 
   std::vector<BufferElement>::iterator begin() { return m_Elements.begin(); }
   std::vector<BufferElement>::iterator end() { return m_Elements.end(); }
 
   std::vector<BufferElement>::const_iterator begin() const {
-    return m_Elements.begin();
+    return m_Elements.cbegin();
   }
   std::vector<BufferElement>::const_iterator end() const {
-    return m_Elements.end();
+    return m_Elements.cend();
   }
 
  private:
-  void CalculateOffsetsAndStride() {
-    m_Stride = 0;
-    for (auto& element : m_Elements) {
-      element.Offset = m_Stride;
-      m_Stride += element.Size;
-    }
+  inline void Initialize() {
+	// calculates offsets and strides
+	if (m_Stride > 0) m_Stride = 0;
+	for (auto& element : m_Elements) {
+		element.Offset = m_Stride;
+	    m_Stride += element.Size;
+	 }
   }
 
  private:
   std::vector<BufferElement> m_Elements;
   uint32_t m_Stride = 0;
 };
+
+// To server as a proxy view to the vertex data
+// TODO: Implement
+class Vertex {};
 
 class DW_API VertexBuffer {
  public:

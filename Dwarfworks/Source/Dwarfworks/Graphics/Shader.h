@@ -17,11 +17,17 @@ class DW_API Shader {
 
   // virtual void UploadUniformBuffer() = 0;
 
-  static Ref<Shader> Create(const std::string& vertexSource,
-                            const std::string& fragmentSource);
+  // From source
+  static Ref<Shader> Create(std::string_view vertexSource, std::string_view fragmentSource);
+  static Ref<Shader> Create(std::string_view source);
 
-  // protected:
-  // virtual std::string ReadFile(const std::string& filepath) const {}
+  // From File
+  // TODO
+
+ private:
+  inline const char* const ReadFile(std::string_view filePath) const {
+	return {0};
+  }
 };
 
 }  // namespace Dwarfworks

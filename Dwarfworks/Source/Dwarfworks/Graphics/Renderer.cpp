@@ -18,17 +18,20 @@ void Renderer::EndScene() {}
 void Renderer::Submit(const Ref<Shader>& shader,
                       const Ref<VertexArray>& vertexArray,
                       const glm::mat4& transform /*=identity*/) {
-  // TODO: Submit to a queue, then eval the render command, bind, then draw
+  // bind shader
   shader->Bind();
+
   // submit the view-projection matrix
   std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4(
       "u_ViewProjection", m_SceneData->ViewProjectionMatrix);
   // submit the model matrix
   std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4(
       "u_Transform", transform);
-
-  // bind material uniforms
-  // materialInstance->Bind();
+  if (m_SceneData->hasLight) {
+	  // submit the light direction vector
+	  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformFloat3(
+		  "u_LightDir", m_SceneData->LightDirectionVector);
+  }
 
   // draw mesh
   vertexArray->Bind();

@@ -8,14 +8,9 @@ namespace Dwarfworks {
 
 class DW_API OpenGLShader : public Shader {
  public:
-  OpenGLShader(const std::string& vertexSource,
-               const std::string& fragmentSource);
+  OpenGLShader(std::string_view vertexSource, std::string_view fragmentSource);
+  OpenGLShader(std::string_view source);
   virtual ~OpenGLShader() override;
-
-  // OpenGLShader(const OpenGLShader&) = default;
-  // OpenGLShader& operator=(const OpenGLShader&) = default;
-  // OpenGLShader(OpenGLShader&&) = default;
-  // OpenGLShader& operator=(OpenGLShader&&) = default;
 
   virtual void Bind() const override;
   virtual void Unbind() const override;

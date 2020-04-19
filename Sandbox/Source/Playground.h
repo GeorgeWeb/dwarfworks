@@ -1,17 +1,35 @@
 #ifndef PLAYGROUND_LAYER_H_
 #define PLAYGROUND_LAYER_H_
 
+// Engine
 #include <Dwarfworks.h>
+// Application entry point
+#include <Dwarfworks/Core/EntryPoint.h>
 
-#include "imgui/imgui.h"
+// Debug gui
+#include <imgui/imgui.h>
 
-// Temporary
-#include "Platform/OpenGL/OpenGLShader.h"
+// Temporary (should get abstracted out of here cause
+#include <Platform/OpenGL/OpenGLShader.h>
+
+// For testing purposes
+#define ASPECT_RATIO_16_10 1
+#define BUFFERLAYOUT_INITLIST_CONSTRUCT 0
 
 class Playground : public Dwarfworks::Layer {
+#if ASPECT_RATIO_16_10
+	static constexpr auto s_ScreenWidth = 1440u;
+	static constexpr auto s_ScreenHeight = 900u;
+#else
+	static constexpr auto s_ScreenWidth = 1366u;
+	static constexpr auto s_ScreenHeight = 768u;
+#endif
+	static constexpr auto s_AspectRatio = static_cast<float>(s_ScreenWidth) / s_ScreenHeight;
+	static constexpr auto s_CanRotate = true;
  public:
   Playground()
-      : Layer("Playground"), m_CameraController(1280.0f / 720.0f, true) {
+      : Layer("Playground"),
+		m_CameraController(s_AspectRatio, s_CanRotate) {
     // --------------------------------------- //
     // Buffers (Vertex, Index) and VertexArray //
     // --------------------------------------- //
@@ -22,7 +40,7 @@ class Playground : public Dwarfworks::Layer {
     m_TriangleVA = Dwarfworks::VertexArray::Create();
 
     // vertices
-    float triangleVertices[3 * 7] = {
+    float triangleVertices[3 * (3 + 4)] = {
         -0.5f, -0.5f, 0.0f,      // vertex: bottom left
         0.8f, 0.2f, 0.8f, 1.0f,  // color: bottom left
                                  // ---
@@ -39,8 +57,7 @@ class Playground : public Dwarfworks::Layer {
 	triangleVB = Dwarfworks::VertexBuffer::Create(triangleVertices, tiangleVbSize);
 
     // vertex buffer layout
-#define USE_INIT_LIST_LAYOUT 0
-#if USE_INIT_LIST_LAYOUT
+#if BUFFERLAYOUT_INITLIST_CONSTRUCT
     Dwarfworks::BufferLayout vbLayout = {
         {Dwarfworks::ShaderDataType::Float3, "a_Position"},
         {Dwarfworks::ShaderDataType::Float4, "a_Color"}};
@@ -83,8 +100,13 @@ class Playground : public Dwarfworks::Layer {
     squareVB = Dwarfworks::VertexBuffer::Create(squareVertices, squareVbSize);
 
     // vertex buffer layout
+#if BUFFERLAYOUT_INITLIST_CONSTRUCT
     Dwarfworks::BufferLayout squareVbLayout = {
         {Dwarfworks::ShaderDataType::Float3, "a_Position"}};
+#else
+	Dwarfworks::BufferLayout squareVbLayout;
+	squareVbLayout.Append<Dwarfworks::ShaderDataType::Float3>("a_Position");
+#endif
 
     squareVB->SetLayout(squareVbLayout);
     m_SquareVA->AddVertexBuffer(squareVB);
@@ -109,15 +131,15 @@ class Playground : public Dwarfworks::Layer {
 	// square vertices
 	float cubeVertices[3 * 8] = {
 		// front
-		-1.0f, -1.0f,  1.0f,
-		 1.0f, -1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
+		-0.75f, -0.75f,  0.75f,
+		 0.75f, -0.75f,  0.75f,
+		 0.75f,  0.75f,  0.75f,
+		-0.75f,  0.75f,  0.75f,
 		// back
-		-1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f
+		-0.75f, -0.75f, -0.75f,
+		 0.75f, -0.75f, -0.75f,
+		 0.75f,  0.75f, -0.75f,
+		-0.75f,  0.75f, -0.75f
 	};
 
 	uint32_t cubeVbSize = sizeof(cubeVertices);
@@ -125,8 +147,13 @@ class Playground : public Dwarfworks::Layer {
 	cubeVB = Dwarfworks::VertexBuffer::Create(cubeVertices, cubeVbSize);
 
 	// vertex buffer layout
+#if BUFFERLAYOUT_INITLIST_CONSTRUCT
 	Dwarfworks::BufferLayout cubeVbLayout = {
 		{Dwarfworks::ShaderDataType::Float3, "a_Position"}};
+#else
+	Dwarfworks::BufferLayout cubeVbLayout;
+	cubeVbLayout.Append<Dwarfworks::ShaderDataType::Float3>("a_Position");
+#endif
 
 	cubeVB->SetLayout(cubeVbLayout);
 	m_CubeVA->AddVertexBuffer(cubeVB);
@@ -225,11 +252,11 @@ class Playground : public Dwarfworks::Layer {
 
 	layout(location = 0) out vec4 color;
 
-	uniform vec3 u_Color;
+	uniform vec4 u_Color;
 
 	void main()
 	{
-	  color = vec4(u_Color, 1.0);
+	  color = vec4(u_Color);
 	}
   )";
 
@@ -256,41 +283,44 @@ class Playground : public Dwarfworks::Layer {
     // render scene
     Dwarfworks::Renderer::BeginScene(m_CameraController.GetCamera());
 
-    static glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+	glm::mat4 transform(1.0f); // identity default
 
     std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
         ->Bind();
-    std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
-        ->UploadUniformFloat3("u_Color", m_SquareColor);
-
     // Square Grid
     for (int y = 0; y < 20; y++) {
       for (int x = 0; x < 20; x++) {
-        glm::vec3 pos(x * .175f, y * .175f, 0.0f);
-        glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+        auto squarePos = glm::vec3(x * 0.175f, y * 0.175f, 0.0f);
+		auto squareScale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+        transform = glm::translate(glm::mat4(1.0f), squarePos) * squareScale;
+		std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
+			->UploadUniformFloat4("u_Color", (x % 2 == 0) ? m_BlueColor : m_RedColor);
         Dwarfworks::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
       }
     }
 
 	// Cube
+	transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.75f, 0.0f));
 	std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
 		->Bind();
 	std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_FlatColorShader)
-		->UploadUniformFloat3("u_Color", m_CubeColor);
-	Dwarfworks::Renderer::Submit(m_FlatColorShader, m_CubeVA);
+		->UploadUniformFloat4("u_Color", m_GreenColor);
+	Dwarfworks::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
 
     // Triangle
+	transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 2.5f, 0.0f));
 	std::dynamic_pointer_cast<Dwarfworks::OpenGLShader>(m_Shader)
 		->Bind();
-    Dwarfworks::Renderer::Submit(m_Shader, m_TriangleVA);
+    Dwarfworks::Renderer::Submit(m_Shader, m_TriangleVA, transform);
 
     Dwarfworks::Renderer::EndScene();
   }
 
   virtual void OnDebugUIRender() override {
     ImGui::Begin((GetName() + " editor").c_str());
-    ImGui::Text("Add stuff here ...");
-    ImGui::ColorEdit3("Square Color", glm::value_ptr(m_SquareColor));
+    ImGui::Text("Square Grid Properties");
+    ImGui::ColorEdit3("Square Color 1", glm::value_ptr(m_BlueColor));
+	ImGui::ColorEdit3("Square Color 2", glm::value_ptr(m_RedColor));
     ImGui::End();
   }
 
@@ -324,8 +354,9 @@ class Playground : public Dwarfworks::Layer {
 
   Dwarfworks::OrthographicCameraController m_CameraController;
 
-  glm::vec3 m_SquareColor = {0.2f, 0.3f, 0.7f};
-  glm::vec3 m_CubeColor = { 0.3f, 0.6f, 0.3f };
+  glm::vec4 m_BlueColor = { 0.2f, 0.3f, 0.8f, 1.0f };
+  glm::vec4 m_RedColor = { 0.8f, 0.2f, 0.3f, 1.0f };
+  glm::vec4 m_GreenColor = { 0.2f, 0.8f, 0.3f, 1.0f };
 };
 
 #endif  // PLAYGROUND_LAYER_H_

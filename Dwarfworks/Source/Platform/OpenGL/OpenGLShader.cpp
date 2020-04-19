@@ -9,17 +9,16 @@
 
 namespace Dwarfworks {
 
-OpenGLShader::OpenGLShader(const std::string& vertexSource,
-                           const std::string& fragmentSource) {
-  // Read our shaders into the appropriate buffers
-  // TODO
+OpenGLShader::OpenGLShader(std::string_view vertexSource, std::string_view fragmentSource) {
+  // TODO: Read our shaders into the appropriate buffers
+  const char* source = {0};
 
   // Create an empty vertex shader handle
   auto vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
   // Send the vertex shader source code to GL
   // Note that std::string's .c_str is NULL character terminated.
-  auto source = static_cast<const char*>(vertexSource.c_str());
+  source = vertexSource.data();
   glShaderSource(vertexShader, 1, &source, 0);
 
   // Compile the vertex shader
@@ -51,7 +50,7 @@ OpenGLShader::OpenGLShader(const std::string& vertexSource,
 
   // Send the fragment shader source code to GL
   // Note that std::string's .c_str is NULL character terminated.
-  source = static_cast<const char*>(fragmentSource.c_str());
+  source = fragmentSource.data();
   glShaderSource(fragmentShader, 1, &source, 0);
 
   // Compile the fragment shader
@@ -101,7 +100,7 @@ OpenGLShader::OpenGLShader(const std::string& vertexSource,
 
     // The maxLength includes the NULL character
     std::vector<char> infoLog(maxLength);
-    glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+    glGetProgramInfoLog(program, maxLength, &maxLength, infoLog.data());
 
     // We don't need the program anymore.
     glDeleteProgram(program);
@@ -120,6 +119,10 @@ OpenGLShader::OpenGLShader(const std::string& vertexSource,
   // Always detach shaders after a successful link.
   glDetachShader(program, vertexShader);
   glDetachShader(program, fragmentShader);
+}
+
+OpenGLShader::OpenGLShader(std::string_view source) {
+	// TODO: Implement combined shader loading (from 1 file/source)
 }
 
 OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererId); }

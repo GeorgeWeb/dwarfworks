@@ -2,7 +2,6 @@
 #define GRAPHICS_RENDERER_H_
 
 #include "Dwarfworks/Graphics/Camera.h"
-#include "Dwarfworks/Graphics/Material.h"
 #include "Dwarfworks/Graphics/RenderCommand.h"
 #include "Dwarfworks/Graphics/Shader.h"
 
@@ -23,6 +22,8 @@ class DW_API Renderer {
   // storage (TEMPORARY!)
   struct SceneData {
     glm::mat4 ViewProjectionMatrix;
+	glm::vec3 LightDirectionVector;
+	bool hasLight = false;
   };
 
   inline static Scope<SceneData> m_SceneData = CreateScope<SceneData>();

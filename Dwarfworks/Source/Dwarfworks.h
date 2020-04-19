@@ -43,27 +43,17 @@
 // ---------------------------------------------------------------
 
 // -- Graphics ---------------------------------------------------
-// ...
 #include "Dwarfworks/Graphics/RenderCommand.h"
 #include "Dwarfworks/Graphics/Renderer.h"
-// ...
 #include "Dwarfworks/Graphics/Buffer.h"
 #include "Dwarfworks/Graphics/Shader.h"
 #include "Dwarfworks/Graphics/VertexArray.h"
-// ...
 #include "Dwarfworks/Graphics/Camera.h"
 #include "Dwarfworks/Graphics/CameraController.h"
-// ...
-#include "Dwarfworks/Graphics/Material.h"
-#include "Dwarfworks/Graphics/Mesh.h"
 // ---------------------------------------------------------------
 
 // -- Factories --------------------------------------------------
 #include "Dwarfworks/Factories/ShaderFactory.h"
-// ---------------------------------------------------------------
-
-// -- Entry point ------------------------------------------------
-#include "Dwarfworks/Core/EntryPoint.h"
 // ---------------------------------------------------------------
 
 #endif  // DWARFWORKS_PUBLIC_API_H_

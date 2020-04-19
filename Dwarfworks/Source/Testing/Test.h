@@ -17,7 +17,7 @@ class Test : public Dwarfworks::Layer {
 };
 
 class TestMenu final : public Test {
-  using createTestFunc_t = std::function<Test*()>;
+  using test_func_t = std::function<Test*()>;
 
  public:
   explicit TestMenu(Test*& currentTestPointer);
@@ -32,7 +32,7 @@ class TestMenu final : public Test {
   Test*& m_CurrentTest;
 
   // Test instance sort of structure in a contiguous collection
-  std::vector<std::pair<std::string, createTestFunc_t>> m_TestList;
+  std::vector<std::pair<std::string, test_func_t>> m_TestList;
 };
 
 }  // namespace Testing

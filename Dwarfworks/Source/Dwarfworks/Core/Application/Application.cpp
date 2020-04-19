@@ -13,7 +13,6 @@
 #include "Testing/OpenGLTests/OpenGLClearColorTest.h"
 #include "Testing/OpenGLTests/OpenGLInfoTest.h"
 #include "Testing/OpenGLTests/OpenGLRenderTriangleTest.h"
-#include "Testing/OpenGLTests/OpenGLShaderManagerTest.h"
 #endif
 
 // TEMPORARY!
@@ -47,8 +46,6 @@ Application::Application() {
   REGISTER_TEST(Testing::OpenGLClearColorTest, "OpenGL Clear Color",
                 m_TestMenu);
   REGISTER_TEST(Testing::OpenGLRenderTriangleTest, "OpenGL Render Triangle",
-                m_TestMenu);
-  REGISTER_TEST(Testing::OpenGLShaderManagerTest, "OpenGL Shader Manager",
                 m_TestMenu);
   // Set Current Test Layer to Test Menu
   m_CurrentTest = m_TestMenu.get();
@@ -172,7 +169,7 @@ void Application::DebugGameLoop() {
     if (m_CurrentTest) {
       // if the current Test layer is not TestMenu, display a BACK button
       // and set it to point to TestMenu upon clicking the BACK button.
-      if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("<< Back")) {
+      if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("Menu")) {
         delete m_CurrentTest;
         m_CurrentTest = m_TestMenu.get();
       }

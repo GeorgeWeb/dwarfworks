@@ -47,6 +47,7 @@
 #include "Dwarfworks/Graphics/Renderer.h"
 #include "Dwarfworks/Graphics/Buffer.h"
 #include "Dwarfworks/Graphics/Shader.h"
+#include "Dwarfworks/Graphics/Texture.h"
 #include "Dwarfworks/Graphics/VertexArray.h"
 #include "Dwarfworks/Graphics/Camera.h"
 #include "Dwarfworks/Graphics/CameraController.h"

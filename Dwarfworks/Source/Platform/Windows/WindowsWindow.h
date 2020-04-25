@@ -3,20 +3,13 @@
 
 #include <GLFW/glfw3.h>
 
-#include "Dwarfworks/Core/Window/IWindow.h"
+#include "Dwarfworks/Core/Window/Window.h"
 #include "Dwarfworks/Graphics/GraphicsContext.h"
 // struct GLFWwindow;
 
 namespace Dwarfworks {
 
-/// \class WindowsWindow
-///
-/// \brief An api.
-///
-/// \author Georg
-/// \date 07/10/2019
-
-class DW_API WindowsWindow : public IWindow {
+class DW_API WindowsWindow : public Window {
  public:
   explicit WindowsWindow(const WindowProps& props);
   virtual ~WindowsWindow() override;
@@ -25,13 +18,6 @@ class DW_API WindowsWindow : public IWindow {
   WindowsWindow& operator=(const WindowsWindow&) = delete;
   WindowsWindow(WindowsWindow&&) = default;
   WindowsWindow& operator=(WindowsWindow&&) = default;
-
-  /// \fn void WindowsWindow::OnUpdate() override;
-  ///
-  /// \brief Executes the update action.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
 
   void OnUpdate() override;
 
@@ -54,15 +40,6 @@ class DW_API WindowsWindow : public IWindow {
   /// \brief The window handle (pointer to GLFWwindow).
   GLFWwindow* m_Window;
   GraphicsContext* m_Context;
-
-  /// \struct WindowData
-  ///
-  /// \brief Custom/User-defined window data that gets passed to the Window
-  /// handling library Used to have less memory transfer, no need to pass an
-  /// enitre WindowsWindow class.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
 
   struct WindowData {
     std::string Title = "Dwarfworks Engine";

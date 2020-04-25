@@ -1,7 +1,7 @@
-#ifndef PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
-#define PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
+#ifndef PLATFORM_WINDOWS_LINUX_WINDOW_H_
+#define PLATFORM_WINDOWS_LINUX_WINDOW_H_
 
-#include "Dwarfworks/Core/Window/IWindow.h"
+#include "Dwarfworks/Core/Window/Window.h"
 
 #include "Dwarfworks/Graphics/GraphicsContext.h"
 
@@ -10,7 +10,7 @@
 
 namespace Dwarfworks {
 
-class DW_API LinuxWindow : public IWindow {
+class DW_API LinuxWindow : public Window {
  public:
 
   explicit LinuxWindow(const WindowProps& props);
@@ -49,4 +49,4 @@ class DW_API LinuxWindow : public IWindow {
 
 }  // namespace Dwarfworks
 
-#endif  // PLATFORM_WINDOWS_WINDOWS_WINDOW_H_
+#endif  // PLATFORM_WINDOWS_LINUX_WINDOW_H_

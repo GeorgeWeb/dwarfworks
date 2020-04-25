@@ -3,24 +3,26 @@
 // end PCH
 
 #include "Log.h"
-#include "spdlog/sinks/stdout_color_sinks.h"
+
+#include <spdlog/sinks/stdout_color_sinks.h>
 
 namespace Dwarfworks {
 
-std::shared_ptr<spdlog::logger> Log::s_CoreLogger;    // = nullptr;
-std::shared_ptr<spdlog::logger> Log::s_ClientLogger;  // = nullptr;
+Ref<spdlog::logger> Log::s_CoreLogger;    // = nullptr;
+Ref<spdlog::logger> Log::s_ClientLogger;  // = nullptr;
 
 void Log::Initialize() noexcept {
   // define the log pattern:
-  // appropirate color, timestamp, logger name (core/client), log message
+  // color, timestamp, logger name (core/client), log msg
   spdlog::set_pattern("%^[%T] %n: %v%$");
 
-  // setup the core/engine logger object
-  s_CoreLogger = spdlog::stdout_color_mt("[ENGINE]");
-  s_CoreLogger->set_level(spdlog::level::trace);
+  // create logger objects
+  using factory = spdlog::synchronous_factory;
+  s_CoreLogger = spdlog::stdout_color_mt<factory>("[ENGINE]");
+  s_ClientLogger = spdlog::stdout_color_mt<factory>("[APP]");
 
-  // setup the client/application logger object
-  s_ClientLogger = spdlog::stdout_color_mt("[APP]");
+  // set default logging severity
+  s_CoreLogger->set_level(spdlog::level::trace);
   s_ClientLogger->set_level(spdlog::level::trace);
 }
 

@@ -5,7 +5,6 @@
 
 #include "Dwarfworks/Core/Window/Window.h"
 #include "Dwarfworks/Graphics/GraphicsContext.h"
-// struct GLFWwindow;
 
 namespace Dwarfworks {
 
@@ -13,11 +12,6 @@ class DW_API WindowsWindow : public Window {
  public:
   explicit WindowsWindow(const WindowProps& props);
   virtual ~WindowsWindow() override;
-
-  WindowsWindow(const WindowsWindow&) = delete;
-  WindowsWindow& operator=(const WindowsWindow&) = delete;
-  WindowsWindow(WindowsWindow&&) = default;
-  WindowsWindow& operator=(WindowsWindow&&) = default;
 
   void OnUpdate() override;
 
@@ -39,7 +33,7 @@ class DW_API WindowsWindow : public Window {
 
   /// \brief The window handle (pointer to GLFWwindow).
   GLFWwindow* m_Window;
-  GraphicsContext* m_Context;
+  Scope<GraphicsContext> m_Context;
 
   struct WindowData {
     std::string Title = "Dwarfworks Engine";

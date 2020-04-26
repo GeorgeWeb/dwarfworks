@@ -13,7 +13,6 @@
 namespace Dwarfworks {
 
 static constexpr int levels = 1; // (num mipmaps)	temporary
-static constexpr int internal_format = GL_RGB8; // temporary
 static constexpr int flip = 1; // flip image on load
 
 OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_Path(path) {
@@ -26,10 +25,16 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_Path(path) {
   
   m_Width = x;
   m_Height = y;
-  m_Format = internal_format;
+
+  int internalFormat = (ch == 4) ? GL_RGBA8 : (ch == 3) ? GL_RGB8 : 0;
+  int dataFormat = (ch == 4) ? GL_RGBA : (ch == 3) ? GL_RGB : 0;
+
+  DW_CORE_ASSERT(internalFormat & dataFormat, "Texture format NOT supported!");
+  // save the data format
+  m_Format = dataFormat;
 
   glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererId);
-  glTextureStorage2D(m_RendererId, levels, internal_format, m_Width, m_Height);
+  glTextureStorage2D(m_RendererId, levels, internalFormat, m_Width, m_Height);
 
   // handle minification and magnification
   int param;
@@ -41,8 +46,7 @@ OpenGLTexture2D::OpenGLTexture2D(const std::string& path) : m_Path(path) {
   glTextureParameteri(m_RendererId, GL_TEXTURE_MAG_FILTER, param);
 
   DW_CORE_ASSERT(levels == 1, "No more/less than 1 mipmap levels supported!");
-  int format = (ch == 4) ? GL_RGBA : (ch == 3) ? GL_RGB : (ch == 2) ? GL_RG : GL_R;
-  glTextureSubImage2D(m_RendererId, 0, 0, 0, m_Width, m_Height, format, GL_UNSIGNED_BYTE, data);
+  glTextureSubImage2D(m_RendererId, 0, 0, 0, m_Width, m_Height, dataFormat, GL_UNSIGNED_BYTE, data);
 
   // deallocate the memory where image data is stored in
   stbi_image_free(data);

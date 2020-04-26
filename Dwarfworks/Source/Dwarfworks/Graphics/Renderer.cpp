@@ -9,6 +9,10 @@
 
 namespace Dwarfworks {
 
+void Renderer::Initialize() {
+  RenderCommand::Initialize();
+}
+
 void Renderer::BeginScene(OrthographicCamera& camera) {
   m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 }

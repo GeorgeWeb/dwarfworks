@@ -16,6 +16,7 @@
 class Playground : public Dwarfworks::Layer {
   using ShaderTable = std::map<const std::string, Dwarfworks::Ref<Dwarfworks::Shader>>;
   using Texture2DTable = std::map<const std::string, Dwarfworks::Ref<Dwarfworks::Texture2D>>;
+  using SpriteTable = std::map<const std::string, Dwarfworks::Ref<Dwarfworks::VertexArray>>;
 
 #if ASPECT_RATIO_16_10
 	static constexpr auto s_ScreenWidth = 1440u;
@@ -37,7 +38,7 @@ class Playground : public Dwarfworks::Layer {
 	// BEGIN TRIANGLE
 
     // vertex array
-    m_TriangleVA = Dwarfworks::VertexArray::Create();
+	m_Sprites["triangle"] = Dwarfworks::VertexArray::Create();
 
     // vertices
     float triangleVertices[(3 + 4) * 3] = {
@@ -68,7 +69,7 @@ class Playground : public Dwarfworks::Layer {
 #endif
 
 	triangleVB->SetLayout(vbLayout);
-    m_TriangleVA->AddVertexBuffer(triangleVB);
+	m_Sprites["triangle"]->AddVertexBuffer(triangleVB);
 
     // indices
     uint32_t triangleIndices[3] = {0, 1, 2};
@@ -78,14 +79,14 @@ class Playground : public Dwarfworks::Layer {
     Dwarfworks::Ref<Dwarfworks::IndexBuffer> triangleIB;
 	triangleIB = Dwarfworks::IndexBuffer::Create(triangleIndices, ibCount);
 
-    m_TriangleVA->SetIndexBuffer(triangleIB);
+	m_Sprites["triangle"]->SetIndexBuffer(triangleIB);
 
 	// END OF TRIANGLE
 
 	// BEGIN SQUARE
 
     // square vertex array
-    m_SquareVA = Dwarfworks::VertexArray::Create();
+	m_Sprites["square"] = Dwarfworks::VertexArray::Create();
 
     // square vertices
     float squareVertices[(3 + 2) * 4] = {
@@ -111,7 +112,7 @@ class Playground : public Dwarfworks::Layer {
 		{Dwarfworks::ShaderDataType::Float3, "a_Position"},
 		{Dwarfworks::ShaderDataType::Float2, "a_TexCoord"} 
 	});
-    m_SquareVA->AddVertexBuffer(squareVB);
+	m_Sprites["square"]->AddVertexBuffer(squareVB);
 
     // square indices
     uint32_t squareIndices[6] = {0, 1, 2, 2, 3, 0};
@@ -121,69 +122,9 @@ class Playground : public Dwarfworks::Layer {
     Dwarfworks::Ref<Dwarfworks::IndexBuffer> squareIB;
     squareIB = Dwarfworks::IndexBuffer::Create(squareIndices, squareIbCount);
 
-    m_SquareVA->SetIndexBuffer(squareIB);
+	m_Sprites["square"]->SetIndexBuffer(squareIB);
 
 	// END OF SQUARE
-
-	// BEGIN CUBE
-
-	// square vertex array
-	m_CubeVA = Dwarfworks::VertexArray::Create();
-
-	// square vertices
-	float cubeVertices[3 * 8] = {
-		// front
-		-0.75f, -0.75f,  0.75f,
-		 0.75f, -0.75f,  0.75f,
-		 0.75f,  0.75f,  0.75f,
-		-0.75f,  0.75f,  0.75f,
-		// back
-		-0.75f, -0.75f, -0.75f,
-		 0.75f, -0.75f, -0.75f,
-		 0.75f,  0.75f, -0.75f,
-		-0.75f,  0.75f, -0.75f
-	};
-
-	uint32_t cubeVbSize = sizeof(cubeVertices);
-	Dwarfworks::Ref<Dwarfworks::VertexBuffer> cubeVB;
-	cubeVB = Dwarfworks::VertexBuffer::Create(cubeVertices, cubeVbSize);
-
-	// vertex buffer layout
-	cubeVB->SetLayout({
-		{Dwarfworks::ShaderDataType::Float3, "a_Position" }
-	});
-	m_CubeVA->AddVertexBuffer(cubeVB);
-
-	// square indices
-	uint32_t cubeIndices[3 * 12] = { 
-		// front
-		0, 1, 2,
-		2, 3, 0,
-		// right
-		1, 5, 6,
-		6, 2, 1,
-		// back
-		7, 6, 5,
-		5, 4, 7,
-		// left
-		4, 0, 3,
-		3, 7, 4,
-		// bottom
-		4, 5, 1,
-		1, 0, 4,
-		// top
-		3, 2, 6,
-		6, 7, 3
-	};
-
-	// square index buffer
-	const auto cubeIbCount = sizeof(cubeIndices) / sizeof(uint32_t);
-	Dwarfworks::Ref<Dwarfworks::IndexBuffer> cubeIB;
-	cubeIB = Dwarfworks::IndexBuffer::Create(cubeIndices, cubeIbCount);
-
-	m_CubeVA->SetIndexBuffer(cubeIB);
-
-	// END OF CUBE
 
     // --------------------------- //
     // Shaders and Shader Programs //
@@ -312,8 +253,10 @@ class Playground : public Dwarfworks::Layer {
 
 	// texture shader program
 	m_Shaders["texture"] = Dwarfworks::Shader::Create(textureVertSrc, textureFragSrc);
-	// Load texture
+	
+	// Load texture(s)
 	m_Textures["checkerboard"] = Dwarfworks::Texture2D::Create("Assets/Textures/Checkerboard.png");
+	m_Textures["inn"] = Dwarfworks::Texture2D::Create("Assets/Textures/inn.png");
 	
 	// Upload texture sampler2D uniform
 	m_Shaders["texture"]->Bind();
@@ -339,6 +282,10 @@ class Playground : public Dwarfworks::Layer {
     // Begin scene rendering
     Dwarfworks::Renderer::BeginScene(m_CameraController.GetCamera());
 
+	// Get references to the sprites
+	auto& triangle = m_Sprites["triangle"];
+	auto& square = m_Sprites["square"];
+
 	// Get references to the shaders
 	auto& basicShader = m_Shaders["basic"];
 	auto& flatColorShader = m_Shaders["flat_color"];
@@ -346,41 +293,48 @@ class Playground : public Dwarfworks::Layer {
 
 	// Get references to the textures
 	auto& checkerboardTexture = m_Textures["checkerboard"];
+	auto& innTexture = m_Textures["inn"];
 
 	// Initialize transform matrix
 	glm::mat4 transform(1.0f); // identity default
 
-	// Square Grid
+	// ------------------- //
+	// Colored Square Grid //
+	// ------------------- //
 	flatColorShader->Bind();
     for (int y = 0; y < 20; y++) {
       for (int x = 0; x < 20; x++) {
         auto squarePos = glm::vec3(x * 0.175f, y * 0.175f, 0.0f);
 		auto squareScale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+		// update transform matrix
         transform = glm::translate(glm::mat4(1.0f), squarePos) * squareScale;
+		// update color uniform
 		flatColorShader->SetFloat4("u_Color", (x % 2 == 0) ? blueColor : redColor);
-        Dwarfworks::Renderer::Submit(flatColorShader, m_SquareVA, transform);
+        Dwarfworks::Renderer::Submit(flatColorShader, square, transform);
       }
     }
 
-	// Textured Square
+	// --------------- //
+	// Textured Square //
+	// --------------- //
 	textureShader->Bind();
-	textureShader->SetFloat4("u_Color", whiteColor);
-	transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.75f, 0.0f));
+	// checkerboard background
 	checkerboardTexture->Bind();
-	Dwarfworks::Renderer::Submit(textureShader, m_SquareVA, transform);
-
-	// Cube (3D)
-#if 0 // when 3D works enable this
-	flatColorShader->Bind();
+	// update transform matrix
 	transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.75f, 0.0f));
-	m_FlatColorShader->SetFloat4("u_Color", m_GreenColor);
-	Dwarfworks::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
-#endif
+	Dwarfworks::Renderer::Submit(textureShader, square, transform);
+	// inn overlay
+	innTexture->Bind();
+	// update transform matrix
+	transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 0.75f, 0.0f));
+	Dwarfworks::Renderer::Submit(textureShader, square, transform);
 
-    // Triangle
+	// ----------------- //
+	// Textured Triangle //
+	// ----------------- //
 	basicShader->Bind();
 	transform = glm::translate(glm::mat4(1.0f), glm::vec3(-1.25f, 2.5f, 0.0f));
-    Dwarfworks::Renderer::Submit(basicShader, m_TriangleVA, transform);
+    Dwarfworks::Renderer::Submit(basicShader, triangle, transform);
 
 	// End scene rendering
     Dwarfworks::Renderer::EndScene();
@@ -388,11 +342,11 @@ class Playground : public Dwarfworks::Layer {
 
   virtual void OnDebugUIRender() override {
     ImGui::Begin((GetName() + " editor").c_str());
-    ImGui::Text("Square Grid Properties");
-    ImGui::ColorEdit4("Square Color 1", glm::value_ptr(blueColor));
-	ImGui::ColorEdit4("Square Color 2", glm::value_ptr(redColor));
-	ImGui::Text("Textured Square Properties");
-	ImGui::ColorEdit4("Color", glm::value_ptr(whiteColor));
+    ImGui::Text("Square Grid");
+    ImGui::ColorEdit4("Color 1", glm::value_ptr(blueColor));
+	ImGui::ColorEdit4("Color 2", glm::value_ptr(redColor));
+	ImGui::Text("Textured Square");
+	// TODO:
     ImGui::End();
   }
 
@@ -426,10 +380,8 @@ class Playground : public Dwarfworks::Layer {
   // textures
   Texture2DTable m_Textures;
 
-  // meshes
-  Dwarfworks::Ref<Dwarfworks::VertexArray> m_TriangleVA;
-  Dwarfworks::Ref<Dwarfworks::VertexArray> m_SquareVA;
-  Dwarfworks::Ref<Dwarfworks::VertexArray> m_CubeVA;
+  // sprites
+  SpriteTable m_Sprites;
 
   // lights
   // TBD

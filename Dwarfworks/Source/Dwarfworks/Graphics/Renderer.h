@@ -9,6 +9,8 @@ namespace Dwarfworks {
 
 class DW_API Renderer {
  public:
+  static void Initialize();
+
   static void BeginScene(OrthographicCamera& camera);
   static void EndScene();
 

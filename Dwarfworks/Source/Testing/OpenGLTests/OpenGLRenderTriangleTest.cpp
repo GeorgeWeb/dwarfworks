@@ -64,7 +64,7 @@ OpenGLRenderTriangleTest::OpenGLRenderTriangleTest() {
 	}
   )";
 
-  m_Shader = Dwarfworks::Shader::Create(vertSrc, fragSrc);
+  m_Shader = Dwarfworks::Shader::Create("Shader", vertSrc, fragSrc);
 }
 
 void OpenGLRenderTriangleTest::OnRender() {

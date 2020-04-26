@@ -13,9 +13,6 @@ class DW_API Shader {
   virtual void Bind() const = 0;
   virtual void Unbind() const = 0;
 
-  // virtual void PreProcess() = 0;
-  // virtual void Compile() = 0;
-
   virtual void SetInt(const std::string& name, int value) const = 0;
   virtual void SetIntArray(const std::string& name, int* values, uint32_t count) const = 0;
   virtual void SetFloat(const std::string& name, float value) const = 0;
@@ -30,13 +27,8 @@ class DW_API Shader {
   virtual const std::string& GetName() const = 0;
 
   static Ref<Shader> Create(const std::string& filepath);
-  static Ref<Shader> Create(const std::string& vertexSource, const std::string& fragmentSource);
-
- private:
-  inline std::string ReadFile(const std::string& filePath) const {
-	// TODO: Implement!
-	return {0};
-  }
+  static Ref<Shader> Create(const std::string& name,
+						    std::string& vertexSource, const std::string& fragmentSource);
 };
 
 class ShaderLibrary

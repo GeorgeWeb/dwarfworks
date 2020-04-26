@@ -53,8 +53,4 @@
 #include "Dwarfworks/Graphics/CameraController.h"
 // ---------------------------------------------------------------
 
-// -- Factories --------------------------------------------------
-#include "Dwarfworks/Factories/ShaderFactory.h"
-// ---------------------------------------------------------------
-
 #endif  // DWARFWORKS_PUBLIC_API_H_

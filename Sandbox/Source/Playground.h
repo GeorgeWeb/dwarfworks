@@ -139,21 +139,21 @@ class Playground : public Dwarfworks::Layer {
 	// because UBOs in OpenGL/Vulkan are not the same in Direct3D - they are Constant buffers.
 
     // shader program
-	m_Shaders["basic"] = Dwarfworks::Shader::Create("Assets/Shaders/Basic.glsl");
+	auto& basicShader = m_ShaderLib.Load("Assets/Shaders/Basic.glsl");
 
     // flat color shader program
-	m_Shaders["flat_color"] = Dwarfworks::Shader::Create("Assets/Shaders/FlatColor.glsl");
+	auto& flatColorShader = m_ShaderLib.Load("Assets/Shaders/FlatColor.glsl");
 
 	// texture shader program
-	m_Shaders["texture"] = Dwarfworks::Shader::Create("Assets/Shaders/Texture.glsl");
+	auto& textureShader = m_ShaderLib.Load("Assets/Shaders/Texture.glsl");
 	
 	// Load texture(s)
 	m_Textures["checkerboard"] = Dwarfworks::Texture2D::Create("Assets/Textures/Checkerboard.png");
 	m_Textures["inn"] = Dwarfworks::Texture2D::Create("Assets/Textures/Inn.png");
 	
 	// Upload texture sampler2D uniform
-	m_Shaders["texture"]->Bind();
-	m_Shaders["texture"]->SetInt("u_Texture", 0);
+	textureShader->Bind();
+	textureShader->SetInt("u_Texture", 0);
   }
 
   virtual void OnUpdate(Dwarfworks::Timestep deltaTime) override {
@@ -180,9 +180,9 @@ class Playground : public Dwarfworks::Layer {
 	auto& square = m_Sprites["square"];
 
 	// Get references to the shaders
-	auto& basicShader = m_Shaders["basic"];
-	auto& flatColorShader = m_Shaders["flat_color"];
-	auto& textureShader = m_Shaders["texture"];
+	auto& basicShader = m_ShaderLib.Get("Basic");
+	auto& flatColorShader = m_ShaderLib.Get("FlatColor");
+	auto& textureShader = m_ShaderLib.Get("Texture");
 
 	// Get references to the textures
 	auto& checkerboardTexture = m_Textures["checkerboard"];
@@ -268,7 +268,7 @@ class Playground : public Dwarfworks::Layer {
   Dwarfworks::OrthographicCameraController m_CameraController;
 
   // shaders
-  ShaderTable m_Shaders;
+  Dwarfworks::ShaderLibrary m_ShaderLib;
 
   // textures
   Texture2DTable m_Textures;

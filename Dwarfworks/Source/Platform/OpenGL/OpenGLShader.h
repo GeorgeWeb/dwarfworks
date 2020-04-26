@@ -12,7 +12,8 @@ namespace Dwarfworks {
 class DW_API OpenGLShader : public Shader {
  public:
   explicit OpenGLShader(const std::string& filepath);
-  OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource);
+  OpenGLShader(const std::string& name,
+	           const std::string& vertexSource, const std::string& fragmentSource);
   virtual ~OpenGLShader() override;
 
   virtual void Bind() const override;

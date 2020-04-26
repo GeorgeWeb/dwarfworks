@@ -36,7 +36,8 @@ OpenGLShader::OpenGLShader(const std::string& filepath) {
   m_Name = filepath.substr(lastSlash, count);
 }
 
-OpenGLShader::OpenGLShader(const std::string& vertexSource, const std::string& fragmentSource) {
+OpenGLShader::OpenGLShader(const std::string& name,
+						   const std::string& vertexSource, const std::string& fragmentSource) {
   std::unordered_map<GLenum, std::string> shaderSources;
   shaderSources[GL_VERTEX_SHADER] = vertexSource;
   shaderSources[GL_FRAGMENT_SHADER] = fragmentSource;

@@ -10,7 +10,6 @@
 #include <imgui/imgui.h>
 
 // For testing purposes
-#define BUFFERLAYOUT_INITLIST_CONSTRUCT 1
 #define ASPECT_RATIO_16_10 1
 
 class Playground : public Dwarfworks::Layer {
@@ -58,15 +57,9 @@ class Playground : public Dwarfworks::Layer {
 	triangleVB = Dwarfworks::VertexBuffer::Create(triangleVertices, tiangleVbSize);
 
     // vertex buffer layout
-#if BUFFERLAYOUT_INITLIST_CONSTRUCT
-    Dwarfworks::BufferLayout vbLayout = {
-        {Dwarfworks::ShaderDataType::Float3, "a_Position"},
-        {Dwarfworks::ShaderDataType::Float4, "a_Color"}};
-#else
 	Dwarfworks::BufferLayout vbLayout;
 	vbLayout.Append<Dwarfworks::ShaderDataType::Float3>("a_Position");
 	vbLayout.Append<Dwarfworks::ShaderDataType::Float4>("a_Color");
-#endif
 
 	triangleVB->SetLayout(vbLayout);
 	m_Sprites["triangle"]->AddVertexBuffer(triangleVB);
@@ -145,118 +138,18 @@ class Playground : public Dwarfworks::Layer {
 	// Consider rewording Uniform to Constant for a more robust and abstract API purposes
 	// because UBOs in OpenGL/Vulkan are not the same in Direct3D - they are Constant buffers.
 
-    // vertex shader
-    std::string vertSrc = R"(
-	#version 330 core
-
-	layout (location = 0) in vec3 a_Position;
-	layout (location = 1) in vec4 a_Color;
-
-	uniform mat4 u_ViewProjection;
-	uniform mat4 u_Transform;
-
-	out vec4 v_Color;
-
-	void main() {
-	  v_Color = a_Color;
-
-	  vec4 vertexPosition = vec4(a_Position, 1.0);
-	  gl_Position = u_ViewProjection * u_Transform * vertexPosition;
-	}
-	)";
-
-    // fragment shader
-    std::string fragSrc = R"(
-	#version 330 core
-
-	layout(location = 0) out vec4 color;
-   
-	in vec4 v_Color;
-
-	void main()
-	{
-	  color = v_Color;
-	}
-	)";
-
     // shader program
-	m_Shaders["basic"] = Dwarfworks::Shader::Create(vertSrc, fragSrc);
-
-    // flat color vertex shader
-    std::string flatColorVertSrc = R"(
-	#version 330 core
-
-	layout (location = 0) in vec3 a_Position;
-
-	uniform mat4 u_ViewProjection;
-	uniform mat4 u_Transform;
-
-	void main()
-	{
-	  vec4 vertexPosition = vec4(a_Position, 1.0);
-	  gl_Position = u_ViewProjection * u_Transform * vertexPosition;
-	}
-	)";
-
-    // flat color fragment shader
-    std::string flatColorFragSrc = R"(
-	#version 330 core
-
-	layout(location = 0) out vec4 color;
-
-	uniform vec4 u_Color;
-
-	void main()
-	{
-	  color = vec4(u_Color);
-	}
-	)";
+	m_Shaders["basic"] = Dwarfworks::Shader::Create("Assets/Shaders/Basic.glsl");
 
     // flat color shader program
-	m_Shaders["flat_color"] = Dwarfworks::Shader::Create(flatColorVertSrc, flatColorFragSrc);
-
-	// texture vertex shader
-	std::string textureVertSrc = R"(
-	#version 330 core
-
-	layout (location = 0) in vec3 a_Position;
-	layout (location = 1) in vec2 a_TexCoord;
-
-	uniform mat4 u_ViewProjection;
-	uniform mat4 u_Transform;
-
-	out vec2 v_TexCoord;
-
-	void main()
-	{
-	  v_TexCoord = a_TexCoord;
-	  vec4 vertexPosition = vec4(a_Position, 1.0);
-	  gl_Position = u_ViewProjection * u_Transform * vertexPosition;
-	}
-	)";
-
-	// texture fragment shader
-	std::string textureFragSrc = R"(
-	#version 330 core
-
-	layout(location = 0) out vec4 color;
-
-	in vec2 v_TexCoord;
-
-	uniform sampler2D u_Texture;
-
-	void main()
-	{
-	  color = texture(u_Texture, v_TexCoord);
-	}
-	)";
+	m_Shaders["flat_color"] = Dwarfworks::Shader::Create("Assets/Shaders/FlatColor.glsl");
 
 	// texture shader program
-	m_Shaders["texture"] = Dwarfworks::Shader::Create(textureVertSrc, textureFragSrc);
+	m_Shaders["texture"] = Dwarfworks::Shader::Create("Assets/Shaders/Texture.glsl");
 	
 	// Load texture(s)
 	m_Textures["checkerboard"] = Dwarfworks::Texture2D::Create("Assets/Textures/Checkerboard.png");
-	m_Textures["inn"] = Dwarfworks::Texture2D::Create("Assets/Textures/inn.png");
+	m_Textures["inn"] = Dwarfworks::Texture2D::Create("Assets/Textures/Inn.png");
 	
 	// Upload texture sampler2D uniform
 	m_Shaders["texture"]->Bind();

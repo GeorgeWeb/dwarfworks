@@ -9,7 +9,7 @@
 
 namespace Dwarfworks {
 
-Ref<Shader> Shader::Create(std::string_view filepath) {
+Ref<Shader> Shader::Create(const std::string& filepath) {
 	switch (Renderer::GetAPI()) {
 		case RendererAPI::API::None:
 			DW_CORE_ASSERT(false, "RendererAPI::None is not supported.");
@@ -22,7 +22,7 @@ Ref<Shader> Shader::Create(std::string_view filepath) {
 	return nullptr;
 }
 
-Ref<Shader> Shader::Create(std::string_view vertexSource, std::string_view fragmentSource) {
+Ref<Shader> Shader::Create(const std::string& vertexSource, const std::string& fragmentSource) {
 	switch (Renderer::GetAPI()) {
 		case RendererAPI::API::None:
 			DW_CORE_ASSERT(false, "RendererAPI::None is not supported.");

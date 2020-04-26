@@ -4,7 +4,7 @@
 #include "Dwarfworks/Core/Core.h"
 
 // Window
-#include "Dwarfworks/Core/Window/IWindow.h"
+#include "Dwarfworks/Core/Window/Window.h"
 
 // Layers
 #include "Dwarfworks/Core/Layers/LayerStack.h"
@@ -39,9 +39,10 @@ class DW_API Application {
 
   // Gets the Application singleton instance
   inline static Application& Get() {
+	// attempts a safer thread-safe singleton instance than than static guarante
+	//
     // Acquire-Release semantic for C++ atomics (standard thread-safe guarantee)
     // https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
-
     // acquire: no reads or writes in the current thread can be reordered before
     // this load
     auto instance = s_Instance.load(std::memory_order_acquire);
@@ -87,7 +88,7 @@ class DW_API Application {
   void PushOverlay(Layer* layer);
 
   // Gets the window for the user's platform
-  inline IWindow& GetWindow() const { return *m_Window; }
+  inline Window& GetWindow() const { return *m_Window; }
 
  protected:
   // Executes the window closed action
@@ -95,7 +96,7 @@ class DW_API Application {
   virtual bool OnWindowClosed(WindowCloseEvent& event);
 
  protected:
-  Scope<IWindow> m_Window;
+  Scope<Window> m_Window;
   Ref<DebugUILayer> m_DebugUILayer;
   LayerStack m_LayerStack;
   

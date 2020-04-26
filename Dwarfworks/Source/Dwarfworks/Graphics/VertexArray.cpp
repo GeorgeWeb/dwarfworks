@@ -2,9 +2,9 @@
 #include "dwpch.h"
 // end PCH
 
+#include "VertexArray.h"
 #include "Dwarfworks/Graphics/Renderer.h"
 #include "Platform/OpenGL/OpenGLVertexArray.h"
-#include "VertexArray.h"
 
 namespace Dwarfworks {
 

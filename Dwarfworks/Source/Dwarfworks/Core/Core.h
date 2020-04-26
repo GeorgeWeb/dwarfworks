@@ -9,7 +9,7 @@
 #include <map>
 
 // cross-platform break into the debugger, programmatically
-#include "debugbreak.h"
+#include <debugbreak.h>
 
 // Platform detection using predefined macros
 #ifdef _WIN32

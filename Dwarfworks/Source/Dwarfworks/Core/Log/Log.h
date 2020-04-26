@@ -1,11 +1,11 @@
 #ifndef CORE_LOGGING_LOG_H_
 #define CORE_LOGGING_LOG_H_
 
-#include "../Core.h"
+#include "Dwarfworks/Core/Core.h"
 
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 // for outputting custom types
-#include "spdlog/fmt/ostr.h"
+#include <spdlog/fmt/ostr.h>
 
 namespace Dwarfworks {
 
@@ -34,13 +34,6 @@ namespace Dwarfworks {
 // https://docs.microsoft.com/en-us/cpp/cpp/using-dllimport-and-dllexport-in-cpp-classes
 // -------------------------------------------------------------------------------------
 
-/// \class Log
-///
-/// \brief A log.
-///
-/// \author Georg
-/// \date 07/10/2019
-
 class Log {
  public:
   /// \fn DW_API static void Log::Initialize() noexcept;
@@ -52,160 +45,44 @@ class Log {
 
   DW_API static void Initialize() noexcept;
 
-  /// \fn DW_API static inline std::shared_ptr<spdlog::logger>&
-  /// Log::GetCoreLogger() noexcept
-  ///
-  /// \brief Gets core logger.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns The core logger.
-
-  DW_API static inline std::shared_ptr<spdlog::logger>&
-  GetCoreLogger() noexcept {
+  // returns the core logger
+  DW_API static inline Ref<spdlog::logger>& GetCoreLogger() {
     return s_CoreLogger;
   }
 
-  /// \fn DW_API static inline std::shared_ptr<spdlog::logger>&
-  /// Log::GetClientLogger() noexcept
-  ///
-  /// \brief Gets client logger.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns The client logger.
-
-  DW_API static inline std::shared_ptr<spdlog::logger>&
-  GetClientLogger() noexcept {
-    return s_ClientLogger;
+  // returns the client logger
+  DW_API static inline Ref<spdlog::logger>& GetClientLogger() {
+    return s_ClientLogger; 
   }
 
  private:
-  /// \brief The core logger.
-  static std::shared_ptr<spdlog::logger> s_CoreLogger;
-  /// \brief The client logger.
-  static std::shared_ptr<spdlog::logger> s_ClientLogger;
+  // the core logger
+  static Ref<spdlog::logger> s_CoreLogger;
+  // the client logger
+  static Ref<spdlog::logger> s_ClientLogger;
 };
 
 }  // namespace Dwarfworks
 
-// Core: Dwarfworks/Engine log macros
-
-/// \def DW_CORE_TRACE(...)
-///
-/// \brief A macro that defines core trace.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
 #define DW_CORE_TRACE(...) \
   ::Dwarfworks::Log::GetCoreLogger()->trace(__VA_ARGS__)
-
-/// \def DW_CORE_INFO(...)
-///
-/// \brief A macro that defines core Information.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
-#define DW_CORE_INFO(...) ::Dwarfworks::Log::GetCoreLogger()->info(__VA_ARGS__)
-
-/// \def DW_CORE_WARN(...)
-///
-/// \brief A macro that defines core Warning.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
-#define DW_CORE_WARN(...) ::Dwarfworks::Log::GetCoreLogger()->warn(__VA_ARGS__)
-
-/// \def DW_CORE_ERROR(...)
-///
-/// \brief A macro that defines core error.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
+#define DW_CORE_INFO(...)  \
+  ::Dwarfworks::Log::GetCoreLogger()->info(__VA_ARGS__)
+#define DW_CORE_WARN(...)  \
+ ::Dwarfworks::Log::GetCoreLogger()->warn(__VA_ARGS__)
 #define DW_CORE_ERROR(...) \
   ::Dwarfworks::Log::GetCoreLogger()->error(__VA_ARGS__)
-
-/// \def DW_CORE_FATAL(...)
-///
-/// \brief A macro that defines core fatal.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
 #define DW_CORE_FATAL(...) \
   ::Dwarfworks::Log::GetCoreLogger()->critical(__VA_ARGS__)
 
-// Client: Application/Game log macros
-
-/// \def DW_TRACE(...)
-///
-/// \brief A macro that defines trace.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
-#define DW_TRACE(...) ::Dwarfworks::Log::GetClientLogger()->trace(__VA_ARGS__)
-
-/// \def DW_INFO(...)
-///
-/// \brief A macro that defines Information.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
-#define DW_INFO(...) ::Dwarfworks::Log::GetClientLogger()->info(__VA_ARGS__)
-
-/// \def DW_WARN(...)
-///
-/// \brief A macro that defines Warning.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
-#define DW_WARN(...) ::Dwarfworks::Log::GetClientLogger()->warn(__VA_ARGS__)
-
-/// \def DW_ERROR(...)
-///
-/// \brief A macro that defines error.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
-#define DW_ERROR(...) ::Dwarfworks::Log::GetClientLogger()->error(__VA_ARGS__)
-
-/// \def DW_FATAL(...)
-///
-/// \brief A macro that defines fatal.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param ... Variable arguments providing additional information.
-
+#define DW_TRACE(...) \
+  ::Dwarfworks::Log::GetClientLogger()->trace(__VA_ARGS__)
+#define DW_INFO(...)  \
+  ::Dwarfworks::Log::GetClientLogger()->info(__VA_ARGS__)
+#define DW_WARN(...)  \
+  ::Dwarfworks::Log::GetClientLogger()->warn(__VA_ARGS__)
+#define DW_ERROR(...) \
+  ::Dwarfworks::Log::GetClientLogger()->error(__VA_ARGS__)
 #define DW_FATAL(...) \
   ::Dwarfworks::Log::GetClientLogger()->critical(__VA_ARGS__)
 

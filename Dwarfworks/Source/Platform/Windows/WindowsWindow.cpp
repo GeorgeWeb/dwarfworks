@@ -8,15 +8,15 @@
 #include "Dwarfworks/Events/ApplicationEvent.h"
 #include "Dwarfworks/Events/KeyEvent.h"
 #include "Dwarfworks/Events/MouseEvent.h"
+
+#include "Dwarfworks/Graphics/Renderer.h"
+
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Dwarfworks {
 
-static bool s_IsGLFWInitialized{false};
-
-IWindow* IWindow::Create(const WindowProps& props) {
-  return new WindowsWindow(props);
-}
+// static bool s_IsGLFWInitialized{false};
+static uint8_t s_GLFWWindowCount = 0;
 
 WindowsWindow::WindowsWindow(const WindowProps& props) { Initialize(props); }
 
@@ -50,7 +50,7 @@ void WindowsWindow::Initialize(const WindowProps& props) {
 
   DW_CORE_INFO("Window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
-  if (!s_IsGLFWInitialized) {
+  if (s_GLFWWindowCount == 0) {
     // TODO: glfwTerminate() on system shutdown (not on window close!)
     auto success = glfwInit();
     DW_CORE_ASSERT(success, "Could not initialize GLFW!");
@@ -58,19 +58,25 @@ void WindowsWindow::Initialize(const WindowProps& props) {
     glfwSetErrorCallback([](int error, const char* description) {
       DW_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
     });
-    s_IsGLFWInitialized = true;
   }
-
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
+  
+  {
+#ifdef DW_DEBUG
+  if (Renderer::GetAPI() == RendererAPI::API::OpenGL) {
+    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  }
+#endif
   // create the window
   m_Window = glfwCreateWindow(static_cast<int>(props.Width),
                               static_cast<int>(props.Height),
                               m_Data.Title.c_str(), nullptr, nullptr);
+  ++s_GLFWWindowCount;
+  }
 
-  m_Context = new OpenGLContext(m_Window);
+  m_Context = GraphicsContext::Create(m_Window);
   m_Context->Initialize();
 
   // set the custom window data to the GLFWwindow
@@ -177,10 +183,6 @@ void WindowsWindow::Initialize(const WindowProps& props) {
 }
 
 void WindowsWindow::Shutdown() {
-  // delete graphics context
-  if (m_Context) {
-    delete m_Context;
-  }
   // delete window handle
   glfwDestroyWindow(m_Window);
 }

@@ -3,8 +3,10 @@
 // end PCH
 
 #include "Application.h"
+
 #include "Dwarfworks/Core/Timestep.h"
 #include "Dwarfworks/Math/Math.h"
+#include "Dwarfworks/Graphics/Renderer.h"
 
 // imgui
 #include "imgui.h"
@@ -29,10 +31,12 @@ Application::Application() {
   s_Instance = this;
 
   // Create the Application Window
-  auto window = IWindow::Create();
-  m_Window.reset(std::move(window));
+  m_Window = Window::Create();
   // Set the Window event handling for this Application
   m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));
+
+  // Initialize the Renderer
+  Renderer::Initialize();
 
   // Create Application DebugUI Layer
   m_DebugUILayer = CreateRef<DebugUILayer>();

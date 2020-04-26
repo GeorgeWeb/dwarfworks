@@ -3,9 +3,3 @@
 // end PCH
 
 #include "RenderCommand.h"
-
-namespace Dwarfworks {
-
-// ...
-
-}

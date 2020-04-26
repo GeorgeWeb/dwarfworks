@@ -8,7 +8,7 @@
 
 namespace Dwarfworks {
 
-struct DW_API InputPrefs {};
+// struct DW_API InputPrefs {};
 
 // Interface representing an Input management system
 class DW_API Input {

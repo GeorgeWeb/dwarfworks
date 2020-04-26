@@ -8,6 +8,10 @@ namespace Dwarfworks {
 // Important: Make sure that Render Commands DO NOT do multiple things!
 class DW_API RenderCommand {
  public:
+  inline static void Initialize() {
+	s_RendererAPI->Initialize();
+  }
+
   inline static void SetClearColor(const glm::vec4& color) {
     s_RendererAPI->SetClearColor(color);
   }

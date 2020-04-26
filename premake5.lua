@@ -19,6 +19,7 @@ IncludeDir["ImGui"] = "Dwarfworks/Vendor/imgui"
 IncludeDir["glm"] = "Dwarfworks/Vendor/glm"
 IncludeDir["spdlog"] = "Dwarfworks/Vendor/spdlog/include"
 IncludeDir["debugbreak"] = "Dwarfworks/Vendor/debugbreak"
+IncludeDir["stb_image"] = "Dwarfworks/Vendor/stb_image"
 
 -- define project external dependencies
 group "Dependencies"
@@ -28,6 +29,7 @@ group "Dependencies"
 
 -- relative path to Dwarfworks source folder
 local SourceDir = "%{prj.name}/Source"
+local VendorDir = "%{prj.name}/Vendor"
 
 ----------------------------
 --       Dwarfworks       --
@@ -54,7 +56,11 @@ project "Dwarfworks"
         SourceDir .. "/Dwarfworks/**.h",
         SourceDir .. "/Dwarfworks/**.cpp",
         SourceDir .. "/Platform/OpenGL/**.h",
-        SourceDir .. "/Platform/OpenGL/**.cpp"
+        SourceDir .. "/Platform/OpenGL/**.cpp",
+		VendorDir .. "/stb_image/**.h",
+		VendorDir .. "/stb_image/**.cpp",
+		VendorDir .. "/glm/**.hpp",
+		VendorDir .. "/glm/**.inl"
     }
 
     -- silence external "noise"
@@ -75,7 +81,9 @@ project "Dwarfworks"
         -- Modern OpenGL profile loader
         "%{IncludeDir.Glad}",
         -- Immediate mode UI
-        "%{IncludeDir.ImGui}"
+        "%{IncludeDir.ImGui}",
+		-- Image decoding/encoding
+        "%{IncludeDir.stb_image}"
     }
 
     links {

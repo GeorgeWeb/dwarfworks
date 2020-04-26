@@ -2,12 +2,17 @@
 #include "dwpch.h"
 // end PCH
 
-#include <glad/glad.h>
-
 #include "Dwarfworks/Core/Log/Log.h"
+
 #include "OpenGLShader.h"
 
+#include <glad/glad.h>
+
 namespace Dwarfworks {
+
+OpenGLShader::OpenGLShader(std::string_view filepath) {
+	// TODO: Implement!
+}
 
 OpenGLShader::OpenGLShader(std::string_view vertexSource, std::string_view fragmentSource) {
   // TODO: Read our shaders into the appropriate buffers
@@ -121,67 +126,105 @@ OpenGLShader::OpenGLShader(std::string_view vertexSource, std::string_view fragm
   glDetachShader(program, fragmentShader);
 }
 
-OpenGLShader::OpenGLShader(std::string_view source) {
-	// TODO: Implement combined shader loading (from 1 file/source)
-}
-
 OpenGLShader::~OpenGLShader() { glDeleteProgram(m_RendererId); }
 
 void OpenGLShader::Bind() const { glUseProgram(m_RendererId); }
 
 void OpenGLShader::Unbind() const { glUseProgram(0); }
 
-void OpenGLShader::UploadUniformBool(std::string_view name, bool val) const {
-  glUniform1i(GetUniformLocation(name), static_cast<int>(val));
+void OpenGLShader::SetInt(std::string_view name, int value) const {
+  UploadUniformInt(name, value);
 }
 
-void OpenGLShader::UploadUniformInt(std::string_view name, int val) const {
-  glUniform1i(GetUniformLocation(name), val);
+void OpenGLShader::SetIntArray(std::string_view name, int* values, uint32_t count) const {
+  UploadUniformIntArray(name, values, count);
+}
+
+void OpenGLShader::SetFloat(std::string_view name, float value) const {
+  UploadUniformFloat(name, value);
+}
+
+void OpenGLShader::SetFloatArray(std::string_view name, float* values, uint32_t count) const {
+	UploadUniformFloatArray(name, values, count);
+}
+
+void OpenGLShader::SetFloat2(std::string_view name, const glm::vec2& value) const {
+  UploadUniformFloat2(name, value);
+}
+
+void OpenGLShader::SetFloat3(std::string_view name, const glm::vec3& value) const {
+  UploadUniformFloat3(name, value);
+}
+
+void OpenGLShader::SetFloat4(std::string_view name, const glm::vec4& value) const {
+  UploadUniformFloat4(name, value);
+}
+
+void OpenGLShader::SetMat2(std::string_view name, const glm::mat2& value) const {
+  UploadUniformMat2(name, value);
+}
+
+void OpenGLShader::SetMat3(std::string_view name, const glm::mat3& value) const {
+  UploadUniformMat3(name, value);
+}
+
+void OpenGLShader::SetMat4(std::string_view name, const glm::mat4& value) const {
+  UploadUniformMat4(name, value);
+}
+
+void OpenGLShader::UploadUniformBool(std::string_view name, bool value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform1i(location, static_cast<int>(value));
+}
+
+void OpenGLShader::UploadUniformInt(std::string_view name, int value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform1i(location, value);
+}
+
+void OpenGLShader::UploadUniformIntArray(std::string_view name, int* values, uint32_t count) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform1iv(location, count, values);
 }
 
 void OpenGLShader::UploadUniformFloat(std::string_view name, float val) const {
-  glUniform1f(GetUniformLocation(name), val);
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform1f(location, val);
 }
 
-void OpenGLShader::UploadUniformFloat2(std::string_view name,
-                                       const glm::vec2& vec) const {
-  glUniform2fv(GetUniformLocation(name), 1, glm::value_ptr(vec));
+void OpenGLShader::UploadUniformFloatArray(std::string_view name, float* values, uint32_t count) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform1fv(location, count, values);
 }
 
-void OpenGLShader::UploadUniformFloat3(std::string_view name,
-                                       const glm::vec3& vec) const {
-  glUniform3fv(GetUniformLocation(name), 1, glm::value_ptr(vec));
+void OpenGLShader::UploadUniformFloat2(std::string_view name, const glm::vec2& value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform2f(location, value.x, value.y);
 }
 
-void OpenGLShader::UploadUniformFloat4(std::string_view name,
-                                       const glm::vec4& vec) const {
-  glUniform4fv(GetUniformLocation(name), 1, glm::value_ptr(vec));
+void OpenGLShader::UploadUniformFloat3(std::string_view name, const glm::vec3& value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform3f(location, value.x, value.y, value.z);
 }
 
-void OpenGLShader::UploadUniformMat2(std::string_view name,
-                                     const glm::mat2& mat) const {
-  glUniformMatrix2fv(GetUniformLocation(name), 1, GL_FALSE,
-                     glm::value_ptr(mat));
+void OpenGLShader::UploadUniformFloat4(std::string_view name, const glm::vec4& value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniform4f(location, value.x, value.y, value.z, value.w);
 }
 
-void OpenGLShader::UploadUniformMat3(std::string_view name,
-                                     const glm::mat3& mat) const {
-  glUniformMatrix3fv(GetUniformLocation(name), 1, GL_FALSE,
-                     glm::value_ptr(mat));
+void OpenGLShader::UploadUniformMat2(std::string_view name, const glm::mat2& value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniformMatrix2fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
-void OpenGLShader::UploadUniformMat4(std::string_view name,
-                                     const glm::mat4& mat) const {
-  glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE,
-                     glm::value_ptr(mat));
+void OpenGLShader::UploadUniformMat3(std::string_view name, const glm::mat3& value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
-int OpenGLShader::GetUniformLocation(std::string_view name) const {
-  auto location = glGetUniformLocation(m_RendererId, name.data());
-  if (location == -1) {
-    DW_CORE_ERROR("Uniform location not found!");
-  }
-  return location;
+void OpenGLShader::UploadUniformMat4(std::string_view name, const glm::mat4& value) const {
+  GLint location = glGetUniformLocation(m_RendererId, name.data());
+  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 }
 
 }  // namespace Dwarfworks

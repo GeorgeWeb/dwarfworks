@@ -9,6 +9,10 @@
 
 namespace Dwarfworks {
 
+void Renderer::Initialize() {
+  RenderCommand::Initialize();
+}
+
 void Renderer::BeginScene(OrthographicCamera& camera) {
   m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
 }
@@ -22,15 +26,12 @@ void Renderer::Submit(const Ref<Shader>& shader,
   shader->Bind();
 
   // submit the view-projection matrix
-  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4(
-      "u_ViewProjection", m_SceneData->ViewProjectionMatrix);
+  shader->SetMat4("u_ViewProjection", m_SceneData->ViewProjectionMatrix);
   // submit the model matrix
-  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformMat4(
-      "u_Transform", transform);
+  shader->SetMat4("u_Transform", transform);
+  // submit the light direction vector
   if (m_SceneData->hasLight) {
-	  // submit the light direction vector
-	  std::dynamic_pointer_cast<OpenGLShader>(shader)->UploadUniformFloat3(
-		  "u_LightDir", m_SceneData->LightDirectionVector);
+	shader->SetFloat3("u_LightDir", m_SceneData->LightDirectionVector);
   }
 
   // draw mesh

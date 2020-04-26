@@ -234,6 +234,12 @@ class DW_API IndexBuffer {
   static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
 };
 
+// TODO:
+class DW_API ConstantBuffer {}; // Uniform Buffer in OpenGL
+
+// TODO:
+class DW_API FrameBuffer {};
+
 }  // namespace Dwarfworks
 
 #endif  // GRAPHICS_BUFFER_H_

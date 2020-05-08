@@ -4,7 +4,7 @@
 #include "Dwarfworks/Graphics/Shader.h"
 #include "Dwarfworks/Math/Math.h"
 
-// TODO: REMOVE!
+// Forward declare GLenum rather than including OpenGL for just this.
 typedef unsigned int GLenum;
 
 namespace Dwarfworks {

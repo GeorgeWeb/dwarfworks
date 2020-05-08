@@ -68,155 +68,41 @@ enum class EventType {
   MouseScrolled
 };
 
-/// \def EVENT_CLASS_TYPE(type)
-///
-/// \brief A macro that defines event class type.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param type The type.
-
 #define EVENT_CLASS_TYPE(type)                                                \
   static EventType GetStaticType() { return EventType::type; }                \
   virtual EventType GetEventType() const override { return GetStaticType(); } \
   virtual const char* GetName() const override { return #type; }
 
-/// \def EVENT_CLASS_CATEGORY(category)
-///
-/// \brief A macro that defines event class category.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param category The category.
-
 #define EVENT_CLASS_CATEGORY(category) \
   virtual int GetCategoryFlags() const override { return category; }
-
-/// \class Event
-///
-/// \brief An api.
-///
-/// \author Georg
-/// \date 07/10/2019
 
 class DW_API Event {
  public:
   /// \brief True if handled.
   bool IsHandled = false;
 
-  /// \fn virtual EventType Event::GetEventType() const = 0;
-  ///
-  /// \brief Gets event type.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns The event type.
-
   virtual EventType GetEventType() const = 0;
-
-  /// \fn virtual const char* Event::GetName() const = 0;
-  ///
-  /// \brief Gets the name.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns Null if it fails, else the name.
-
   virtual const char* GetName() const = 0;
-
-  /// \fn virtual int Event::GetCategoryFlags() const = 0;
-  ///
-  /// \brief Gets category flags.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns The category flags.
-
   virtual int GetCategoryFlags() const = 0;
 
-  /// \fn virtual std::string Event::ToString() const
-  ///
-  /// \brief Convert this object into a string representation.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \returns A std::string that represents this object.
 
   virtual std::string ToString() const { return GetName(); }
-
-  /// \fn inline bool Event::IsInCategory(EventCategory category) const
-  ///
-  /// \brief Query if 'category' is in category.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \param category
-  /// The category.
-  ///
-  /// \returns True if in category, false if not.
 
   // TODO: Rework the current design that uses unscoped enum!
   inline bool IsInCategory(EventCategory category) const {
     return GetCategoryFlags() & category;
   }
 
-  /// \fn inline bool Event::CompareType(EventType type) const
-  ///
-  /// \brief Compare type.
-  ///
-  /// \author Georg
-  /// \date 07/10/2019
-  ///
-  /// \param type
-  /// The type.
-  ///
-  /// \returns True if it succeeds, false if it fails.
-
   inline bool CompareType(EventType type) const {
     return GetEventType() == type;
   }
 };
 
-/// \fn inline bool operator==(const Event& lhs, const Event& rhs)
-///
-/// \brief Equality operator.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param lhs The first instance to compare.
-/// \param rhs
-/// The second instance to compare.
-///
-/// \returns True if the parameters are considered equivalent.
-
 inline bool operator==(const Event& lhs, const Event& rhs) {
-  // check types
+  // Check if both events types are equal.
+  // May want to check names as well but not considering for now.
   return lhs.GetEventType() == rhs.GetEventType();
-  // check names
-  // && lhs.GetName() == rhs.GetName();
 }
-
-/// \fn inline std::ostream& operator<<(std::ostream& os, const Event& event) {
-/// return os << event.ToString();
-///
-/// \brief Stream insertion operator.
-///
-/// \author Georg
-/// \date 07/10/2019
-///
-/// \param [in,out] os    The operating system.
-/// \param 		    event
-/// The event.
-///
-/// \returns The shifted result.
 
 inline std::ostream& operator<<(std::ostream& os, const Event& event) {
   return os << event.ToString();

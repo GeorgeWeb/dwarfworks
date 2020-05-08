@@ -92,35 +92,36 @@ void Application::GameLoop() {
     // -------------------------------- //
     // -- Update layers --------------- //
     // -------------------------------- //
+    if (!IsMinimized()) {
+      for (auto appLayer : m_LayerStack) {
+        appLayer->OnUpdate(deltaTime);
+      }
 
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnUpdate(deltaTime);
+      // -------------------------------- //
+      // -- Render layers --------------- //
+      // -------------------------------- //
+
+      for (auto appLayer : m_LayerStack) {
+        appLayer->OnRender();
+      }
+
+      // -------------------------------- //
+      // -- Render DebugUI overlay ------ //
+      // -------------------------------- //
+
+      m_DebugUILayer->Begin();
+
+      for (auto appLayer : m_LayerStack) {
+        appLayer->OnDebugUIRender();
+      }
+
+      m_DebugUILayer->End();
     }
-
-    // -------------------------------- //
-    // -- Render layers --------------- //
-    // -------------------------------- //
-
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnRender();
-    }
-
-    // -------------------------------- //
-    // -- Render DebugUI overlay ------ //
-    // -------------------------------- //
-
-    m_DebugUILayer->Begin();
-
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnDebugUIRender();
-    }
-
-    m_DebugUILayer->End();
-
     // -------------------------------- //
     // -- Poll window events ---------- //
     // -------------------------------- //
 
+    // TODO: If minimized - don't swap buffers
     m_Window->OnUpdate();
   }
 }
@@ -139,58 +140,61 @@ void Application::DebugGameLoop() {
     // -------------------------------- //
     // -- Update layers --------------- //
     // -------------------------------- //
-
-    for (auto appLayer : m_LayerStack) {
-      appLayer->OnUpdate(deltaTime);
-    }
-
-    // -------------------------------- //
-    // -- Render layers --------------- //
-    // -------------------------------- //
-
-    // if the current Test layer is active, render this layer.
-    if (m_CurrentTest) {
-      m_CurrentTest->OnRender();
-    }
-
-    // if the current Test layer is TestMenu, render all the 
-    // Application layers excluding the current Test layer.
-    if (m_CurrentTest == m_TestMenu.get()) {
+    if (!IsMinimized()) {
       for (auto appLayer : m_LayerStack) {
-        if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
-          appLayer->OnRender();
+        appLayer->OnUpdate(deltaTime);
+      }
+
+      // -------------------------------- //
+      // -- Render layers --------------- //
+      // -------------------------------- //
+
+      // if the current Test layer is active, render this layer.
+      if (m_CurrentTest) {
+        m_CurrentTest->OnRender();
+      }
+
+      // if the current Test layer is TestMenu, render all the 
+      // Application layers excluding the current Test layer.
+      if (m_CurrentTest == m_TestMenu.get()) {
+        for (auto appLayer : m_LayerStack) {
+          if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
+            appLayer->OnRender();
+          }
         }
       }
-    }
 
-    // -------------------------------- //
-    // -- Render DebugUI overlay ------ //
-    // -------------------------------- //
 
-    m_DebugUILayer->Begin();
+      // -------------------------------- //
+      // -- Render DebugUI overlay ------ //
+      // -------------------------------- //
 
-    // if the current Test layer is active, render DebugUI for this layer.
-    if (m_CurrentTest) {
-      // if the current Test layer is not TestMenu, display a BACK button
-      // and set it to point to TestMenu upon clicking the BACK button.
-      if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("Menu")) {
-        delete m_CurrentTest;
-        m_CurrentTest = m_TestMenu.get();
+      // TODO: If minimized - don't swap buffers
+      m_DebugUILayer->Begin();
+
+      // if the current Test layer is active, render DebugUI for this layer.
+      if (m_CurrentTest) {
+        // if the current Test layer is not TestMenu, display a BACK button
+        // and set it to point to TestMenu upon clicking the BACK button.
+        if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("Menu")) {
+          delete m_CurrentTest;
+          m_CurrentTest = m_TestMenu.get();
+        }
+        m_CurrentTest->OnDebugUIRender();
       }
-      m_CurrentTest->OnDebugUIRender();
-    }
 
-    // if the current Test layer is TestMenu, render DebugUI for 
-    // all Application layers excluding the current Test layer.
-    if (m_CurrentTest == m_TestMenu.get()) {
-      for (auto appLayer : m_LayerStack) {
-        if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
-          appLayer->OnDebugUIRender();
+      // if the current Test layer is TestMenu, render DebugUI for 
+      // all Application layers excluding the current Test layer.
+      if (m_CurrentTest == m_TestMenu.get()) {
+        for (auto appLayer : m_LayerStack) {
+          if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
+            appLayer->OnDebugUIRender();
+          }
         }
       }
-    }
 
-    m_DebugUILayer->End();
+      m_DebugUILayer->End();
+    }
 
     // -------------------------------- //
     // -- Poll window events ---------- //
@@ -205,8 +209,8 @@ void Application::OnEvent(Event& event) {
   // listen for upcoming events and register them
   EventManager eventManager(event);
   // dispatch the event and call its function if it matches the registered event
-  eventManager.Dispatch<WindowCloseEvent>(
-      DW_BIND_EVENT_FN(Application::OnWindowClosed));
+  eventManager.Dispatch<WindowCloseEvent>(DW_BIND_EVENT_FN(Application::OnWindowClosed));
+  eventManager.Dispatch<WindowResizeEvent>(DW_BIND_EVENT_FN(Application::OnWindowResize));
 
   // call events in reverse order from most top to most bottom layer
   std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
@@ -224,6 +228,21 @@ bool Application::OnWindowClosed(WindowCloseEvent& event) {
   // stop running
   SetRunning(false);
   return true; // block
+}
+
+bool Application::OnWindowResize(WindowResizeEvent& event) {
+  const auto width = event.GetWidth();
+  const auto height = event.GetHeight();
+
+  if (width == 0 || height == 0) {
+    SetMinimized(true);
+    return false;
+  }
+
+  SetMinimized(false);
+  Renderer::OnWindowResize(width, height);
+
+  return false;
 }
 
 }  // namespace Dwarfworks

@@ -72,11 +72,6 @@ class DW_API Application {
   // Executes the event action
   virtual void OnEvent(Event& event);
 
-  // Query if the application is running
-  inline bool IsRunning() const noexcept { return m_IsRunning; }
-  // Set the application running state
-  inline void SetRunning(bool isRunning) { m_IsRunning = isRunning; }
-
   // ...
   inline float GetLastFrameTime() const noexcept { return m_LastFrameTime; }
 
@@ -94,14 +89,25 @@ class DW_API Application {
   // Executes the window closed action
   // True if it succeeds, false if it fails.
   virtual bool OnWindowClosed(WindowCloseEvent& event);
+  virtual bool OnWindowResize(WindowResizeEvent& event);
+
+  // Query if the application is running
+  inline bool IsRunning() const { return m_Running; }
+  // Set the application running state
+  inline void SetRunning(bool running) { m_Running = running; }
+  // ...
+  inline bool IsMinimized() const { return m_Minimized; }
+  inline void SetMinimized(bool minimized) { m_Minimized = minimized; }
 
  protected:
   Scope<Window> m_Window;
   Ref<DebugUILayer> m_DebugUILayer;
   LayerStack m_LayerStack;
   
-private:
-  bool m_IsRunning = true;
+ private:
+  bool m_Running = true;
+  bool m_Minimized = false;
+
   // timestep
   float m_LastFrameTime = 0.0f;
 

@@ -8,6 +8,8 @@ class DW_API OpenGLRendererAPI : public RendererAPI {
  public:
   virtual void Initialize() const override;
 
+  virtual void SetViewport(int x, int y, uint32_t width, uint32_t height) const override;
+
   virtual void SetClearColor(const glm::vec4& color) const override;
   virtual void Clear() const override;
 

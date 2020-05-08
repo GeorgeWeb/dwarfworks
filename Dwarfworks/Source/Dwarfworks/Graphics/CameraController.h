@@ -13,8 +13,8 @@ class DW_API OrthographicCameraController {
  public:
   OrthographicCameraController(float aspectRatio, bool canRotate = false);
 
-  inline OrthographicCamera& GetCamera() { return m_Camera; }
-  inline const OrthographicCamera& GetCamera() const { return m_Camera; }
+  OrthographicCamera& GetCamera() { return m_Camera; }
+  const OrthographicCamera& GetCamera() const { return m_Camera; }
 
   inline float GetZoomLevel() const { return m_ZoomLevel; }
   inline void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; }
@@ -24,8 +24,8 @@ class DW_API OrthographicCameraController {
 
  private:
   // bool OnMouseMoved(MouseMovedEvent& mouseEvent);
-  bool OnMouseScrolled(MouseScrolledEvent& mouseEvent);
-  bool OnWindowResized(WindowResizeEvent& windowEvent);
+  bool OnMouseScrolled(MouseScrolledEvent& event);
+  bool OnWindowResize(WindowResizeEvent& event);
 
  private:
   float m_AspectRatio;
@@ -35,7 +35,8 @@ class DW_API OrthographicCameraController {
   bool m_CanRotate;
 
   glm::vec3 m_CameraPosition = {0.0f, 0.0f, 0.0f};
-  float m_CameraRotation = 0.0f;  // degrees, in anti-clockwise direction
+  // rotate angle - degrees in anti-clockwise direction (OpenGL)
+  float m_CameraRotation = 0.0f;
 
   // default translation speed
   float m_CameraTranslationSpeed = 1.0f;
@@ -46,7 +47,7 @@ class DW_API OrthographicCameraController {
   float m_ZoomSpeed = 0.25f;
 };
 
-// 3D Perspective Camera Controller
+// TODO: 3D Perspective Camera Controller
 class DW_API OrbitalCameraController {
  public:
   inline OrbitalCamera& GetCamera() { return m_Camera; }

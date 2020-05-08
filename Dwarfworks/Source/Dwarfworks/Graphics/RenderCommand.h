@@ -12,6 +12,10 @@ class DW_API RenderCommand {
 	s_RendererAPI->Initialize();
   }
 
+  inline static void SetViewport(int x, int y, uint32_t width, uint32_t height) {
+    s_RendererAPI->SetViewport(x, y, width, height);
+  }
+
   inline static void SetClearColor(const glm::vec4& color) {
     s_RendererAPI->SetClearColor(color);
   }

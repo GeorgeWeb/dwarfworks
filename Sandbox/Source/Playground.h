@@ -18,14 +18,14 @@ class Playground : public Dwarfworks::Layer {
   using SpriteTable = std::map<const std::string, Dwarfworks::Ref<Dwarfworks::VertexArray>>;
 
 #if ASPECT_RATIO_16_10
-	static constexpr auto s_ScreenWidth = 1440u;
-	static constexpr auto s_ScreenHeight = 900u;
+	static constexpr float s_ScreenWidth = 1440.0f;
+	static constexpr float s_ScreenHeight = 900.0f;
 #else
-	static constexpr auto s_ScreenWidth = 1366u;
-	static constexpr auto s_ScreenHeight = 768u;
+	static constexpr float s_ScreenWidth = 1366.0f;
+	static constexpr float s_ScreenHeight = 768.0f;
 #endif
-	static constexpr auto s_AspectRatio = static_cast<float>(s_ScreenWidth) / s_ScreenHeight;
-	static constexpr auto s_CanRotate = true;
+	static constexpr float s_AspectRatio = s_ScreenWidth / s_ScreenHeight;
+	static constexpr bool s_CanRotate = true;
  public:
   Playground()
       : Layer("Playground"),
@@ -139,13 +139,13 @@ class Playground : public Dwarfworks::Layer {
 	// because UBOs in OpenGL/Vulkan are not the same in Direct3D - they are Constant buffers.
 
     // shader program
-	auto& basicShader = m_ShaderLib.Load("Assets/Shaders/Basic.glsl");
+	auto& basicShader = m_ShaderLibrary.Load("Assets/Shaders/Basic.glsl");
 
     // flat color shader program
-	auto& flatColorShader = m_ShaderLib.Load("Assets/Shaders/FlatColor.glsl");
+	auto& flatColorShader = m_ShaderLibrary.Load("Assets/Shaders/FlatColor.glsl");
 
 	// texture shader program
-	auto& textureShader = m_ShaderLib.Load("Assets/Shaders/Texture.glsl");
+	auto& textureShader = m_ShaderLibrary.Load("Assets/Shaders/Texture.glsl");
 	
 	// Load texture(s)
 	m_Textures["checkerboard"] = Dwarfworks::Texture2D::Create("Assets/Textures/Checkerboard.png");
@@ -180,9 +180,9 @@ class Playground : public Dwarfworks::Layer {
 	auto& square = m_Sprites["square"];
 
 	// Get references to the shaders
-	auto& basicShader = m_ShaderLib.Get("Basic");
-	auto& flatColorShader = m_ShaderLib.Get("FlatColor");
-	auto& textureShader = m_ShaderLib.Get("Texture");
+	auto& basicShader = m_ShaderLibrary.Get("Basic");
+	auto& flatColorShader = m_ShaderLibrary.Get("FlatColor");
+	auto& textureShader = m_ShaderLibrary.Get("Texture");
 
 	// Get references to the textures
 	auto& checkerboardTexture = m_Textures["checkerboard"];
@@ -239,7 +239,7 @@ class Playground : public Dwarfworks::Layer {
     ImGui::ColorEdit4("Color 1", glm::value_ptr(blueColor));
 	ImGui::ColorEdit4("Color 2", glm::value_ptr(redColor));
 	ImGui::Text("Textured Square");
-	// TODO:
+	// TODO: Add properties...
     ImGui::End();
   }
 
@@ -268,7 +268,7 @@ class Playground : public Dwarfworks::Layer {
   Dwarfworks::OrthographicCameraController m_CameraController;
 
   // shaders
-  Dwarfworks::ShaderLibrary m_ShaderLib;
+  Dwarfworks::ShaderLibrary m_ShaderLibrary;
 
   // textures
   Texture2DTable m_Textures;

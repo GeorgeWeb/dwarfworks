@@ -14,7 +14,8 @@ namespace Dwarfworks {
 OrthographicCameraController::OrthographicCameraController(float aspectRatio,
                                                            bool canRotate)
     : m_AspectRatio(aspectRatio),
-      m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel,
+      m_Camera(-m_AspectRatio * m_ZoomLevel,
+                m_AspectRatio * m_ZoomLevel,
                -m_ZoomLevel, m_ZoomLevel),
       m_CanRotate(canRotate) {}
 
@@ -67,29 +68,30 @@ void OrthographicCameraController::OnUpdate(Timestep deltaTime) {
 
 void OrthographicCameraController::OnEvent(Event& event) {
   EventManager eventManager(event);
-  eventManager.Dispatch<MouseScrolledEvent>(
-      DW_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-  eventManager.Dispatch<WindowResizeEvent>(
-      DW_BIND_EVENT_FN(OrthographicCameraController::OnWindowResized));
+  eventManager.Dispatch<MouseScrolledEvent>(DW_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
+  eventManager.Dispatch<WindowResizeEvent>(DW_BIND_EVENT_FN(OrthographicCameraController::OnWindowResize));
 }
 
-bool OrthographicCameraController::OnMouseScrolled(
-    MouseScrolledEvent& mouseEvent) {
-  m_ZoomLevel -= mouseEvent.GetYOffset() * m_ZoomSpeed;
+bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& event) {
+  m_ZoomLevel -= event.GetYOffset() * m_ZoomSpeed;
   m_ZoomLevel = std::max(m_ZoomLevel, m_ZoomSpeed);
+
   m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel,
                          m_AspectRatio * m_ZoomLevel, -m_ZoomLevel,
                          m_ZoomLevel);
+  
   return false;
 }
 
-bool OrthographicCameraController::OnWindowResized(
-    WindowResizeEvent& windowEvent) {
-  m_AspectRatio -= static_cast<float>(windowEvent.GetWidth()) /
-                   static_cast<float>(windowEvent.GetHeight());
+bool OrthographicCameraController::OnWindowResize(WindowResizeEvent& event) {
+  const auto width = event.GetWidth();
+  const auto height = event.GetHeight();
+  m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
+
   m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel,
-                         m_AspectRatio * m_ZoomLevel, -m_ZoomLevel,
-                         m_ZoomLevel);
+                          m_AspectRatio * m_ZoomLevel,
+                         -m_ZoomLevel, m_ZoomLevel);
+ 
   return false;
 }
 

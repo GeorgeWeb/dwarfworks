@@ -91,11 +91,12 @@ void WindowsWindow::Initialize(const WindowProps& props) {
   glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width,
                                          int height) {
     auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
-    auto event = WindowResizeEvent(width, height);
     // update the window dimensions
     data.Width = width;
     data.Height = height;
     // set the window resize callback
+    auto event = WindowResizeEvent(width, height);
+    DW_CORE_WARN("Resolution: {0} x {1}", width, height);
     data.EventCallback(event);
   });
 

@@ -6,32 +6,29 @@
 
 namespace Dwarfworks {
 
-OrthographicCamera::OrthographicCamera(glm::mat4 projectionMatrix,
-                                       glm::mat4 viewMatrix)
-    : m_ViewProjection(projectionMatrix, viewMatrix) {}
+static constexpr float near = -1.0f;
+static constexpr float far = 1.0f;
 
-OrthographicCamera::OrthographicCamera(float left, float right, float bottom,
-                                       float top, float near, float far)
-    : m_ViewProjection(glm::ortho(left, right, bottom, top, near, far),
-                       glm::mat4(1.0f)) {}
+OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
+    : m_ProjectionMatrix(glm::ortho(left, right, bottom, top, near, far)),
+      m_ViewMatrix(1.0f) {
+  m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+}
 
-void OrthographicCamera::SetProjection(float left, float right, float bottom,
-                                       float top, float near, float far) {
-  m_ViewProjection.ProjectionMatrix =
-      glm::ortho(left, right, bottom, top, near, far);
-  m_ViewProjection.ViewProjectionMatrix =
-      m_ViewProjection.ProjectionMatrix * m_ViewProjection.ViewMatrix;
+void OrthographicCamera::SetProjection(float left, float right, float bottom, float top) {
+    m_ProjectionMatrix = glm::ortho(left, right, bottom, top, near, far);
+    m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
 void OrthographicCamera::RecalculateViewMatrix() {
   // create transform matrix (rotated by 'z' axis)
-  glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position);
-  transform = glm::rotate(transform, glm::radians(m_Rotation),
-                          glm::vec3(0.0f, 0.0f, 1.0f));
+  glm::mat4 transform = glm::translate(glm::mat4(1.0f), m_Position) *
+      glm::rotate(glm::mat4(1.0f), glm::radians(m_Rotation),
+      glm::vec3(0, 0, 1));
 
-  m_ViewProjection.ViewMatrix = glm::inverse(transform);
-  m_ViewProjection.ViewProjectionMatrix = /* OpenGL matrix mul order: */
-      m_ViewProjection.ProjectionMatrix * m_ViewProjection.ViewMatrix;
+  m_ViewMatrix = glm::inverse(transform);
+  // Note: Using OpenGL matrix multiplication order
+  m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 }
 
 }  // namespace Dwarfworks

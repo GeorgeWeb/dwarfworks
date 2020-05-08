@@ -7,32 +7,12 @@
 namespace Dwarfworks {
 
 // 2D Orthographic Camera
-
-struct DW_API ViewProjection {
-  glm::mat4 ProjectionMatrix;
-  glm::mat4 ViewMatrix;
-
-  // cache of the view-projection matrix
-  glm::mat4 ViewProjectionMatrix;
-
-  // constructing the view-projection matrix
-  // note: accepts that the view matrix is inversed by default
-  ViewProjection(glm::mat4 projectionMatrix, glm::mat4 viewMatrix)
-      : ProjectionMatrix{projectionMatrix},
-        ViewMatrix{viewMatrix},
-        ViewProjectionMatrix{ProjectionMatrix * ViewMatrix} {}
-};
-
 class DW_API OrthographicCamera {
  public:
-  // TODO: Implement generic camera constructor
-  OrthographicCamera(glm::mat4 projectionMatrix, glm::mat4 viewMatrix);
   // Constructor that takes (rectangle) bounds (for orthographic matrix)
-  OrthographicCamera(float left, float right, float bottom, float top,
-                     float near = -1.0f, float far = 1.0f);
+  OrthographicCamera(float left, float right, float bottom, float top);
 
-  void SetProjection(float left, float right, float bottom, float top,
-                     float near = -1.0f, float far = 1.0f);
+  void SetProjection(float left, float right, float bottom, float top);
 
   inline const glm::vec3& GetPosition() const { return m_Position; }
   inline void SetPosition(const glm::vec3& position) {
@@ -47,15 +27,9 @@ class DW_API OrthographicCamera {
     RecalculateViewMatrix();
   }
 
-  inline const glm::mat4& GetProjectionMatrix() const {
-    return m_ViewProjection.ProjectionMatrix;
-  }
-  inline const glm::mat4& GetViewMatrix() const {
-    return m_ViewProjection.ViewMatrix;
-  }
-  inline const glm::mat4& GetViewProjectionMatrix() const {
-    return m_ViewProjection.ViewProjectionMatrix;
-  }
+  inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
+  inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
+  inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
 
  public:
   // TODO: Hook this up with the event system to recalculate
@@ -63,11 +37,14 @@ class DW_API OrthographicCamera {
   // void OnUpdate();
 
  private:
-  // TEMPORARY!
+  // Temporary, until hooked with the events system
   void RecalculateViewMatrix();
 
  private:
-  ViewProjection m_ViewProjection;
+  glm::mat4 m_ProjectionMatrix;
+  glm::mat4 m_ViewMatrix;
+  glm::mat4 m_ViewProjectionMatrix;
+
 
   // transformation of the camera
   glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};

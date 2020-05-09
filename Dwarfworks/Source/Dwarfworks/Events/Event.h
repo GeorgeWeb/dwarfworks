@@ -52,6 +52,8 @@ enum class EventType {
   WindowFocus,
   WindowLostFocus,
   WindowMoved,
+  // Frame Buffer Events
+  FramebufferResize,
   // Application Events
   AppFixedUpdate,
   AppUpdate,
@@ -84,7 +86,6 @@ class DW_API Event {
   virtual EventType GetEventType() const = 0;
   virtual const char* GetName() const = 0;
   virtual int GetCategoryFlags() const = 0;
-
 
   virtual std::string ToString() const { return GetName(); }
 

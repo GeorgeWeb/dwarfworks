@@ -1,6 +1,7 @@
 #ifndef GRAPHICS_RENDER_COMMAND_H_
 #define GRAPHICS_RENDER_COMMAND_H_
 
+// TODO: This include should be removed and the API should be set dynamically
 #include "Platform/OpenGL/OpenGLRendererAPI.h"
 
 namespace Dwarfworks {
@@ -8,11 +9,14 @@ namespace Dwarfworks {
 // Important: Make sure that Render Commands DO NOT do multiple things!
 class DW_API RenderCommand {
  public:
-  inline static void Initialize() {
-	s_RendererAPI->Initialize();
+  inline static void Initialize() { s_RendererAPI->Initialize(); }
+
+  inline static void SetViewport(uint32_t width, uint32_t height) {
+    SetViewport(0, 0, width, height);
   }
 
-  inline static void SetViewport(int x, int y, uint32_t width, uint32_t height) {
+  inline static void SetViewport(int x, int y, uint32_t width,
+                                 uint32_t height) {
     s_RendererAPI->SetViewport(x, y, width, height);
   }
 

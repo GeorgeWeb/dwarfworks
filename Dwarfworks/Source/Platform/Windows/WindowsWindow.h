@@ -18,8 +18,6 @@ class DW_API WindowsWindow : public Window {
   unsigned int GetWidth() const override { return m_Data.Width; }
   unsigned int GetHeight() const override { return m_Data.Height; }
 
-  // Window attributes
-
   void SetEventCallback(const EventCallbackFn& callback) override;
 
   void SetVSync(bool isEnabled) override;
@@ -31,7 +29,7 @@ class DW_API WindowsWindow : public Window {
   void Initialize(const WindowProps& props);
   void Shutdown();
 
-  /// \brief The window handle (pointer to GLFWwindow).
+  /// The native window handle
   GLFWwindow* m_Window;
   Scope<GraphicsContext> m_Context;
 

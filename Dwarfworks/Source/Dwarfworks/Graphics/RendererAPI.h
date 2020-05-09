@@ -12,7 +12,8 @@ class DW_API RendererAPI {
  public:
   virtual void Initialize() const = 0;
 
-  virtual void SetViewport(int x, int y, uint32_t width, uint32_t height) const = 0;
+  virtual void SetViewport(int x, int y, uint32_t width,
+                           uint32_t height) const = 0;
 
   virtual void SetClearColor(const glm::vec4 &color) const = 0;
   // TODO: Take in flags to what we actually wanna clear

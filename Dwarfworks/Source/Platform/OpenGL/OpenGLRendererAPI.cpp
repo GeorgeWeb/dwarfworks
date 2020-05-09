@@ -13,7 +13,8 @@ void OpenGLRendererAPI::Initialize() const {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void OpenGLRendererAPI::SetViewport(int x, int y, uint32_t width, uint32_t height) const {
+void OpenGLRendererAPI::SetViewport(int x, int y, uint32_t width,
+                                    uint32_t height) const {
   glViewport(x, y, width, height);
 }
 
@@ -28,8 +29,8 @@ void OpenGLRendererAPI::Clear() const {
 void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray) const {
   uint32_t elementCount = vertexArray->GetIndexBuffer()->GetCount();
   if (static bool print = true; print) {
-	  DW_CORE_INFO("Drawing elements with {0} indices.", elementCount);
-	  print = false;
+    DW_CORE_INFO("Drawing elements with {0} indices.", elementCount);
+    print = false;
   }
   glDrawElements(GL_TRIANGLES, elementCount, GL_UNSIGNED_INT, nullptr);
 }

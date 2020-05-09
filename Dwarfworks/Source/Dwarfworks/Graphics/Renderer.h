@@ -11,7 +11,7 @@ class DW_API Renderer {
  public:
   static void Initialize();
 
-  static void OnWindowResize(uint32_t width, uint32_t height);
+  static void OnFramebufferResize(uint32_t width, uint32_t height);
 
   static void BeginScene(OrthographicCamera& camera);
   static void EndScene();
@@ -26,8 +26,8 @@ class DW_API Renderer {
   // General scene storage (temporary)
   struct SceneData {
     glm::mat4 ViewProjectionMatrix;
-	glm::vec3 LightDirectionVector;
-	bool hasLight = false;
+    glm::vec3 LightDirectionVector;
+    bool hasLight = false;
   };
 
   inline static Scope<SceneData> m_Scene = CreateScope<SceneData>();

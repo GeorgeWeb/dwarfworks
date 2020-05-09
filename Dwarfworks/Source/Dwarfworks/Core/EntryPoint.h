@@ -8,13 +8,7 @@ auto main() -> int {
   Dwarfworks::Log::Initialize();
 
   auto app = Dwarfworks::CreateApplication();
-
-  #ifdef ENABLE_VISUAL_TESTING
-  app->DebugGameLoop();
-  #else
   app->GameLoop();
-  #endif
-
   delete app;
 
   return 0;

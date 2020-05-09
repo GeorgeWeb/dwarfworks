@@ -39,8 +39,8 @@ class DW_API Application {
 
   // Gets the Application singleton instance
   inline static Application& Get() {
-	// attempts a safer thread-safe singleton instance than than static guarante
-	//
+    // attempts a safer thread-safe singleton instance than than static guarante
+    //
     // Acquire-Release semantic for C++ atomics (standard thread-safe guarantee)
     // https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
     // acquire: no reads or writes in the current thread can be reordered before
@@ -64,7 +64,7 @@ class DW_API Application {
 
   // The application/game loop
   virtual void GameLoop();
-  
+
   // The application/game loop with built-in
   // TestMenu Layer for graphics testing purposes
   void DebugGameLoop();
@@ -90,6 +90,7 @@ class DW_API Application {
   // True if it succeeds, false if it fails.
   virtual bool OnWindowClosed(WindowCloseEvent& event);
   virtual bool OnWindowResize(WindowResizeEvent& event);
+  virtual bool OnFramebufferResize(FramebufferResizeEvent& event);
 
   // Query if the application is running
   inline bool IsRunning() const { return m_Running; }
@@ -103,7 +104,7 @@ class DW_API Application {
   Scope<Window> m_Window;
   Ref<DebugUILayer> m_DebugUILayer;
   LayerStack m_LayerStack;
-  
+
  private:
   bool m_Running = true;
   bool m_Minimized = false;

@@ -8,9 +8,7 @@
 #include "Dwarfworks/Events/ApplicationEvent.h"
 #include "Dwarfworks/Events/KeyEvent.h"
 #include "Dwarfworks/Events/MouseEvent.h"
-
 #include "Dwarfworks/Graphics/Renderer.h"
-
 #include "Platform/OpenGL/OpenGLContext.h"
 
 namespace Dwarfworks {
@@ -34,7 +32,7 @@ void WindowsWindow::SetEventCallback(const EventCallbackFn& callback) {
 }
 
 void WindowsWindow::SetVSync(bool isEnabled) {
-  // set the interval synchronisation time for a frame to be
+  // set the interval synchronization time for a frame to be
   // called for rendering depending on v-sync being enabled
   const auto interval = isEnabled ? 1 : 0;  // 1 is default, could be changed
   glfwSwapInterval(interval);
@@ -59,21 +57,21 @@ void WindowsWindow::Initialize(const WindowProps& props) {
       DW_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
     });
   }
-  
+
   {
-#ifdef DW_DEBUG
-  if (Renderer::GetAPI() == RendererAPI::API::OpenGL) {
-    glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-  }
-#endif
-  // create the window
-  m_Window = glfwCreateWindow(static_cast<int>(props.Width),
-                              static_cast<int>(props.Height),
-                              m_Data.Title.c_str(), nullptr, nullptr);
-  ++s_GLFWWindowCount;
+    // TODO: Only do in DEBUG mode!
+    if (Renderer::GetAPI() == RendererAPI::API::OpenGL) {
+      glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+      glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    }
+
+    // create the window
+    m_Window = glfwCreateWindow(static_cast<int>(props.Width),
+                                static_cast<int>(props.Height),
+                                m_Data.Title.c_str(), nullptr, nullptr);
+    ++s_GLFWWindowCount;
   }
 
   m_Context = GraphicsContext::Create(m_Window);
@@ -84,27 +82,46 @@ void WindowsWindow::Initialize(const WindowProps& props) {
   m_Data.VSync = true;  // v-sync is on by default
 
   // ------------------
-  // set glfw callbacks
+  // set GLFW callbacks
   // ------------------
-
-  // window resize
-  glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width,
-                                         int height) {
-    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
-    // update the window dimensions
-    data.Width = width;
-    data.Height = height;
-    // set the window resize callback
-    auto event = WindowResizeEvent(width, height);
-    DW_CORE_WARN("Resolution: {0} x {1}", width, height);
-    data.EventCallback(event);
-  });
 
   // window close
   glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
     auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
     auto event = WindowCloseEvent{};
     // set the window close callback
+    data.EventCallback(event);
+  });
+
+  // window resize
+  glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width,
+                                         int height) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+
+    const auto wndWidth = static_cast<uint32_t>(width);
+    const auto wndHeight = static_cast<uint32_t>(height);
+
+    // update the window dimensions
+    data.Width = wndWidth;
+    data.Height = wndHeight;
+
+    // set the window size callback
+    auto event = WindowResizeEvent(wndWidth, wndHeight);
+    DW_CORE_WARN("Window: {0} x {1}", wndWidth, wndHeight);
+    data.EventCallback(event);
+  });
+
+  // make sure the viewport matches the new window dimensions
+  glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width,
+                                              int height) {
+    auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+
+    const auto fbWidth = static_cast<uint32_t>(width);
+    const auto fbHeight = static_cast<uint32_t>(height);
+
+    // set the framebuffer size callback
+    auto event = FramebufferResizeEvent(fbWidth, fbHeight);
+    DW_CORE_WARN("Framebuffer: {0} x {1}", fbWidth, fbHeight);
     data.EventCallback(event);
   });
 
@@ -135,9 +152,9 @@ void WindowsWindow::Initialize(const WindowProps& props) {
   });
 
   // character type action
-  glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int charater) {
+  glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t charater) {
     auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
-    KeyTypedEvent event(charater);
+    auto event = KeyTypedEvent(charater);
     data.EventCallback(event);
   });
 

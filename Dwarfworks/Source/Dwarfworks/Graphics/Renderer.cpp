@@ -6,16 +6,11 @@
 
 namespace Dwarfworks {
 
-void Renderer::Initialize() {
-  RenderCommand::Initialize();
-}
+void Renderer::Initialize() { RenderCommand::Initialize(); }
 
-void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
-  // Note:
-  // Needs to be reworked based on framebuffers in the future!
-  // If rendering multiple viewports, upon window resizing we
-  // don't want to immediately set the viewport to this.
-  RenderCommand::SetViewport(0, 0, width, height);
+void Renderer::OnFramebufferResize(uint32_t width, uint32_t height) {
+  int x = 0, y = 0;
+  RenderCommand::SetViewport(x, y, width, height);
 }
 
 void Renderer::BeginScene(OrthographicCamera& camera) {
@@ -36,7 +31,7 @@ void Renderer::Submit(const Ref<Shader>& shader,
   shader->SetMat4("u_Transform", transform);
   // submit the light direction vector
   if (m_Scene->hasLight) {
-	shader->SetFloat3("u_LightDir", m_Scene->LightDirectionVector);
+    shader->SetFloat3("u_LightDir", m_Scene->LightDirectionVector);
   }
 
   // draw mesh

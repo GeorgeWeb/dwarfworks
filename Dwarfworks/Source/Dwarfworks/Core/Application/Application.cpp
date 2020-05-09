@@ -3,10 +3,9 @@
 // end PCH
 
 #include "Application.h"
-
 #include "Dwarfworks/Core/Timestep.h"
-#include "Dwarfworks/Math/Math.h"
 #include "Dwarfworks/Graphics/Renderer.h"
+#include "Dwarfworks/Math/Math.h"
 
 // imgui
 #include "imgui.h"
@@ -58,22 +57,19 @@ Application::Application() {
 }
 
 Application::~Application() {
-  // cleanup Test layer resources
-  #ifdef ENABLE_VISUAL_TESTING
+#ifdef ENABLE_VISUAL_TESTING
+  // Cleanup Visual Test layer resources
   if (m_CurrentTest) {
-    // TODO: Provide explanation!
     m_LayerStack.PopLayer(m_CurrentTest);
-    // TODO: Provide explanation!
     if (m_CurrentTest != m_TestMenu.get()) {
       delete m_CurrentTest;
     }
     m_CurrentTest = nullptr;
-    // TODO: Provide explanation!
     m_LayerStack.PopLayer(m_TestMenu.get());
   }
-  #endif
+#endif
 
-  // cleanup DebugUI overlay resources
+  // Cleanup DebugUI overlay resources
   m_LayerStack.PopOverlay(m_DebugUILayer.get());
 
   DW_CORE_INFO("Closed the Application!");
@@ -89,10 +85,10 @@ void Application::GameLoop() {
     Timestep deltaTime = time - m_LastFrameTime;
     m_LastFrameTime = time;
 
-    // -------------------------------- //
-    // -- Update layers --------------- //
-    // -------------------------------- //
     if (!IsMinimized()) {
+      // -------------------------------- //
+      // -- Update layers --------------- //
+      // -------------------------------- //
       for (auto appLayer : m_LayerStack) {
         appLayer->OnUpdate(deltaTime);
       }
@@ -101,60 +97,13 @@ void Application::GameLoop() {
       // -- Render layers --------------- //
       // -------------------------------- //
 
-      for (auto appLayer : m_LayerStack) {
-        appLayer->OnRender();
-      }
-
-      // -------------------------------- //
-      // -- Render DebugUI overlay ------ //
-      // -------------------------------- //
-
-      m_DebugUILayer->Begin();
-
-      for (auto appLayer : m_LayerStack) {
-        appLayer->OnDebugUIRender();
-      }
-
-      m_DebugUILayer->End();
-    }
-    // -------------------------------- //
-    // -- Poll window events ---------- //
-    // -------------------------------- //
-
-    // TODO: If minimized - don't swap buffers
-    m_Window->OnUpdate();
-  }
-}
-
-void Application::DebugGameLoop() {
-  #ifdef ENABLE_VISUAL_TESTING
-  while (IsRunning()) {
-    // -------------------------------- //
-    // -- Timestep calculation -------- //
-    // -------------------------------- //
-
-    float time = static_cast<float>(glfwGetTime());  // TODO:Platform::GetTime()
-    Timestep deltaTime = time - m_LastFrameTime;
-    m_LastFrameTime = time;
-
-    // -------------------------------- //
-    // -- Update layers --------------- //
-    // -------------------------------- //
-    if (!IsMinimized()) {
-      for (auto appLayer : m_LayerStack) {
-        appLayer->OnUpdate(deltaTime);
-      }
-
-      // -------------------------------- //
-      // -- Render layers --------------- //
-      // -------------------------------- //
-
-      // if the current Test layer is active, render this layer.
+#ifdef ENABLE_VISUAL_TESTING
+      // If the current Test layer is active, render this layer.
       if (m_CurrentTest) {
         m_CurrentTest->OnRender();
       }
 
-      // if the current Test layer is TestMenu, render all the 
+      // If the current Test layer is TestMenu, render all the
       // Application layers excluding the current Test layer.
       if (m_CurrentTest == m_TestMenu.get()) {
         for (auto appLayer : m_LayerStack) {
@@ -163,7 +112,11 @@ void Application::DebugGameLoop() {
           }
         }
       }
-
+#else
+      for (auto appLayer : m_LayerStack) {
+        appLayer->OnRender();
+      }
+#endif
 
       // -------------------------------- //
       // -- Render DebugUI overlay ------ //
@@ -172,7 +125,8 @@ void Application::DebugGameLoop() {
       // TODO: If minimized - don't swap buffers
       m_DebugUILayer->Begin();
 
-      // if the current Test layer is active, render DebugUI for this layer.
+#ifdef ENABLE_VISUAL_TESTING
+      // If the current Test layer is active, render DebugUI for this layer.
       if (m_CurrentTest) {
         // if the current Test layer is not TestMenu, display a BACK button
         // and set it to point to TestMenu upon clicking the BACK button.
@@ -183,7 +137,7 @@ void Application::DebugGameLoop() {
         m_CurrentTest->OnDebugUIRender();
       }
 
-      // if the current Test layer is TestMenu, render DebugUI for 
+      // If the current Test layer is TestMenu, render DebugUI for
       // all Application layers excluding the current Test layer.
       if (m_CurrentTest == m_TestMenu.get()) {
         for (auto appLayer : m_LayerStack) {
@@ -192,6 +146,11 @@ void Application::DebugGameLoop() {
           }
         }
       }
+#else
+      for (auto appLayer : m_LayerStack) {
+        appLayer->OnDebugUIRender();
+      }
+#endif
 
       m_DebugUILayer->End();
     }
@@ -200,17 +159,21 @@ void Application::DebugGameLoop() {
     // -- Poll window events ---------- //
     // -------------------------------- //
 
+    // TODO: If minimized - don't swap buffers
     m_Window->OnUpdate();
   }
-  #endif
 }
 
 void Application::OnEvent(Event& event) {
   // listen for upcoming events and register them
   EventManager eventManager(event);
   // dispatch the event and call its function if it matches the registered event
-  eventManager.Dispatch<WindowCloseEvent>(DW_BIND_EVENT_FN(Application::OnWindowClosed));
-  eventManager.Dispatch<WindowResizeEvent>(DW_BIND_EVENT_FN(Application::OnWindowResize));
+  eventManager.Dispatch<WindowCloseEvent>(
+      DW_BIND_EVENT_FN(Application::OnWindowClosed));
+  eventManager.Dispatch<WindowResizeEvent>(
+      DW_BIND_EVENT_FN(Application::OnWindowResize));
+  eventManager.Dispatch<FramebufferResizeEvent>(
+      DW_BIND_EVENT_FN(Application::OnFramebufferResize));
 
   // call events in reverse order from most top to most bottom layer
   std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
@@ -219,7 +182,6 @@ void Application::OnEvent(Event& event) {
   });
 }
 
-
 void Application::PushLayer(Layer* layer) { m_LayerStack.PushLayer(layer); }
 
 void Application::PushOverlay(Layer* layer) { m_LayerStack.PushOverlay(layer); }
@@ -227,20 +189,25 @@ void Application::PushOverlay(Layer* layer) { m_LayerStack.PushOverlay(layer); }
 bool Application::OnWindowClosed(WindowCloseEvent& event) {
   // stop running
   SetRunning(false);
-  return true; // block
+  return true;  // block
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& event) {
-  const auto width = event.GetWidth();
-  const auto height = event.GetHeight();
-
-  if (width == 0 || height == 0) {
+  if (event.GetWidth() == 0 || event.GetHeight() == 0) {
     SetMinimized(true);
     return false;
   }
 
   SetMinimized(false);
-  Renderer::OnWindowResize(width, height);
+
+  return false;
+}
+
+bool Application::OnFramebufferResize(FramebufferResizeEvent& event) {
+  const auto width = event.GetWidth();
+  const auto height = event.GetHeight();
+  // TODO: Framebuffer abstraction!
+  Renderer::OnFramebufferResize(event.GetWidth(), event.GetHeight());
 
   return false;
 }

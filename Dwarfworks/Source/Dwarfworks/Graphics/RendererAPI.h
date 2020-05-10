@@ -5,19 +5,31 @@
 
 namespace Dwarfworks {
 
+struct BufferTarget {
+  static const uint32_t Color;
+  static const uint32_t Depth;
+  static const uint32_t Stencil;
+};
+
 class DW_API RendererAPI {
  public:
   enum class API { None = 0, OpenGL = 1 };
 
- public:
   virtual void Initialize() const = 0;
 
   virtual void SetViewport(int x, int y, uint32_t width,
                            uint32_t height) const = 0;
 
+  virtual void SetScissor(int x, int y, uint32_t width,
+                          uint32_t height) const = 0;
+
+  virtual void SetBlending(bool enable = true) const = 0;
+  virtual void SetDepthTest(bool enable = true) const = 0;
+  virtual void SetScissorTest(bool enable = true) const = 0;
+
   virtual void SetClearColor(const glm::vec4 &color) const = 0;
   // TODO: Take in flags to what we actually wanna clear
-  virtual void Clear() const = 0;
+  virtual void Clear(uint32_t target = BufferTarget::Color) const = 0;
 
   virtual void DrawIndexed(const Ref<VertexArray> &vertexArray) const = 0;
 

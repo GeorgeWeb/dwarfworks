@@ -8,9 +8,13 @@ namespace Dwarfworks {
 
 void Renderer::Initialize() { RenderCommand::Initialize(); }
 
-void Renderer::OnFramebufferResize(uint32_t width, uint32_t height) {
-  int x = 0, y = 0;
+void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
+  OnWindowResize(0, 0, width, height);
+}
+
+void Renderer::OnWindowResize(int x, int y, uint32_t width, uint32_t height) {
   RenderCommand::SetViewport(x, y, width, height);
+  RenderCommand::SetScissor(x, y, width, height);
 }
 
 void Renderer::BeginScene(OrthographicCamera& camera) {

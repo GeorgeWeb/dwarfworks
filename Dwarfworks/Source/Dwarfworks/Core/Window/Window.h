@@ -1,19 +1,15 @@
 #ifndef CORE_WINDOW_WINDOW_H_
 #define CORE_WINDOW_WINDOW_H_
 
-#include "dwpch.h"
-
 #include "Dwarfworks/Core/Core.h"
 #include "Dwarfworks/Events/EventManager.h"
+#include "dwpch.h"
 
 namespace Dwarfworks {
 
 struct DW_API WindowProps {
-  /// \brief The title
   std::string Title;
-  /// \brief The width
   unsigned int Width;
-  /// \brief The height
   unsigned int Height;
 
   explicit WindowProps(const std::string& title = "Dwarfworks Engine",
@@ -21,7 +17,7 @@ struct DW_API WindowProps {
       : Title(title), Width(width), Height(height) {}
 };
 
-// Interface representing a desktop system based window. 
+// Interface representing a desktop system based window.
 // Implemented per platform
 
 class DW_API Window {
@@ -44,7 +40,7 @@ class DW_API Window {
   virtual bool IsVSync() const = 0;
 
   // Get the native window for the platform
-  // Note: Currently we're using GLFWwindow for all glfw supported platforms 
+  // Note: Currently we're using GLFWwindow for all GLFW supported platforms
   // until implemented using the native APIs
   virtual void* GetNativeWindow() const = 0;
 

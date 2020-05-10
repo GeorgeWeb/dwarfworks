@@ -11,8 +11,15 @@ class DW_API OpenGLRendererAPI : public RendererAPI {
   virtual void SetViewport(int x, int y, uint32_t width,
                            uint32_t height) const override;
 
+  virtual void SetScissor(int x, int y, uint32_t width,
+                          uint32_t height) const override;
+
+  virtual void SetBlending(bool enable = true) const override;
+  virtual void SetDepthTest(bool enable = true) const override;
+  virtual void SetScissorTest(bool enable = true) const override;
+
   virtual void SetClearColor(const glm::vec4& color) const override;
-  virtual void Clear() const override;
+  virtual void Clear(uint32_t target = BufferTarget::Color) const override;
 
   virtual void DrawIndexed(const Ref<VertexArray>& vertexArray) const override;
 };

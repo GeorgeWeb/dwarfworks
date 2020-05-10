@@ -19,27 +19,14 @@
 
 namespace Dwarfworks {
 
-/// \class Application
-///
-/// \brief An api.
-///
-/// \author Georg
-/// \date 07/10/2019
-
 class DW_API Application {
  public:
-  Application();
+  Application(const WindowProps& props = WindowProps());
   virtual ~Application();
-
-  // Application is non-copyable and non-movable(for now)
-  Application(const Application&) = delete;
-  Application& operator=(const Application&) = delete;
-  Application(Application&&) = delete;
-  Application& operator=(Application&&) = delete;
 
   // Gets the Application singleton instance
   inline static Application& Get() {
-    // attempts a safer thread-safe singleton instance than than static guarante
+    // attempts safer thread-safe singleton instance than than static guarantee
     //
     // Acquire-Release semantic for C++ atomics (standard thread-safe guarantee)
     // https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
@@ -65,10 +52,6 @@ class DW_API Application {
   // The application/game loop
   virtual void GameLoop();
 
-  // The application/game loop with built-in
-  // TestMenu Layer for graphics testing purposes
-  void DebugGameLoop();
-
   // Executes the event action
   virtual void OnEvent(Event& event);
 
@@ -83,14 +66,13 @@ class DW_API Application {
   void PushOverlay(Layer* layer);
 
   // Gets the window for the user's platform
-  inline Window& GetWindow() const { return *m_Window; }
+  inline Window& GetWindow() /*const*/ { return *m_Window; }
 
  protected:
   // Executes the window closed action
   // True if it succeeds, false if it fails.
   virtual bool OnWindowClosed(WindowCloseEvent& event);
   virtual bool OnWindowResize(WindowResizeEvent& event);
-  virtual bool OnFramebufferResize(FramebufferResizeEvent& event);
 
   // Query if the application is running
   inline bool IsRunning() const { return m_Running; }

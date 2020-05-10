@@ -24,20 +24,20 @@ namespace Dwarfworks {
 std::atomic<Application*> Application::s_Instance = nullptr;
 std::mutex Application::s_Mutex;
 
-Application::Application() {
+Application::Application(const WindowProps& props) {
   DW_CORE_ASSERT(!s_Instance, "Instance of Application already exists!");
   // set the single instance to point to the existing application
   s_Instance = this;
 
   // Create the Application Window
-  m_Window = Window::Create();
+  m_Window = Window::Create(props);
   // Set the Window event handling for this Application
   m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));
 
   // Initialize the Renderer
   Renderer::Initialize();
 
-  // Create Application DebugUI Layer
+  // Create Application DebugUI Layer (as overlay)
   m_DebugUILayer = CreateRef<DebugUILayer>();
   PushOverlay(m_DebugUILayer.get());
 
@@ -52,7 +52,7 @@ Application::Application() {
                 m_TestMenu);
   // Set Current Test Layer to Test Menu
   m_CurrentTest = m_TestMenu.get();
-  m_LayerStack.PushLayer(m_CurrentTest);
+  m_LayerStack.PushOverlay(m_CurrentTest);
 #endif
 }
 
@@ -60,12 +60,12 @@ Application::~Application() {
 #ifdef ENABLE_VISUAL_TESTING
   // Cleanup Visual Test layer resources
   if (m_CurrentTest) {
-    m_LayerStack.PopLayer(m_CurrentTest);
+    m_LayerStack.PopOverlay(m_CurrentTest);
     if (m_CurrentTest != m_TestMenu.get()) {
       delete m_CurrentTest;
     }
     m_CurrentTest = nullptr;
-    m_LayerStack.PopLayer(m_TestMenu.get());
+    m_LayerStack.PopOverlay(m_TestMenu.get());
   }
 #endif
 
@@ -89,8 +89,8 @@ void Application::GameLoop() {
       // -------------------------------- //
       // -- Update layers --------------- //
       // -------------------------------- //
-      for (auto appLayer : m_LayerStack) {
-        appLayer->OnUpdate(deltaTime);
+      for (auto layer : m_LayerStack) {
+        layer->OnUpdate(deltaTime);
       }
 
       // -------------------------------- //
@@ -106,15 +106,15 @@ void Application::GameLoop() {
       // If the current Test layer is TestMenu, render all the
       // Application layers excluding the current Test layer.
       if (m_CurrentTest == m_TestMenu.get()) {
-        for (auto appLayer : m_LayerStack) {
-          if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
-            appLayer->OnRender();
+        for (auto layer : m_LayerStack) {
+          if (layer != m_CurrentTest && layer != m_TestMenu.get()) {
+            layer->OnRender();
           }
         }
       }
 #else
-      for (auto appLayer : m_LayerStack) {
-        appLayer->OnRender();
+      for (auto layer : m_LayerStack) {
+        layer->OnRender();
       }
 #endif
 
@@ -140,15 +140,15 @@ void Application::GameLoop() {
       // If the current Test layer is TestMenu, render DebugUI for
       // all Application layers excluding the current Test layer.
       if (m_CurrentTest == m_TestMenu.get()) {
-        for (auto appLayer : m_LayerStack) {
-          if (appLayer != m_CurrentTest && appLayer != m_TestMenu.get()) {
-            appLayer->OnDebugUIRender();
+        for (auto layer : m_LayerStack) {
+          if (layer != m_CurrentTest && layer != m_TestMenu.get()) {
+            layer->OnDebugUIRender();
           }
         }
       }
 #else
-      for (auto appLayer : m_LayerStack) {
-        appLayer->OnDebugUIRender();
+      for (auto layer : m_LayerStack) {
+        layer->OnDebugUIRender();
       }
 #endif
 
@@ -170,10 +170,9 @@ void Application::OnEvent(Event& event) {
   // dispatch the event and call its function if it matches the registered event
   eventManager.Dispatch<WindowCloseEvent>(
       DW_BIND_EVENT_FN(Application::OnWindowClosed));
+  // Note: Default resizing behaviour, refactor later.
   eventManager.Dispatch<WindowResizeEvent>(
       DW_BIND_EVENT_FN(Application::OnWindowResize));
-  eventManager.Dispatch<FramebufferResizeEvent>(
-      DW_BIND_EVENT_FN(Application::OnFramebufferResize));
 
   // call events in reverse order from most top to most bottom layer
   std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
@@ -199,15 +198,7 @@ bool Application::OnWindowResize(WindowResizeEvent& event) {
   }
 
   SetMinimized(false);
-
-  return false;
-}
-
-bool Application::OnFramebufferResize(FramebufferResizeEvent& event) {
-  const auto width = event.GetWidth();
-  const auto height = event.GetHeight();
-  // TODO: Framebuffer abstraction!
-  Renderer::OnFramebufferResize(event.GetWidth(), event.GetHeight());
+  Renderer::OnWindowResize(event.GetWidth(), event.GetHeight());
 
   return false;
 }

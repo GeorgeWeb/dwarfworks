@@ -16,6 +16,9 @@ class DW_API OrthographicCameraController {
   OrthographicCamera& GetCamera() { return m_Camera; }
   const OrthographicCamera& GetCamera() const { return m_Camera; }
 
+  inline float GetAspectRatio() const { return m_AspectRatio; }
+  inline void SetAspectRatio(float aspectRatio) { m_AspectRatio = aspectRatio; }
+
   inline float GetZoomLevel() const { return m_ZoomLevel; }
   inline void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; }
 
@@ -29,7 +32,7 @@ class DW_API OrthographicCameraController {
 
  private:
   float m_AspectRatio;
-  float m_ZoomLevel = 1.0f;
+  float m_ZoomLevel = 5.0f;
   OrthographicCamera m_Camera;
 
   bool m_CanRotate;

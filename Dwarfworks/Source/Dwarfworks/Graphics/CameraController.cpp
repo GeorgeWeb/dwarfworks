@@ -14,8 +14,7 @@ namespace Dwarfworks {
 OrthographicCameraController::OrthographicCameraController(float aspectRatio,
                                                            bool canRotate)
     : m_AspectRatio(aspectRatio),
-      m_Camera(-m_AspectRatio * m_ZoomLevel,
-                m_AspectRatio * m_ZoomLevel,
+      m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel,
                -m_ZoomLevel, m_ZoomLevel),
       m_CanRotate(canRotate) {}
 
@@ -68,8 +67,11 @@ void OrthographicCameraController::OnUpdate(Timestep deltaTime) {
 
 void OrthographicCameraController::OnEvent(Event& event) {
   EventManager eventManager(event);
-  eventManager.Dispatch<MouseScrolledEvent>(DW_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
-  eventManager.Dispatch<WindowResizeEvent>(DW_BIND_EVENT_FN(OrthographicCameraController::OnWindowResize));
+  eventManager.Dispatch<MouseScrolledEvent>(
+      DW_BIND_EVENT_FN(OrthographicCameraController::OnMouseScrolled));
+  // Note: Default resizing behaviour, refactor later.
+  eventManager.Dispatch<WindowResizeEvent>(
+      DW_BIND_EVENT_FN(OrthographicCameraController::OnWindowResize));
 }
 
 bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& event) {
@@ -79,19 +81,20 @@ bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& event) {
   m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel,
                          m_AspectRatio * m_ZoomLevel, -m_ZoomLevel,
                          m_ZoomLevel);
-  
+
   return false;
 }
 
 bool OrthographicCameraController::OnWindowResize(WindowResizeEvent& event) {
   const auto width = event.GetWidth();
   const auto height = event.GetHeight();
+
   m_AspectRatio = static_cast<float>(width) / static_cast<float>(height);
 
   m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel,
-                          m_AspectRatio * m_ZoomLevel,
-                         -m_ZoomLevel, m_ZoomLevel);
- 
+                         m_AspectRatio * m_ZoomLevel, -m_ZoomLevel,
+                         m_ZoomLevel);
+
   return false;
 }
 

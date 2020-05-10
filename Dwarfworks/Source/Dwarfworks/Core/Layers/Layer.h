@@ -41,6 +41,8 @@ class DW_API Layer {
 
   inline const std::string& GetName() const noexcept { return m_DebugName; }
 
+  virtual bool IsOverlay() const { return false; }
+
  protected:
   std::string m_DebugName{"Layer"};
 };

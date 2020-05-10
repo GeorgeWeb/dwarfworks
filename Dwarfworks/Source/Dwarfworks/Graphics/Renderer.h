@@ -11,7 +11,8 @@ class DW_API Renderer {
  public:
   static void Initialize();
 
-  static void OnFramebufferResize(uint32_t width, uint32_t height);
+  static void OnWindowResize(uint32_t width, uint32_t height);
+  static void OnWindowResize(int x, int y, uint32_t width, uint32_t height);
 
   static void BeginScene(OrthographicCamera& camera);
   static void EndScene();

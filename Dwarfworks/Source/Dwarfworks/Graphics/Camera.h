@@ -27,9 +27,13 @@ class DW_API OrthographicCamera {
     RecalculateViewMatrix();
   }
 
-  inline const glm::mat4& GetProjectionMatrix() const { return m_ProjectionMatrix; }
+  inline const glm::mat4& GetProjectionMatrix() const {
+    return m_ProjectionMatrix;
+  }
   inline const glm::mat4& GetViewMatrix() const { return m_ViewMatrix; }
-  inline const glm::mat4& GetViewProjectionMatrix() const { return m_ViewProjectionMatrix; }
+  inline const glm::mat4& GetViewProjectionMatrix() const {
+    return m_ViewProjectionMatrix;
+  }
 
  public:
   // TODO: Hook this up with the event system to recalculate
@@ -44,7 +48,6 @@ class DW_API OrthographicCamera {
   glm::mat4 m_ProjectionMatrix;
   glm::mat4 m_ViewMatrix;
   glm::mat4 m_ViewProjectionMatrix;
-
 
   // transformation of the camera
   glm::vec3 m_Position = {0.0f, 0.0f, 0.0f};

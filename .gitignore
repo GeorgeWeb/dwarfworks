@@ -1,0 +1,31 @@
+# directories
+.vs/
+bin/
+bin-int/
+*build*/
+
+# file
+*.user
+
+# temporary excludes (clang-tidy and clang-format, used by the clang power tools)
+# .clang-*
+
+# exclude cppcheck config files
+*.cppcheck
+
+# Makefiles
+*Makefile*
+
+# Visual Studio solution & project files
+*.sln
+Dwarfworks/*.vcxproj
+Dwarfworks/*.vcxproj.*
+Sandbox/*.vcxproj
+Sandbox/*.vcxproj.*
+
+# ImGui generated files
+Sandbox/imgui.ini
+
+#
+packages/*
+debug.log

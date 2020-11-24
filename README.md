@@ -1,14 +1,14 @@
 # Dwarfworks Game Engine
 
-### Why yet another Game Engine attempt ?
+### What
 
-1. Firstly, we believe that there is nothing wrong with experimenting and learning new skills, right?
-2. My main goal is clear and it is to implement a Game/Application development engine that aims to provide an easy to use, yet powerful API that allows developers to create amazing graphical applications and games.
-3. Learning best practies for software design and architecture is always a great motivation, thus the reason why we are spending countless hours in research so that others can benefit from this project and also teach themselves in a good general design of a Game Engine and also use it to create cool games in the process.
-4. I (**GeorgeWeb**), and my collaborator **wolfstrasz** are aiming to create the game we've always wanted alongside the custom AA Game Engine we've also always desired to create with no intension to impress the world but learn all techniques for ourselves and then be able to apply them in a professional environment at the end.
-5. This is a work-in-progress early stages project so please bare with the incompleteness with it. We do want to jam things in as quickly as possible but also do
-want to take our time to investigate the best approach to each system. Game Engines are complex and their awesomeness is not measured in terms of the graphical
-output you see rendered on the screen. There are many systems that make up a complete **cross-platform** engine such that Dwarfworks is going to be.
+This is a work-in-progress early stages project so please bare with its incompleteness. I am eager to start jamming things in as quickly as possible but also do
+want to take our time to investigate good/best approaches to the different systems involved. Game Engines are complex and their awesomeness is not measured only in terms of the graphical output you see rendered on the screen. There are many systems that will define and complete the engine in the future.
+
+
+#### Goal
+
+The goal is to implement a Game/Application development engine that aims to provide an easy to use, yet powerful API that allows developers to create amazing graphical applications and games.
 
 ### Building
 
@@ -27,7 +27,7 @@ Bare in mind that C++ 17 is widely used in development so always try the latest 
 
 ### Continuous Integration
 
-**CI** for Linux/Mac/Windows , GCC/Clang/MSVC will be set up very soon, after we decide on our final set of build tools and cross-platform design.
+**CI** for Linux/Mac/Windows using GCC/Clang/MSVC will be set up soon, after the introduction of build tools scripts for automating dwarfworks building and testing.
 
 ---
 

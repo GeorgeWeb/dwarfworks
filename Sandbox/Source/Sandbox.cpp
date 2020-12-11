@@ -1,5 +1,8 @@
 #include "Sandbox.h"
 
+// generic playground (currently 2D stuff)
+#include "Playground.h"
+
 // Application entry point - the main() function
 #include <Dwarfworks/Core/EntryPoint.h>
 
@@ -12,22 +15,6 @@ Dwarfworks::Application* Dwarfworks::CreateApplication() {
 }
 
 Sandbox::Sandbox() : Application(props) {
-  // GetWindow()->SetProps(props);
-
-  // initialize application layers
-  m_Layers.push_back(new Playground);
-  m_Layers.push_back(new Basic3D);
-
   // attach the layers to the application
-  for (auto layer : m_Layers) {
-    if (layer->IsOverlay()) {
-      PushOverlay(layer);
-    } else {
-      PushLayer(layer);
-    }
-    // debug print
-    std::string layerName = layer->GetName();
-    std::string layerType = layer->IsOverlay() ? "overlay" : "layer";
-    DW_INFO("Added {0} {1}.", layerName, layerType);
-  }
+  PushLayer(new Playground);
 }

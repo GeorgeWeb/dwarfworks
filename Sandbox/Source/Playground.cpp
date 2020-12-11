@@ -4,11 +4,11 @@
 #include <imgui/imgui.h>
 
 static constexpr float s_AspectRatio =
-    static_cast<float>(s_ScreenWidth / 2) / static_cast<float>(s_ScreenHeight);
+    static_cast<float>(s_ScreenWidth) / static_cast<float>(s_ScreenHeight);
 static constexpr bool s_CanRotate = true;
 
 Playground::Playground()
-    : SandboxLayer("Playground"),
+    : Dwarfworks::Layer("Playground"),
       m_CameraController(s_AspectRatio, s_CanRotate) {
   // --------------------------------------- //
   // Buffers (Vertex, Index) and VertexArray //
@@ -27,8 +27,8 @@ Playground::Playground()
       0.5f,  -0.5f, 0.0f,        // point: bottom right
       0.2f,  0.3f,  0.8f, 1.0f,  // color: bottom right
 
-      0.0f,  0.5f,  0.0f,       // point: top
-      0.8f,  0.8f,  0.2f, 1.0f  // color: top
+      0.0f,  0.5f,  0.0f,         // point: top
+      0.8f,  0.8f,  0.2f, 1.0f    // color: top
   };
 
   // vertex buffer
@@ -153,13 +153,6 @@ void Playground::OnUpdate(Dwarfworks::Timestep deltaTime) {
 void Playground::OnRender() {
   // clear buffers - Framebuffer abstraction (TODO!)
   Dwarfworks::RenderCommand::SetClearColor({0.2f, 0.2f, 0.2f, 1.0f});
-  Dwarfworks::RenderCommand::SetViewport(
-      Dwarfworks::Application::Get().GetWindow().GetWidth() / 2,
-      Dwarfworks::Application::Get().GetWindow().GetHeight());
-  Dwarfworks::RenderCommand::SetScissor(
-      Dwarfworks::Application::Get().GetWindow().GetWidth() / 2,
-      Dwarfworks::Application::Get().GetWindow().GetHeight());
-  Dwarfworks::RenderCommand::SetScissorTest();
   Dwarfworks::RenderCommand::Clear();
 
   // Begin scene rendering
@@ -244,7 +237,7 @@ void Playground::OnEvent(Dwarfworks::Event& event) {
   if (event.GetEventType() == Dwarfworks::EventType::WindowResize) {
     auto& re = static_cast<Dwarfworks::WindowResizeEvent&>(event);
 
-    float aspectRatio = static_cast<float>(re.GetWidth() / 2) /
+    float aspectRatio = static_cast<float>(re.GetWidth()) /
                         static_cast<float>(re.GetHeight());
     m_CameraController.SetAspectRatio(aspectRatio);
 

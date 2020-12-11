@@ -10,25 +10,26 @@
 // imgui
 #include "imgui.h"
 
-#ifdef ENABLE_VISUAL_TESTING
-#include "Testing/OpenGLTests/OpenGLClearColorTest.h"
-#include "Testing/OpenGLTests/OpenGLInfoTest.h"
-#include "Testing/OpenGLTests/OpenGLRenderTriangleTest.h"
-#endif
-
 // TEMPORARY!
 #include <GLFW/glfw3.h>
 
 namespace Dwarfworks {
 
-std::atomic<Application*> Application::s_Instance = nullptr;
-std::mutex Application::s_Mutex;
+Application* Application::s_Instance;
+std::once_flag Application::s_instantiateApplicationFlag;
+
+Application& Application::Get() {
+  std::call_once(s_instantiateApplicationFlag, []() {
+    if (!s_Instance) {
+      s_Instance = new Application();
+    }
+  });
+  return *s_Instance;
+}
 
 Application::Application(const WindowProps& props) {
-  DW_CORE_ASSERT(!s_Instance, "Instance of Application already exists!");
-  // set the single instance to point to the existing application
+  DW_CORE_ASSERT(!s_Instance, "Can have only one Application instance!");
   s_Instance = this;
-
   // Create the Application Window
   m_Window = Window::Create(props);
   // Set the Window event handling for this Application
@@ -40,38 +41,11 @@ Application::Application(const WindowProps& props) {
   // Create Application DebugUI Layer (as overlay)
   m_DebugUILayer = CreateRef<DebugUILayer>();
   PushOverlay(m_DebugUILayer.get());
-
-#ifdef ENABLE_VISUAL_TESTING
-  // Create Test Menu
-  INIT_TEST_MENU(m_TestMenu, m_CurrentTest);
-  // Register Tests
-  REGISTER_TEST(Testing::OpenGLInfoTest, "OpenGL Info", m_TestMenu);
-  REGISTER_TEST(Testing::OpenGLClearColorTest, "OpenGL Clear Color",
-                m_TestMenu);
-  REGISTER_TEST(Testing::OpenGLRenderTriangleTest, "OpenGL Render Triangle",
-                m_TestMenu);
-  // Set Current Test Layer to Test Menu
-  m_CurrentTest = m_TestMenu.get();
-  m_LayerStack.PushOverlay(m_CurrentTest);
-#endif
 }
 
 Application::~Application() {
-#ifdef ENABLE_VISUAL_TESTING
-  // Cleanup Visual Test layer resources
-  if (m_CurrentTest) {
-    m_LayerStack.PopOverlay(m_CurrentTest);
-    if (m_CurrentTest != m_TestMenu.get()) {
-      delete m_CurrentTest;
-    }
-    m_CurrentTest = nullptr;
-    m_LayerStack.PopOverlay(m_TestMenu.get());
-  }
-#endif
-
   // Cleanup DebugUI overlay resources
   m_LayerStack.PopOverlay(m_DebugUILayer.get());
-
   DW_CORE_INFO("Closed the Application!");
 }
 
@@ -96,27 +70,9 @@ void Application::GameLoop() {
       // -------------------------------- //
       // -- Render layers --------------- //
       // -------------------------------- //
-
-#ifdef ENABLE_VISUAL_TESTING
-      // If the current Test layer is active, render this layer.
-      if (m_CurrentTest) {
-        m_CurrentTest->OnRender();
-      }
-
-      // If the current Test layer is TestMenu, render all the
-      // Application layers excluding the current Test layer.
-      if (m_CurrentTest == m_TestMenu.get()) {
-        for (auto layer : m_LayerStack) {
-          if (layer != m_CurrentTest && layer != m_TestMenu.get()) {
-            layer->OnRender();
-          }
-        }
-      }
-#else
       for (auto layer : m_LayerStack) {
         layer->OnRender();
       }
-#endif
 
       // -------------------------------- //
       // -- Render DebugUI overlay ------ //
@@ -124,34 +80,9 @@ void Application::GameLoop() {
 
       // TODO: If minimized - don't swap buffers
       m_DebugUILayer->Begin();
-
-#ifdef ENABLE_VISUAL_TESTING
-      // If the current Test layer is active, render DebugUI for this layer.
-      if (m_CurrentTest) {
-        // if the current Test layer is not TestMenu, display a BACK button
-        // and set it to point to TestMenu upon clicking the BACK button.
-        if (m_CurrentTest != m_TestMenu.get() && ImGui::Button("Menu")) {
-          delete m_CurrentTest;
-          m_CurrentTest = m_TestMenu.get();
-        }
-        m_CurrentTest->OnDebugUIRender();
-      }
-
-      // If the current Test layer is TestMenu, render DebugUI for
-      // all Application layers excluding the current Test layer.
-      if (m_CurrentTest == m_TestMenu.get()) {
-        for (auto layer : m_LayerStack) {
-          if (layer != m_CurrentTest && layer != m_TestMenu.get()) {
-            layer->OnDebugUIRender();
-          }
-        }
-      }
-#else
       for (auto layer : m_LayerStack) {
         layer->OnDebugUIRender();
       }
-#endif
-
       m_DebugUILayer->End();
     }
 

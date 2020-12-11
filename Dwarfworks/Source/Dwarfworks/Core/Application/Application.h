@@ -13,41 +13,22 @@
 // Events
 #include "Dwarfworks/Events/ApplicationEvent.h"
 
-#ifdef ENABLE_VISUAL_TESTING
-#include "Testing/Test.h"
-#endif
-
 namespace Dwarfworks {
 
 class DW_API Application {
  public:
+  // Application can only be instantiated with WindowProps.
   Application(const WindowProps& props = WindowProps());
-  virtual ~Application();
+  virtual ~Application(); // Application Teardown
+
+  // Disable moving or copying Applications for now
+  Application(const Application&) = delete;
+  Application& operator=(const Application&) = delete;
+  Application(Application&&) = delete;
+  Application& operator=(Application&&) = delete;
 
   // Gets the Application singleton instance
-  inline static Application& Get() {
-    // attempts safer thread-safe singleton instance than than static guarantee
-    //
-    // Acquire-Release semantic for C++ atomics (standard thread-safe guarantee)
-    // https://www.modernescpp.com/index.php/thread-safe-initialization-of-a-singleton
-    // acquire: no reads or writes in the current thread can be reordered before
-    // this load
-    auto instance = s_Instance.load(std::memory_order_acquire);
-    // Double-checked locking pattern
-    if (!instance) {
-      std::scoped_lock<std::mutex> lock(s_Mutex);
-      // no synchronization or ordering constraints imposed on other reads or
-      // writes, only this operation's atomicity is guaranteed
-      instance = s_Instance.load(std::memory_order_relaxed);
-      if (!instance) {
-        instance = new Application();
-        // release: no reads or writes in the current thread can be reordered
-        // after this store
-        s_Instance.store(instance, std::memory_order_release);
-      }
-    }
-    return *instance;
-  }
+  static Application& Get();
 
   // The application/game loop
   virtual void GameLoop();
@@ -55,7 +36,6 @@ class DW_API Application {
   // Executes the event action
   virtual void OnEvent(Event& event);
 
-  // ...
   inline float GetLastFrameTime() const noexcept { return m_LastFrameTime; }
 
   // return the frames per second calculated in the Run loop
@@ -78,7 +58,7 @@ class DW_API Application {
   inline bool IsRunning() const { return m_Running; }
   // Set the application running state
   inline void SetRunning(bool running) { m_Running = running; }
-  // ...
+
   inline bool IsMinimized() const { return m_Minimized; }
   inline void SetMinimized(bool minimized) { m_Minimized = minimized; }
 
@@ -91,18 +71,12 @@ class DW_API Application {
   bool m_Running = true;
   bool m_Minimized = false;
 
-  // timestep
+  // Time step
   float m_LastFrameTime = 0.0f;
 
- private:  // testing on/off
-#ifdef ENABLE_VISUAL_TESTING
-  inline static Testing::Test* m_CurrentTest = nullptr;
-  Ref<Testing::TestMenu> m_TestMenu;
-#endif
-
-  // singleton-related variable members
-  static std::atomic<Application*> s_Instance;
-  static std::mutex s_Mutex;
+private:
+  static Application* s_Instance;
+  static std::once_flag s_instantiateApplicationFlag;
 };
 
 Dwarfworks::Application* CreateApplication();

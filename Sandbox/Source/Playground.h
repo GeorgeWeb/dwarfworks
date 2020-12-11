@@ -1,10 +1,10 @@
-#ifndef PLAYGROUND_LAYER_H_
-#define PLAYGROUND_LAYER_H_
+#ifndef SANDBOX_PLAYGROUND_H_
+#define SANDBOX_PLAYGROUND_H_
 
 // Engine and common defines
 #include "Common.h"
 
-class Playground final : public SandboxLayer {
+class Playground final : public Dwarfworks::Layer {
  public:
   Playground();
 
@@ -37,4 +37,4 @@ class Playground final : public SandboxLayer {
   static inline glm::vec4 blackColor = {0.0f, 0.0f, 0.0f, 1.0f};
 };
 
-#endif  // PLAYGROUND_LAYER_H_
+#endif  // SANDBOX_PLAYGROUND_H_

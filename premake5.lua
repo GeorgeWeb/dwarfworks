@@ -150,14 +150,8 @@ project "Dwarfworks"
 
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
-        files {
-            SourceDir .. "/Testing/**.h",
-            SourceDir .. "/Testing/**.cpp"
-        }
-
         defines {
-            "DW_DEBUG",
-            "ENABLE_VISUAL_TESTING"
+            "DW_DEBUG"
         }
         
         symbols "on"
@@ -243,8 +237,7 @@ project "Sandbox"
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
         defines {
-            "DW_DEBUG",
-            "ENABLE_VISUAL_TESTING"
+            "DW_DEBUG"
         }
         runtime "Debug"
         symbols "on"

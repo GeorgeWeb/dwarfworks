@@ -19,7 +19,7 @@
 #include <vector>
 
 #ifdef DW_PLATFORM_WINDOWS
-#include <Windows.h>
+    #include <Windows.h>
 #endif
 
 #endif // DWARFWORKS_PRECOMPILED_HEADER_H_

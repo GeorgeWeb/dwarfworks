@@ -3,18 +3,19 @@
 
 #include "Dwarfworks/Core/Core.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+class ENGINE_API GraphicsContext
+{
+  public:
+    virtual ~GraphicsContext() = default;
 
-class DW_API GraphicsContext {
- public:
-  virtual ~GraphicsContext() = default;
+    virtual void Initialize()  = 0;
+    virtual void SwapBuffers() = 0;
 
-  virtual void Initialize() = 0;
-  virtual void SwapBuffers() = 0;
-
-  static Scope<GraphicsContext> Create(void* window);
+    static Scope<GraphicsContext> Create(void* window);
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // GRAPHICS_GRAPHICS_CONTEXT_H_
+#endif // GRAPHICS_GRAPHICS_CONTEXT_H_

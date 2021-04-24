@@ -10,4 +10,4 @@
 // pointers for each vector and matrix types
 #include <glm/gtc/type_ptr.hpp>
 
-#endif  // MATH_MATH_H_
+#endif // MATH_MATH_H_

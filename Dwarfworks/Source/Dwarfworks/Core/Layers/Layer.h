@@ -5,48 +5,49 @@
 #include "Dwarfworks/Core/Timestep.h"
 #include "Dwarfworks/Events/Event.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+class ENGINE_API Layer
+{
+  public:
+    Layer() = default;
+    explicit Layer(const std::string& name);
 
-class DW_API Layer {
- public:
-  Layer() = default;
-  explicit Layer(const std::string& name);
+    virtual ~Layer() = default;
 
-  virtual ~Layer() = default;
+    // The virtual members are optional for overriding by
+    // the derived layer implementation
 
-  // The virtual members are optional for overriding by
-  // the derived layer implementation
+    virtual void OnAttach() {}
 
-  virtual void OnAttach() {}
+    virtual void OnDetach() {}
 
-  virtual void OnDetach() {}
+    // virtual void OnAwake() {} // (?)
+    // virtual void OnStart() {} // (?)
 
-  // virtual void OnAwake() {} // (?)
-  // virtual void OnStart() {} // (?)
+    // virtual void OnFixedUpdate() {}
 
-  // virtual void OnFixedUpdate() {}
+    virtual void OnUpdate(Timestep deltaTime) {}
 
-  virtual void OnUpdate(Timestep deltaTime) {}
+    // This is useful to order script execution. For example a follow camera
+    // should always be implemented in LateUpdate because it tracks objects that
+    // might have moved inside Update.
+    // virtual void OnLateUpdate() {}
 
-  // This is useful to order script execution. For example a follow camera
-  // should always be implemented in LateUpdate because it tracks objects that
-  // might have moved inside Update.
-  // virtual void OnLateUpdate() {}
+    virtual void OnRender() {}
 
-  virtual void OnRender() {}
+    virtual void OnDebugUIRender() {}
 
-  virtual void OnDebugUIRender() {}
+    virtual void OnEvent(Event& event) {}
 
-  virtual void OnEvent(Event& event) {}
+    inline const std::string& GetName() const noexcept { return m_DebugName; }
 
-  inline const std::string& GetName() const noexcept { return m_DebugName; }
+    virtual bool IsOverlay() const { return false; }
 
-  virtual bool IsOverlay() const { return false; }
-
- protected:
-  std::string m_DebugName{"Layer"};
+  protected:
+    std::string m_DebugName {"Layer"};
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // CORE_LAYERS_LAYER_H_
+#endif // CORE_LAYERS_LAYER_H_

@@ -53,4 +53,4 @@
 #include "Dwarfworks/Graphics/CameraController.h"
 // ---------------------------------------------------------------
 
-#endif  // DWARFWORKS_PUBLIC_API_H_
+#endif // DWARFWORKS_PUBLIC_API_H_

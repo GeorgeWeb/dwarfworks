@@ -4,8 +4,10 @@
 
 #include "Layer.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+Layer::Layer(const std::string& name) : m_DebugName(name)
+{
+}
 
-Layer::Layer(const std::string& name) : m_DebugName(name) {}
-
-}  // namespace Dwarfworks
+} // namespace Dwarfworks

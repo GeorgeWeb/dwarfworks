@@ -6,33 +6,33 @@
 #include "Dwarfworks/Graphics/Shader.h"
 #include "Dwarfworks/Graphics/Texture.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+class ENGINE_API Renderer2D
+{
+  public:
+    static void Initialize();
 
-class DW_API Renderer2D {
- public:
-  static void Initialize();
+    static void BeginScene(OrthographicCamera& camera);
+    static void EndScene();
 
-  static void BeginScene(OrthographicCamera& camera);
-  static void EndScene();
+    static void DrawQuad(const glm::vec3& position, const glm::vec3& size, const glm::vec4& color);
+    static void DrawQuad(const glm::vec3& position, const glm::vec3& size, const Ref<Texture2D>& texture);
 
-  static void DrawQuad(const glm::vec3& position, const glm::vec3& size,
-                       const glm::vec4& color);
-  static void DrawQuad(const glm::vec3& position, const glm::vec3& size,
-                       const Ref<Texture2D>& texture);
+    inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 
-  inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+  private:
+    // General scene storage (temporary)
+    struct SceneData
+    {
+        glm::mat4 ViewProjectionMatrix;
+        glm::vec3 LightDirectionVector;
+        bool      hasLight = false;
+    };
 
- private:
-  // General scene storage (temporary)
-  struct SceneData {
-    glm::mat4 ViewProjectionMatrix;
-    glm::vec3 LightDirectionVector;
-    bool hasLight = false;
-  };
-
-  inline static Scope<SceneData> m_Scene = CreateScope<SceneData>();
+    inline static Scope<SceneData> m_Scene = CreateScope<SceneData>();
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // GRAPHICS_RENDERER_H_
+#endif // GRAPHICS_RENDERER_H_

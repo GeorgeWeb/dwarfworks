@@ -13,74 +13,69 @@
 // Events
 #include "Dwarfworks/Events/ApplicationEvent.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+class ENGINE_API Application : protected Noncopyable
+{
+  public:
+    // Application can only be instantiated with WindowProps.
+    Application(const WindowProps& props = WindowProps());
+    virtual ~Application(); // Application Teardown
 
-class DW_API Application {
- public:
-  // Application can only be instantiated with WindowProps.
-  Application(const WindowProps& props = WindowProps());
-  virtual ~Application(); // Application Teardown
+    // Gets the Application singleton instance
+    static Application& Get();
 
-  // Disable moving or copying Applications for now
-  Application(const Application&) = delete;
-  Application& operator=(const Application&) = delete;
-  Application(Application&&) = delete;
-  Application& operator=(Application&&) = delete;
+    // The application/game loop
+    virtual void GameLoop();
 
-  // Gets the Application singleton instance
-  static Application& Get();
+    // Executes the event action
+    virtual void OnEvent(Event& event);
 
-  // The application/game loop
-  virtual void GameLoop();
+    inline float GetLastFrameTime() const noexcept { return m_LastFrameTime; }
 
-  // Executes the event action
-  virtual void OnEvent(Event& event);
+    // return the frames per second calculated in the Run loop
 
-  inline float GetLastFrameTime() const noexcept { return m_LastFrameTime; }
+    // Pushes a layer
+    void PushLayer(Layer* layer);
+    // Pushes an overlay
+    void PushOverlay(Layer* layer);
 
-  // return the frames per second calculated in the Run loop
+    // Gets the window for the user's platform
+    inline Window& GetWindow() /*const*/ { return *m_Window; }
 
-  // Pushes a layer
-  void PushLayer(Layer* layer);
-  // Pushes an overlay
-  void PushOverlay(Layer* layer);
+  protected:
+    // Executes the window closed action
+    // True if it succeeds, false if it fails.
+    virtual bool OnWindowClosed(WindowCloseEvent& event);
+    virtual bool OnWindowResize(WindowResizeEvent& event);
 
-  // Gets the window for the user's platform
-  inline Window& GetWindow() /*const*/ { return *m_Window; }
+    // Query if the application is running
+    inline bool IsRunning() const { return m_Running; }
+    // Set the application running state
+    inline void SetRunning(bool running) { m_Running = running; }
 
- protected:
-  // Executes the window closed action
-  // True if it succeeds, false if it fails.
-  virtual bool OnWindowClosed(WindowCloseEvent& event);
-  virtual bool OnWindowResize(WindowResizeEvent& event);
+    inline bool IsMinimized() const { return m_Minimized; }
+    inline void SetMinimized(bool minimized) { m_Minimized = minimized; }
 
-  // Query if the application is running
-  inline bool IsRunning() const { return m_Running; }
-  // Set the application running state
-  inline void SetRunning(bool running) { m_Running = running; }
+  protected:
+    Scope<Window>     m_Window;
+    Ref<DebugUILayer> m_DebugUILayer;
+    LayerStack        m_LayerStack;
 
-  inline bool IsMinimized() const { return m_Minimized; }
-  inline void SetMinimized(bool minimized) { m_Minimized = minimized; }
+  private:
+    bool m_Running   = true;
+    bool m_Minimized = false;
 
- protected:
-  Scope<Window> m_Window;
-  Ref<DebugUILayer> m_DebugUILayer;
-  LayerStack m_LayerStack;
+    // Time step
+    float m_LastFrameTime = 0.0f;
 
- private:
-  bool m_Running = true;
-  bool m_Minimized = false;
-
-  // Time step
-  float m_LastFrameTime = 0.0f;
-
-private:
-  static Application* s_Instance;
-  static std::once_flag s_instantiateApplicationFlag;
+  private:
+    static Application*   s_Instance;
+    static std::once_flag s_instantiateApplicationFlag;
 };
 
-Dwarfworks::Application* CreateApplication();
+Dwarfworks::Scope<Dwarfworks::Application> CreateApplication();
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // CORE_APPLICATION_APPLICATION_H_
+#endif // CORE_APPLICATION_APPLICATION_H_

@@ -6,30 +6,31 @@
 #include "Dwarfworks/Events/KeyEvent.h"
 #include "Dwarfworks/Events/MouseEvent.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+class ENGINE_API DebugUILayer final : public Layer
+{
+  public:
+    DebugUILayer();
 
-class DW_API DebugUILayer final : public Layer {
- public:
-  DebugUILayer();
+    virtual ~DebugUILayer() override final = default;
 
-  virtual ~DebugUILayer() override final = default;
+    virtual void OnAttach() override final;
 
-  virtual void OnAttach() override final;
+    virtual void OnDetach() override final;
 
-  virtual void OnDetach() override final;
+    virtual void OnDebugUIRender() override final;
 
-  virtual void OnDebugUIRender() override final;
+    virtual bool IsOverlay() const override final { return m_Overlay; }
 
-  virtual bool IsOverlay() const override final { return m_Overlay; }
+    void Begin() const;
+    void End() const;
 
-  void Begin() const;
-  void End() const;
-
- private:
-  float m_Time{0.0f};
-  bool m_Overlay = true;
+  private:
+    float m_Time {0.0f};
+    bool  m_Overlay = true;
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // !DEBUGUI_DEBUGUI_LAYER_H_
+#endif // !DEBUGUI_DEBUGUI_LAYER_H_

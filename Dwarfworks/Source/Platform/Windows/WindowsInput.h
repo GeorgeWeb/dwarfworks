@@ -3,20 +3,21 @@
 
 #include "Dwarfworks/Core/Input/Input.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+class ENGINE_API WindowsInput : public Input
+{
+  protected:
+    bool IsKeyPressedImpl(int keycode) const override;
 
-class DW_API WindowsInput : public Input {
- protected:
-  bool IsKeyPressedImpl(int keycode) const override;
+    bool IsMouseButtonPressedImpl(int button) const override;
 
-  bool IsMouseButtonPressedImpl(int button) const override;
+    std::pair<float, float> GetMousePositionImpl() const override;
 
-  std::pair<float, float> GetMousePositionImpl() const override;
-
-  float GetMouseXImpl() const override;
-  float GetMouseYImpl() const override;
+    float GetMouseXImpl() const override;
+    float GetMouseYImpl() const override;
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // PLATFORM_WINDOWS_WINDOWS_INPUT_H_
+#endif // PLATFORM_WINDOWS_WINDOWS_INPUT_H_

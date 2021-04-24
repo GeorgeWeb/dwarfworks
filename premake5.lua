@@ -20,6 +20,7 @@ IncludeDir["glm"] = "Dwarfworks/Vendor/glm"
 IncludeDir["spdlog"] = "Dwarfworks/Vendor/spdlog/include"
 IncludeDir["debugbreak"] = "Dwarfworks/Vendor/debugbreak"
 IncludeDir["stb_image"] = "Dwarfworks/Vendor/stb_image"
+IncludeDir["directx"] = "Dwarfworks/Vendor/directx"
 
 -- define project external dependencies
 group "Dependencies"
@@ -55,8 +56,6 @@ project "Dwarfworks"
         SourceDir .. "/*.cpp",
         SourceDir .. "/Dwarfworks/**.h",
         SourceDir .. "/Dwarfworks/**.cpp",
-        SourceDir .. "/Platform/OpenGL/**.h",
-        SourceDir .. "/Platform/OpenGL/**.cpp",
 		VendorDir .. "/stb_image/**.h",
 		VendorDir .. "/stb_image/**.cpp",
 		VendorDir .. "/glm/**.hpp",
@@ -64,7 +63,9 @@ project "Dwarfworks"
     }
 
     -- silence external "noise"
-    defines "_CRT_SECURE_NO_WARNINGS"
+    defines {
+        "_CRT_SECURE_NO_WARNINGS"
+    }
 
     -- set project include directories
     includedirs {
@@ -93,12 +94,57 @@ project "Dwarfworks"
     }
 
     -- set project target properties
-    
+
+    filter "system:windows"
+        systemversion "latest"
+
+        -- Windows specific
+        files {
+            VendorDir .. "/directx/**.h",
+            SourceDir .. "/Platform/Windows/**.h",
+            SourceDir .. "/Platform/Windows/**.cpp",
+            SourceDir .. "/Platform/OpenGL/**.h",
+            SourceDir .. "/Platform/OpenGL/**.cpp",
+            SourceDir .. "/Platform/D3D12/**.h",
+            SourceDir .. "/Platform/D3D12/**.cpp",
+        }
+
+        --
+        includedirs {
+            -- DirectX helpers
+            "%{IncludeDir.directx}"
+        }
+
+        -- 
+        links {
+            -- OpenGL
+            "opengl32.lib",
+            -- D3D12
+            "d3d12.lib",
+            "dxgi.lib",
+            "dxguid.lib",
+        }
+
+        -- preprocessor definitions
+        defines {
+            -- "DW_BUILD_DLL",
+            "GLFW_INCLUDE_NONE",
+        }
+
+        -- Temporary disabled until building the engine as a dll gets re-enabled
+        -- copying DLLs and resoruces
+        -- postbuildcommands {
+            -- copy dwarfworks.dll into sandbox
+            -- ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
+        -- }
+
     filter "system:linux"
         systemversion "latest"
 
         -- Linux specific
         files {
+            SourceDir .. "/Platform/OpenGL/**.h",
+            SourceDir .. "/Platform/OpenGL/**.cpp",
             SourceDir .. "/Platform/Linux/**.h",
             SourceDir .. "/Platform/Linux/**.cpp",
         }
@@ -109,42 +155,16 @@ project "Dwarfworks"
             "Xi",
             "GLU",
             "GL",
-            "X11"
+            "X11",
+            "dl",
+            "pthread",
         }
         
         -- preprocessor definitions
         defines {
-            -- "DW_PALTFORM_LINUX",
             -- "DW_BUILD_DLL",
             "GLFW_INCLUDE_NONE"
         }
-
-    filter "system:windows"
-        systemversion "latest"
-        
-        -- Windows specific
-        files {
-            SourceDir .. "/Platform/Windows/**.h",
-            SourceDir .. "/Platform/Windows/**.cpp",
-        }
-
-        -- 
-        links {
-            "opengl32.lib"
-        }
-
-        -- preprocessor definitions
-        defines {
-            -- "DW_PLATFORM_WINDOWS",
-            -- "DW_BUILD_DLL",
-            "GLFW_INCLUDE_NONE"
-        }
-        -- copying DLLs and resoruces
-        -- postbuildcommands {
-            -- copy dwarfworks.dll into sandbox
-            -- ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
-        -- }
-
 
     print("%{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
 
@@ -205,6 +225,15 @@ project "Sandbox"
 
     -- set project target properties
 
+    filter "system:windows"
+        systemversion "latest"
+
+        links {}
+
+        defines {
+            -- "DW_DYNAMIC_LINK"
+        }
+
     filter "system:linux"
         links {
             "GLFW",
@@ -216,21 +245,10 @@ project "Sandbox"
             "GL",
             "X11",
             "dl",
-            "pthread"
+            "pthread",
         }
 
         defines {
-            -- "HZ_PLATFORM_LINUX",
-            -- "DW_DYNAMIC_LINK"
-        }
-
-    filter "system:windows"
-        systemversion "latest"
-
-        links {}
-
-        defines {
-            -- "HZ_PLATFORM_WINDOWS",
             -- "DW_DYNAMIC_LINK"
         }
 

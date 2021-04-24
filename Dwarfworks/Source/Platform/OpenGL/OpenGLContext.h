@@ -3,22 +3,26 @@
 
 #include "Dwarfworks/Graphics/GraphicsContext.h"
 
-// forward decl.
 struct GLFWwindow;
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+static constexpr int MinimumSupportedOpenGLVersionMajor = 4;
+static constexpr int MinimumSupportedOpenGLVersionMinor = 3;
 
-class DW_API OpenGLContext : public GraphicsContext {
- public:
-  OpenGLContext(GLFWwindow* windowHandle);
+class ENGINE_API OpenGLContext : public GraphicsContext
+{
+  public:
+    OpenGLContext(GLFWwindow* handle);
+    virtual ~OpenGLContext() override = default;
 
-  void Initialize() override;
-  void SwapBuffers() override;
+    virtual void Initialize() override;
+    virtual void SwapBuffers() override;
 
- private:
-  GLFWwindow* m_WindowHandle;
+  private:
+    GLFWwindow* m_WindowHandle;
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // PLATFORM_OPENGL_OPENGL_CONTEXT_H_
+#endif // PLATFORM_OPENGL_OPENGL_CONTEXT_H_

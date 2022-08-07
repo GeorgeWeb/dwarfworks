@@ -2,74 +2,30 @@
 #include "dwpch.h"
 // end PCH
 
-#include "Dwarfworks/Core/Log/Log.h"
-#include "Dwarfworks/Graphics/RendererAPI.h"
-
 #include "OpenGLContext.h"
+#include "OpenGLLoader.h"
 
-// GLFW
-#include <GLFW/glfw3.h>
-// Glad
-#include <glad/glad.h>
+#include "Dwarfworks/Core/Log/Log.h"
+#include "Dwarfworks/Renderer/RendererAPI.h"
 
-// Callback for OpenGL API calls error debugging
-static void MessageCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length,
-                            const GLchar* message, const void* userParam)
-{
-    std::string_view sourceStr = [source]() {
-        switch (source)
-        {
-            case GL_DEBUG_SOURCE_API: return "API";
-            case GL_DEBUG_SOURCE_WINDOW_SYSTEM: return "WINDOW SYSTEM";
-            case GL_DEBUG_SOURCE_SHADER_COMPILER: return "SHADER COMPILER";
-            case GL_DEBUG_SOURCE_THIRD_PARTY: return "THIRD PARTY";
-            case GL_DEBUG_SOURCE_APPLICATION: return "APPLICATION";
-            case GL_DEBUG_SOURCE_OTHER: return "OTHER";
-            default: return "";
-        }
-    }();
-
-    std::string_view typeStr = [type]() {
-        switch (type)
-        {
-            case GL_DEBUG_TYPE_ERROR: return "ERROR";
-            case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR: return "DEPRECATED_BEHAVIOR";
-            case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR: return "UNDEFINED_BEHAVIOR";
-            case GL_DEBUG_TYPE_PORTABILITY: return "PORTABILITY";
-            case GL_DEBUG_TYPE_PERFORMANCE: return "PERFORMANCE";
-            case GL_DEBUG_TYPE_MARKER: return "MARKER";
-            case GL_DEBUG_TYPE_OTHER: return "OTHER";
-            default: return "";
-        }
-    }();
-
-    std::string_view severityStr = [severity]() {
-        switch (severity)
-        {
-            case GL_DEBUG_SEVERITY_NOTIFICATION: return "NOTIFICATION";
-            case GL_DEBUG_SEVERITY_LOW: return "LOW";
-            case GL_DEBUG_SEVERITY_MEDIUM: return "MEDIUM";
-            case GL_DEBUG_SEVERITY_HIGH: return "HIGH";
-            default: return "";
-        }
-    }();
-
-    DW_CORE_ERROR("GL ERROR!\nSource: {}\n Type:{}\nSeverity: {}\nID: {}\nMessage: {}\n", sourceStr, typeStr,
-                  severityStr, id, message);
-}
+#include "glad/glad.h"
+#include "GLFW/glfw3.h"
 
 using namespace Dwarfworks;
 
-OpenGLContext::OpenGLContext(GLFWwindow* handle) : m_WindowHandle(handle)
+OpenGLContext::OpenGLContext(GLFWwindow* handle)
+    : m_OpenGLLoader {CreateRef<GLADOpenGLLoader>()}, m_WindowHandle {handle}
 {
-    DW_CORE_ASSERT(handle, "Window handle is null");
+    DW_CORE_ASSERT(handle, "Window handle is invalid (null)");
 }
 
-void OpenGLContext::Initialize()
+void OpenGLContext::Initialize() const
 {
-    glfwMakeContextCurrent(m_WindowHandle);
-    auto status = gladLoadGLLoader((GLADloadproc)(glfwGetProcAddress));
-    DW_CORE_ASSERT(status, "Failed to initialize Glad!");
+    MakeContextCurrent();
+
+    const bool loadedOpenGL = m_OpenGLLoader->LoadOpenGLFunctions();
+
+    DW_CORE_ASSERT(loadedOpenGL, "Failed to initialize Glad!");
 
     auto OpenGLVendor   = reinterpret_cast<const char*>(glGetString(GL_VENDOR));
     auto OpenGLRenderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
@@ -87,21 +43,15 @@ void OpenGLContext::Initialize()
     DW_CORE_ASSERT(DeviceAPIVersionMajor > MinimumSupportedOpenGLVersionMajor ||
                        (DeviceAPIVersionMajor == MinimumSupportedOpenGLVersionMajor &&
                         DeviceAPIVersionMinor >= MinimumSupportedOpenGLVersionMinor),
-                   "Dwarfworks requires at least OpenGL version 4.3");
-
-    GAPIVersionMajor = DeviceAPIVersionMajor;
-    GAPIVersionMinor = DeviceAPIVersionMinor;
-
-#ifdef DW_DEBUG
-    if (GLAD_GL_VERSION_4_3)
-    {
-        glEnable(GL_DEBUG_OUTPUT);
-        glDebugMessageCallback(MessageCallback, nullptr);
-    }
-#endif
+                   "Dwarfworks requires at least OpenGL version 4.1");
 }
 
-void OpenGLContext::SwapBuffers()
+void OpenGLContext::FlipSwapChainBuffers() const
 {
     glfwSwapBuffers(m_WindowHandle);
+}
+
+void OpenGLContext::MakeContextCurrent() const
+{
+    glfwMakeContextCurrent(m_WindowHandle);
 }

@@ -1,28 +1,35 @@
-#ifndef PLATFORM_OPENGL_OPENGL_CONTEXT_H_
-#define PLATFORM_OPENGL_OPENGL_CONTEXT_H_
+#ifndef PLATFORM_OPENGL_OPENGL_CONTEXT_H
+#define PLATFORM_OPENGL_OPENGL_CONTEXT_H
 
-#include "Dwarfworks/Graphics/GraphicsContext.h"
+#include "Dwarfworks/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;
 
 namespace Dwarfworks
 {
 static constexpr int MinimumSupportedOpenGLVersionMajor = 4;
-static constexpr int MinimumSupportedOpenGLVersionMinor = 3;
+static constexpr int MinimumSupportedOpenGLVersionMinor = 1;
 
-class ENGINE_API OpenGLContext : public GraphicsContext
+class ENGINE_API OpenGLLoader;
+
+class ENGINE_API OpenGLContext final : public GraphicsContext
 {
   public:
     OpenGLContext(GLFWwindow* handle);
-    virtual ~OpenGLContext() override = default;
 
-    virtual void Initialize() override;
-    virtual void SwapBuffers() override;
+    ~OpenGLContext() = default;
+
+    void Initialize() const override final;
+    void FlipSwapChainBuffers() const override final;
+
+  protected:
+    void MakeContextCurrent() const override final;
 
   private:
-    GLFWwindow* m_WindowHandle;
+    Ref<OpenGLLoader> m_OpenGLLoader;
+    GLFWwindow*       m_WindowHandle;
 };
 
 } // namespace Dwarfworks
 
-#endif // PLATFORM_OPENGL_OPENGL_CONTEXT_H_
+#endif // PLATFORM_OPENGL_OPENGL_CONTEXT_H

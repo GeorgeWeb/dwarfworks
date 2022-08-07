@@ -2,54 +2,49 @@
 #include "dwpch.h"
 // end PCH
 
-#include <glad/glad.h>
-
-#include "Dwarfworks/Graphics/RendererAPI.h"
+#include "Dwarfworks/Renderer/RendererAPI.h"
 
 #include "OpenGLVertexArray.h"
+#include "OpenGLUtil.h"
 
-namespace Dwarfworks
-{
+using namespace Dwarfworks;
+
 // Temporary
 static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 {
     switch (type)
     {
-        case Dwarfworks::ShaderDataType::Float: return GL_FLOAT;
-        case Dwarfworks::ShaderDataType::Float2: return GL_FLOAT;
-        case Dwarfworks::ShaderDataType::Float3: return GL_FLOAT;
-        case Dwarfworks::ShaderDataType::Float4: return GL_FLOAT;
-        case Dwarfworks::ShaderDataType::Mat3: return GL_FLOAT;
-        case Dwarfworks::ShaderDataType::Mat4: return GL_FLOAT;
-        case Dwarfworks::ShaderDataType::Int: return GL_INT;
-        case Dwarfworks::ShaderDataType::Int2: return GL_INT;
-        case Dwarfworks::ShaderDataType::Int3: return GL_INT;
-        case Dwarfworks::ShaderDataType::Int4: return GL_INT;
-        case Dwarfworks::ShaderDataType::Bool: return GL_BOOL;
+        default:
+            // fall-through
+        case ShaderDataType::None: break;
+        case ShaderDataType::Float: return GL_FLOAT;
+        case ShaderDataType::Float2: return GL_FLOAT;
+        case ShaderDataType::Float3: return GL_FLOAT;
+        case ShaderDataType::Float4: return GL_FLOAT;
+        case ShaderDataType::Mat3: return GL_FLOAT;
+        case ShaderDataType::Mat4: return GL_FLOAT;
+        case ShaderDataType::Int: return GL_INT;
+        case ShaderDataType::Int2: return GL_INT;
+        case ShaderDataType::Int3: return GL_INT;
+        case ShaderDataType::Int4: return GL_INT;
+        case ShaderDataType::Bool: return GL_BOOL;
     }
 
     DW_CORE_ASSERT(false, "Unknown ShaderDataType!");
     return 0;
 }
 
-OpenGLVertexArray::OpenGLVertexArray()
+OpenGLVertexArray::OpenGLVertexArray() : m_IndexBuffer(IndexBuffer::Create(nullptr, 0))
 {
-    if (GLAD_GL_VERSION_4_5)
-    {
-        glCreateVertexArrays(1, &m_RendererId);
-    }
-    else
-    {
-        glGenVertexArrays(1, &m_RendererId);
-    }
+    OpenGL::CreateVertexArrays(1, &m_RendererId);
 }
 
-void OpenGLVertexArray::Bind() const
+inline void OpenGLVertexArray::Bind() const
 {
     glBindVertexArray(m_RendererId);
 }
 
-void OpenGLVertexArray::Unbind() const
+inline void OpenGLVertexArray::Unbind() const
 {
     glBindVertexArray(0);
 }
@@ -65,14 +60,7 @@ void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
     const auto& layout = vertexBuffer->GetLayout();
     for (const auto& element : layout)
     {
-        if (GLAD_GL_VERSION_4_5)
-        {
-            glEnableVertexArrayAttrib(m_RendererId, index);
-        }
-        else
-        {
-            glEnableVertexAttribArray(index);
-        }
+        OpenGL::EnableVertexArrayAttrib(m_RendererId, index);
         glVertexAttribPointer(index, element.GetComponentCount(), ShaderDataTypeToOpenGLBaseType(element.Type),
                               element.Normalized ? GL_TRUE : GL_FALSE, layout.GetStride(),
                               reinterpret_cast<const void*>(element.Offset));
@@ -89,5 +77,3 @@ void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 
     m_IndexBuffer = indexBuffer;
 }
-
-} // namespace Dwarfworks

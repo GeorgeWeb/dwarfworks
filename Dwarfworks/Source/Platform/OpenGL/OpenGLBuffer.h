@@ -1,43 +1,47 @@
-#ifndef PLATFORM_OPENGL_OPENGL_BUFFER_H_
-#define PLATFORM_OPENGL_OPENGL_BUFFER_H_
+#ifndef PLATFORM_OPENGL_OPENGL_BUFFER_H
+#define PLATFORM_OPENGL_OPENGL_BUFFER_H
 
-#include "Dwarfworks/Graphics/Buffer.h"
+#include "Dwarfworks/Renderer/Buffer.h"
 
 namespace Dwarfworks
 {
-class ENGINE_API OpenGLVertexBuffer : public VertexBuffer
+class ENGINE_API OpenGLVertexBuffer final : public VertexBuffer
 {
   public:
+    OpenGLVertexBuffer() = default;
     OpenGLVertexBuffer(float* vertices, uint32_t size);
-    virtual ~OpenGLVertexBuffer() override;
 
-    virtual void Bind() const override;
-    virtual void Unbind() const override;
+    ~OpenGLVertexBuffer() override final;
 
-    virtual const BufferLayout& GetLayout() const override { return m_Layout; }
-    virtual void                SetLayout(const BufferLayout& layout) override { m_Layout = layout; }
+    void Bind() const override final;
+    void Unbind() const override final;
+
+    const BufferLayout& GetLayout() const override final { return m_Layout; }
+    void                SetLayout(const BufferLayout& layout) override final { m_Layout = layout; }
 
   private:
-    uint32_t     m_RendererId;
-    BufferLayout m_Layout;
+    std::uint32_t m_RendererId {0};
+    BufferLayout  m_Layout;
 };
 
-class ENGINE_API OpenGLIndexBuffer : public IndexBuffer
+class ENGINE_API OpenGLIndexBuffer final : public IndexBuffer
 {
   public:
-    OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
-    ~OpenGLIndexBuffer() override;
+    OpenGLIndexBuffer() = default;
+    OpenGLIndexBuffer(std::uint32_t* indices, std::uint32_t count);
 
-    virtual void Bind() const override;
-    virtual void Unbind() const override;
+    ~OpenGLIndexBuffer() override final;
 
-    uint32_t GetCount() const override { return m_Count; }
+    void Bind() const override final;
+    void Unbind() const override final;
+
+    std::uint32_t GetCount() const override final { return m_Count; }
 
   private:
-    uint32_t m_RendererId;
-    uint32_t m_Count;
+    std::uint32_t m_RendererId {0};
+    std::uint32_t m_Count;
 };
 
 } // namespace Dwarfworks
 
-#endif // PLATFORM_OPENGL_OPENGL_BUFFER_H_
+#endif // PLATFORM_OPENGL_OPENGL_BUFFER_H

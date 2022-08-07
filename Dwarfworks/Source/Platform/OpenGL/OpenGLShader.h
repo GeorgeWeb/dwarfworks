@@ -1,36 +1,38 @@
-#ifndef PLATFORM_OPENGL_OPENGL_SHADER_H_
-#define PLATFORM_OPENGL_OPENGL_SHADER_H_
+#ifndef PLATFORM_OPENGL_OPENGL_SHADER_H
+#define PLATFORM_OPENGL_OPENGL_SHADER_H
 
-#include "Dwarfworks/Graphics/Shader.h"
+#include "Dwarfworks/Core/Core.h"
+#include "Dwarfworks/Renderer/Shader.h"
 #include "Dwarfworks/Math/Math.h"
-
-// Forward declare GLenum rather than including OpenGL for just this.
-typedef unsigned int GLenum;
 
 namespace Dwarfworks
 {
-class ENGINE_API OpenGLShader : public Shader
+class ENGINE_API OpenGLShader final : public Shader
 {
+    // typedef GLenum rather than including glad for all OpenGL definitions.
+    typedef unsigned int GLenum;
+
   public:
     explicit OpenGLShader(const std::string& filepath);
-    OpenGLShader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
-    virtual ~OpenGLShader() override;
+    explicit OpenGLShader(const std::string& name, const std::string& vertexSource, const std::string& fragmentSource);
 
-    virtual void Bind() const override;
-    virtual void Unbind() const override;
+    ~OpenGLShader() override final;
 
-    virtual void SetInt(const std::string& name, int value) const override;
-    virtual void SetIntArray(const std::string& name, int* values, uint32_t count) const override;
-    virtual void SetFloat(const std::string& name, float value) const override;
-    virtual void SetFloatArray(const std::string& name, float* values, uint32_t count) const override;
-    virtual void SetFloat2(const std::string& name, const glm::vec2& value) const override;
-    virtual void SetFloat3(const std::string& name, const glm::vec3& value) const override;
-    virtual void SetFloat4(const std::string& name, const glm::vec4& value) const override;
-    virtual void SetMat2(const std::string& name, const glm::mat2& value) const override;
-    virtual void SetMat3(const std::string& name, const glm::mat3& value) const override;
-    virtual void SetMat4(const std::string& name, const glm::mat4& value) const override;
+    void Bind() const override final;
+    void Unbind() const override final;
 
-    virtual const std::string& GetName() const override { return m_Name; }
+    void SetInt(const std::string& name, int value) const override final;
+    void SetIntArray(const std::string& name, int* values, uint32_t count) const override final;
+    void SetFloat(const std::string& name, float value) const override final;
+    void SetFloatArray(const std::string& name, float* values, uint32_t count) const override final;
+    void SetFloat2(const std::string& name, const glm::vec2& value) const override final;
+    void SetFloat3(const std::string& name, const glm::vec3& value) const override final;
+    void SetFloat4(const std::string& name, const glm::vec4& value) const override final;
+    void SetMat2(const std::string& name, const glm::mat2& value) const override final;
+    void SetMat3(const std::string& name, const glm::mat3& value) const override final;
+    void SetMat4(const std::string& name, const glm::mat4& value) const override final;
+
+    inline const std::string& GetName() const override final { return m_Name; }
 
     void UploadUniformBool(const std::string& name, bool value) const;
     void UploadUniformInt(const std::string& name, int value) const;
@@ -58,4 +60,4 @@ class ENGINE_API OpenGLShader : public Shader
 
 } // namespace Dwarfworks
 
-#endif // PLATFORM_OPENGL_OPENGL_SHADER_H_
+#endif // PLATFORM_OPENGL_OPENGL_SHADER_H

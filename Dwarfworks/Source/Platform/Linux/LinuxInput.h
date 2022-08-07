@@ -1,23 +1,24 @@
-#ifndef PLATFORM_WINDOWS_WINDOWS_INPUT_H_
-#define PLATFORM_WINDOWS_WINDOWS_INPUT_H_
+#ifndef PLATFORM_LINUX_LINUX_INPUT_H_
+#define PLATFORM_LINUX_LINUX_INPUT_H_
 
 #include "Dwarfworks/Core/Input/Input.h"
 
-namespace Dwarfworks {
+namespace Dwarfworks
+{
+class ENGINE_API LinuxInput final : public Input
+{
+  public:
+  protected:
+    bool IsKeyPressedImpl(int keycode) const override;
 
-class DW_API LinuxInput : public Input {
- public:
- protected:
-  bool IsKeyPressedImpl(int keycode) const override;
+    bool IsMouseButtonPressedImpl(int button) const override;
 
-  bool IsMouseButtonPressedImpl(int button) const override;
+    std::pair<float, float> GetMousePositionImpl() const override;
 
-  std::pair<float, float> GetMousePositionImpl() const override;
-
-  float GetMouseXImpl() const override;
-  float GetMouseYImpl() const override;
+    float GetMouseXImpl() const override;
+    float GetMouseYImpl() const override;
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // PLATFORM_WINDOWS_WINDOWS_INPUT_H_
+#endif // PLATFORM_LINUX_LINUX_INPUT_H_

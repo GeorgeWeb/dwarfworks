@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_PRECOMPILED_HEADER_H_
-#define DWARFWORKS_PRECOMPILED_HEADER_H_
+#ifndef DWARFWORKS_PRECOMPILED_HEADER_H
+#define DWARFWORKS_PRECOMPILED_HEADER_H
 
 #include <array>
 #include <atomic>
@@ -13,13 +13,15 @@
 #include <stdexcept>
 #include <string>
 #include <string_view>
+#include <map>
+#include <set>
 #include <unordered_map>
 #include <unordered_set>
 #include <utility>
 #include <vector>
 
-#ifdef DW_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
     #include <Windows.h>
 #endif
 
-#endif // DWARFWORKS_PRECOMPILED_HEADER_H_
+#endif // DWARFWORKS_PRECOMPILED_HEADER_H

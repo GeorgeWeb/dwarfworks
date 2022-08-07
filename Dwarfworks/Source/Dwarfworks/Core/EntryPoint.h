@@ -1,18 +1,16 @@
-#ifndef CORE_ENTRY_POINT_H_
-#define CORE_ENTRY_POINT_H_
+#ifndef CORE_ENTRY_POINT_H
+#define CORE_ENTRY_POINT_H
 
 extern Dwarfworks::Scope<Dwarfworks::Application> Dwarfworks::CreateApplication();
 
-auto main() -> int32_t
+auto main() -> int
 {
     Dwarfworks::Log::Initialize();
 
-    [] {
-        return Dwarfworks::CreateApplication();
-    }()
-        ->GameLoop();
+    auto App = Dwarfworks::CreateApplication();
+    App->GameLoop();
 
     return 0;
 }
 
-#endif // CORE_ENTRY_POINT_H_
+#endif // CORE_ENTRY_POINT_H

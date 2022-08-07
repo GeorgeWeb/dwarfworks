@@ -1,52 +1,42 @@
-#ifndef PLATFORM_WINDOWS_LINUX_WINDOW_H_
-#define PLATFORM_WINDOWS_LINUX_WINDOW_H_
+#ifndef PLATFORM_LINUX_LINUX_WINDOW_H_
+#define PLATFORM_LINUX_LINUX_WINDOW_H_
 
 #include "Dwarfworks/Core/Window/Window.h"
+#include "Dwarfworks/Renderer/GraphicsContext.h"
 
-#include "Dwarfworks/Graphics/GraphicsContext.h"
+struct GLFWwindow;
 
-#include <GLFW/glfw3.h>
-// struct GLFWwindow;
+namespace Dwarfworks
+{
+class ENGINE_API LinuxWindow final : public Window
+{
+  public:
+    explicit LinuxWindow(const WindowProps& props);
+    virtual ~LinuxWindow() override;
 
-namespace Dwarfworks {
+    void* Get() const override;
+    void* GetNative() const override;
 
-class DW_API LinuxWindow : public Window {
- public:
+    void OnUpdate() override;
 
-  explicit LinuxWindow(const WindowProps& props);
-  virtual ~LinuxWindow() override;
+    uint32_t GetWidth() const override { return m_Data.Width; }
+    uint32_t GetHeight() const override { return m_Data.Height; }
 
-  void OnUpdate() override;
+    void SetVSyncEnabled(bool enable = false) override;
+    bool IsVSyncEnabled() const override;
 
-  unsigned int GetWidth() const override { return m_Data.Width; }
-  unsigned int GetHeight() const override { return m_Data.Height; }
+    virtual void SetEventCallback(const EventCallbackFn& callback) override;
 
-  // Window attributes
-  void SetEventCallback(const EventCallbackFn& callback) override;
+  private:
+    void Initialize(const WindowProps& props);
+    void Shutdown();
 
-  void SetVSync(bool isEnabled) override;
-  bool IsVSync() const override;
+    GLFWwindow*      m_Window;
+    GraphicsContext* m_Context;
 
-  inline void* GetNativeWindow() const override { return m_Window; }
-
- private:
-  void Initialize(const WindowProps& props);
-  void Shutdown();
-
-  GLFWwindow* m_Window;
-  GraphicsContext* m_Context;
-
-  struct WindowData {
-    std::string Title{"Dwarfworks Engine"};
-    unsigned int Width{1280};
-    unsigned int Height{720};
-    bool VSync{false};
-    EventCallbackFn EventCallback;
-  };
-
-  WindowData m_Data;
+    WindowState m_Data;
 };
 
-}  // namespace Dwarfworks
+} // namespace Dwarfworks
 
-#endif  // PLATFORM_WINDOWS_LINUX_WINDOW_H_
+#endif // PLATFORM_LINUX_LINUX_WINDOW_H_

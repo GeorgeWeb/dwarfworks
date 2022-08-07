@@ -30,3 +30,6 @@ Sandbox/imgui.ini
 #
 packages/*
 debug.log
+
+.cache/*
+.DS_Store

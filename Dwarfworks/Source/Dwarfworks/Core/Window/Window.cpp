@@ -4,9 +4,11 @@
 
 #include "Window.h"
 
-#ifdef DW_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
     #include "Platform/Windows/WindowsWindow.h"
-#elif defined(DW_PLATFORM_LINUX)
+#elif defined(PLATFORM_MACOS)
+    #include "Platform/Mac/MacWindow.h"
+#elif defined(PLATFORM_LINUX)
     #include "Platform/Linux/LinuxWindow.h"
 #endif
 
@@ -14,10 +16,11 @@ namespace Dwarfworks
 {
 Scope<Window> Window::Create(const WindowProps& props)
 {
-#ifdef DW_PLATFORM_WINDOWS
+#ifdef PLATFORM_WINDOWS
     return CreateScope<WindowsWindow>(props);
-#elif defined(DW_PLATFORM_LINUX)
-    // TODO: Check if LinuxWindow is up-to-date
+#elif defined(PLATFORM_MACOS)
+    return CreateScope<MacWindow>(props);
+#elif defined(PLATFORM_LINUX)
     return CreateScope<LinuxWindow>(props);
 #else
     HZ_CORE_ASSERT(false, "Unknown platform!");

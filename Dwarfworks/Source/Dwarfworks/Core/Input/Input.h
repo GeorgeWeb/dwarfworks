@@ -1,5 +1,5 @@
-#ifndef CORE_INPUT_INPUT_H_
-#define CORE_INPUT_INPUT_H_
+#ifndef CORE_INPUT_INPUT_H
+#define CORE_INPUT_INPUT_H
 
 #include "Dwarfworks/Core/Core.h"
 
@@ -8,20 +8,22 @@
 
 namespace Dwarfworks
 {
-// struct DW_API InputPrefs {};
+// struct ENGINE_API InputPrefs {};
 
 // Interface representing an Input management system
 class ENGINE_API Input
 {
   public:
-    inline static bool IsKeyPressed(int keycode) { return s_Instance->IsKeyPressedImpl(keycode); }
+    virtual ~Input() = default;
 
-    inline static bool IsMouseButtonPressed(int button) { return s_Instance->IsMouseButtonPressedImpl(button); }
+    static bool IsKeyPressed(int keycode) { return s_Instance->IsKeyPressedImpl(keycode); }
 
-    inline static std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }
+    static bool IsMouseButtonPressed(int button) { return s_Instance->IsMouseButtonPressedImpl(button); }
 
-    inline static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
-    inline static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
+    static std::pair<float, float> GetMousePosition() { return s_Instance->GetMousePositionImpl(); }
+
+    static float GetMouseX() { return s_Instance->GetMouseXImpl(); }
+    static float GetMouseY() { return s_Instance->GetMouseYImpl(); }
 
   protected:
     virtual bool IsKeyPressedImpl(int keycode) const        = 0;
@@ -38,4 +40,4 @@ class ENGINE_API Input
 
 } // namespace Dwarfworks
 
-#endif // CORE_INPUT_INPUT_H_
+#endif // CORE_INPUT_INPUT_H

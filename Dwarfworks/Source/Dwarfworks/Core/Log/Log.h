@@ -1,11 +1,11 @@
-#ifndef CORE_LOGGING_LOG_H_
-#define CORE_LOGGING_LOG_H_
+#ifndef CORE_LOGGING_LOG_H
+#define CORE_LOGGING_LOG_H
 
 #include "Dwarfworks/Core/Core.h"
 
-#include <spdlog/spdlog.h>
+#include "spdlog/spdlog.h"
 // for outputting custom types
-#include <spdlog/fmt/ostr.h>
+#include "spdlog/fmt/ostr.h"
 
 namespace Dwarfworks
 {
@@ -34,28 +34,20 @@ namespace Dwarfworks
 // https://docs.microsoft.com/en-us/cpp/cpp/using-dllimport-and-dllexport-in-cpp-classes
 // -------------------------------------------------------------------------------------
 
-class Log
+class Log final
 {
+    inline static const char s_CoreLoggerName[]   = "[ENGINE]";
+    inline static const char s_ClientLoggerName[] = "[GAME]";
+
   public:
-    /// \fn DW_API static void Log::Initialize() noexcept;
-    ///
-    /// \brief Initializes this object.
-    ///
-    /// \author Georg
-    /// \date 07/10/2019
+    ENGINE_API static void Initialize(std::string_view coreLoggerName   = s_CoreLoggerName,
+                                      std::string_view clientLoggerName = s_ClientLoggerName) noexcept;
 
-    ENGINE_API static void Initialize() noexcept;
-
-    // returns the core logger
-    ENGINE_API static inline Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
-
-    // returns the client logger
-    ENGINE_API static inline Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
+    ENGINE_API inline static Ref<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
+    ENGINE_API inline static Ref<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
 
   private:
-    // the core logger
     static Ref<spdlog::logger> s_CoreLogger;
-    // the client logger
     static Ref<spdlog::logger> s_ClientLogger;
 };
 
@@ -73,7 +65,7 @@ class Log
 #define DW_ERROR(...) ::Dwarfworks::Log::GetClientLogger()->error(__VA_ARGS__)
 #define DW_FATAL(...) ::Dwarfworks::Log::GetClientLogger()->critical(__VA_ARGS__)
 
-// Strip out (from binary) the core log macros on distribution
+// strip out from distribution builds
 #ifdef DW_DIST_BUILD
     #define DW_CORE_TRACE
     #define DW_CORE_INFO
@@ -82,4 +74,4 @@ class Log
     #define DW_CORE_FATAL
 #endif
 
-#endif // CORE_LOGGING_LOG_H_
+#endif // CORE_LOGGING_LOG_H

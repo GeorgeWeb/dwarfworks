@@ -54,8 +54,8 @@ void DebugUILayer::OnAttach()
         style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
-    auto& app    = Application::Get();
-    auto  window = static_cast<GLFWwindow*>(app.GetWindow().Get());
+    Application& app    = Application::Get();
+    auto         window = static_cast<GLFWwindow*>(app.GetWindow().Get());
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);

@@ -1,5 +1,5 @@
-#ifndef DWARFWORKS_PUBLIC_API_H_
-#define DWARFWORKS_PUBLIC_API_H_
+#ifndef DWARFWORKS_PUBLIC_API_H
+#define DWARFWORKS_PUBLIC_API_H
 
 // For use by Dwarfworks applications
 
@@ -12,17 +12,16 @@
 // ---------------------------------------------------------------
 
 // -- Events ------------------------------------------------
-#include "Dwarfworks/Events/ApplicationEvent.h"
-#include "Dwarfworks/Events/KeyEvent.h"
-#include "Dwarfworks/Events/MouseEvent.h"
-// ...
-#include "Dwarfworks/Events/EventManager.h"
+#include "Dwarfworks/Event/ApplicationEvent.h"
+#include "Dwarfworks/Event/KeyEvent.h"
+#include "Dwarfworks/Event/MouseEvent.h"
+#include "Dwarfworks/Event/EventDispatcher.h"
 // ---------------------------------------------------------------
 
 // -- Input ------------------------------------------------------
 #include "Dwarfworks/Core/Input/Input.h"
-#include "Dwarfworks/Core/Input/KeyCodes.h"
-#include "Dwarfworks/Core/Input/MouseButtonCodes.h"
+#include "Dwarfworks/Core/Input/KeyCodeDefinitions.h"
+#include "Dwarfworks/Core/Input/MouseButtonDefinitions.h"
 // ---------------------------------------------------------------
 
 // -- Timestep ---------------------------------------------------
@@ -33,24 +32,28 @@
 #include "Dwarfworks/Core/Application/Application.h"
 // ---------------------------------------------------------------
 
-// -- Layers -----------------------------------------------------
-#include "Dwarfworks/Core/Layers/Layer.h"
+// -- Layer ------------------------------------------------------
+#include "Dwarfworks/Core/Layer/Layer.h"
+// ---------------------------------------------------------------
+
+// -- ImGui ------------------------------------------------------
 #include "Dwarfworks/DebugUI/DebugUILayer.h"
 // ---------------------------------------------------------------
 
-// -- Maths ------------------------------------------------------
+// -- Math -------------------------------------------------------
 #include "Dwarfworks/Math/Math.h"
 // ---------------------------------------------------------------
 
-// -- Graphics ---------------------------------------------------
-#include "Dwarfworks/Graphics/RenderCommand.h"
-#include "Dwarfworks/Graphics/Renderer.h"
-#include "Dwarfworks/Graphics/Buffer.h"
-#include "Dwarfworks/Graphics/Shader.h"
-#include "Dwarfworks/Graphics/Texture.h"
-#include "Dwarfworks/Graphics/VertexArray.h"
-#include "Dwarfworks/Graphics/Camera.h"
-#include "Dwarfworks/Graphics/CameraController.h"
+// -- Renderer ---------------------------------------------------
+#include "Dwarfworks/Renderer/RenderCommand.h"
+#include "Dwarfworks/Renderer/Renderer.h"
+#include "Dwarfworks/Renderer/2D/Renderer2D.h"
+#include "Dwarfworks/Renderer/Buffer.h"
+#include "Dwarfworks/Renderer/Shader.h"
+#include "Dwarfworks/Renderer/Texture.h"
+#include "Dwarfworks/Renderer/VertexArray.h"
+#include "Dwarfworks/Renderer/Camera.h"
+#include "Dwarfworks/Renderer/CameraController.h"
 // ---------------------------------------------------------------
 
-#endif // DWARFWORKS_PUBLIC_API_H_
+#endif // DWARFWORKS_PUBLIC_API_H

@@ -13,6 +13,7 @@
 #include "Dwarfworks/Core/Application/Application.h"
 
 // TEMPORARY UNTIL Drawrfworks::Input is setup
+#define GLFW_INCLUDE_NONE
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 
@@ -54,11 +55,15 @@ void DebugUILayer::OnAttach()
     }
 
     auto& app    = Application::Get();
-    auto  window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+    auto  window = static_cast<GLFWwindow*>(app.GetWindow().Get());
 
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
+#if PLATFORM_MACOS
+    ImGui_ImplOpenGL3_Init("#version 410");
+#else
     ImGui_ImplOpenGL3_Init("#version 450");
+#endif
 }
 
 void DebugUILayer::OnDetach()

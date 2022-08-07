@@ -4,19 +4,20 @@
 
 #include "WindowsWindow.h"
 
-// events
-#include "Dwarfworks/Events/ApplicationEvent.h"
-#include "Dwarfworks/Events/KeyEvent.h"
-#include "Dwarfworks/Events/MouseEvent.h"
-#include "Dwarfworks/Graphics/Renderer.h"
+#include "Dwarfworks/Core/Core.h"
 
+// events
+#include "Dwarfworks/Event/ApplicationEvent.h"
+#include "Dwarfworks/Event/KeyEvent.h"
+#include "Dwarfworks/Event/MouseEvent.h"
+
+// renderer context
+#include "Dwarfworks/Renderer/Renderer.h"
 #include "Platform/OpenGL/OpenGLContext.h"
 
-// GLFW
 #include <GLFW/glfw3.h>
-using namespace Dwarfworks;
 
-static std::atomic<uint32_t> GLFWWindowCount {0};
+using namespace Dwarfworks;
 
 WindowsWindow::WindowsWindow(const WindowProps& props)
 {
@@ -28,12 +29,36 @@ WindowsWindow::~WindowsWindow()
     Shutdown();
 };
 
+void* WindowsWindow::Get() const
+{
+    return m_Window;
+}
+
+void* WindowsWindow::GetNative() const
+{
+    return Get();
+}
+
 void WindowsWindow::OnUpdate()
 {
     glfwPollEvents();
     // TODO: In the future, change the API so this is called like:
-    // m_Context->GetSwapChain().Flush();
-    m_Context->SwapBuffers();
+    // m_Context->GetSwapChain().Present();
+    m_Context->FlipSwapChainBuffers();
+}
+
+void WindowsWindow::SetVSyncEnabled(bool enable)
+{
+    // set the interval synchronization time for a frame to be
+    // called for rendering depending on v-sync being enabled
+    const int32_t interval = enable ? 1 : 0;
+    glfwSwapInterval(interval);
+    m_Data.VSync = enable;
+}
+
+bool WindowsWindow::IsVSyncEnabled() const
+{
+    return m_Data.VSync;
 }
 
 void WindowsWindow::SetEventCallback(const EventCallbackFn& callback)
@@ -41,19 +66,8 @@ void WindowsWindow::SetEventCallback(const EventCallbackFn& callback)
     m_Data.EventCallback = callback;
 }
 
-void WindowsWindow::SetVSync(bool isEnabled)
-{
-    // set the interval synchronization time for a frame to be
-    // called for rendering depending on v-sync being enabled
-    const auto interval = isEnabled ? 1 : 0; // 1 is default, could be changed
-    glfwSwapInterval(interval);
-    m_Data.VSync = isEnabled;
-}
-
-bool WindowsWindow::IsVSync() const
-{
-    return m_Data.VSync;
-}
+// Temp.
+static bool s_IsGLFWInitialized {false};
 
 void WindowsWindow::Initialize(const WindowProps& props)
 {
@@ -62,7 +76,7 @@ void WindowsWindow::Initialize(const WindowProps& props)
     m_Data.Height = props.Height;
     DW_CORE_INFO("Window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
-    if (GLFWWindowCount == 0)
+    if (!s_IsGLFWInitialized)
     {
         // TODO: glfwTerminate() on system shutdown (not on window close!)
         auto success = glfwInit();
@@ -70,28 +84,26 @@ void WindowsWindow::Initialize(const WindowProps& props)
         // temporary until abstracted away in a GLFWErrorCallback function
         glfwSetErrorCallback(
             [](int error, const char* description) { DW_CORE_ERROR("GLFW Error ({0}): {1}", error, description); });
+        s_IsGLFWInitialized = true;
     }
 
+    switch (Renderer::GetAPI())
     {
+        default: DW_CORE_ASSERT(false, "Unknown RendererAPI!"); break;
+        case RendererAPI::API::OpenGL: {
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+            glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
+            glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 #ifdef DW_DEBUG
-        switch (Renderer::GetAPI())
-        {
-            default: break;
-            case RendererAPI::API::None: break;
-            case RendererAPI::API::OpenGL: {
-                glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-                break;
-            }
-    #ifdef DW_PLATFORM_WINDOWS
-            case RendererAPI::API::D3D12: break;
-    #endif
-        }
+            glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
-        // create the window
-        m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), m_Data.Title.c_str(),
-                                    nullptr, nullptr);
-        GLFWWindowCount++;
+        }
+        break;
     }
+
+    // create the window
+    m_Window = glfwCreateWindow(static_cast<int>(props.Width), static_cast<int>(props.Height), m_Data.Title.c_str(),
+                                nullptr, nullptr);
 
     m_Context = GraphicsContext::Create(m_Window);
     m_Context->Initialize();
@@ -106,7 +118,7 @@ void WindowsWindow::Initialize(const WindowProps& props)
 
     // window close
     glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
-        auto& data  = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data  = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
         auto  event = WindowCloseEvent {};
         // set the window close callback
         data.EventCallback(event);
@@ -114,7 +126,7 @@ void WindowsWindow::Initialize(const WindowProps& props)
 
     // window resize
     glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
-        auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
 
         const auto wndWidth  = static_cast<uint32_t>(width);
         const auto wndHeight = static_cast<uint32_t>(height);
@@ -131,7 +143,7 @@ void WindowsWindow::Initialize(const WindowProps& props)
 
     // make sure the viewport matches the new window dimensions
     glfwSetFramebufferSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
-        auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
 
         const auto fbWidth  = static_cast<uint32_t>(width);
         const auto fbHeight = static_cast<uint32_t>(height);
@@ -144,7 +156,7 @@ void WindowsWindow::Initialize(const WindowProps& props)
 
     // key action
     glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-        auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
 
         switch (action)
         {
@@ -170,14 +182,14 @@ void WindowsWindow::Initialize(const WindowProps& props)
 
     // character type action
     glfwSetCharCallback(m_Window, [](GLFWwindow* window, uint32_t charater) {
-        auto& data  = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data  = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
         auto  event = KeyTypedEvent(charater);
         data.EventCallback(event);
     });
 
     // mouse button action
     glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
-        auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
 
         switch (action)
         {
@@ -196,7 +208,7 @@ void WindowsWindow::Initialize(const WindowProps& props)
 
     // mouse scroll action
     glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset) {
-        auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
 
         const auto xOffsetFloat = static_cast<float>(xOffset);
         const auto yOffsetFloat = static_cast<float>(yOffset);
@@ -206,7 +218,7 @@ void WindowsWindow::Initialize(const WindowProps& props)
 
     // mouse cursor move action
     glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos) {
-        auto& data = *(static_cast<WindowData*>(glfwGetWindowUserPointer(window)));
+        auto& data = *(static_cast<WindowState*>(glfwGetWindowUserPointer(window)));
 
         const auto xPosFloat = static_cast<float>(xPos);
         const auto yPosFloat = static_cast<float>(yPos);

@@ -5,7 +5,7 @@
 
 namespace Dwarfworks
 {
-class ENGINE_API WindowsInput : public Input
+class ENGINE_API WindowsInput final : public Input
 {
   protected:
     bool IsKeyPressedImpl(int keycode) const override;

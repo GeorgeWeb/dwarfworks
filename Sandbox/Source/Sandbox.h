@@ -1,14 +1,12 @@
-#ifndef SANDBOX_H_
-#define SANDBOX_H_
+#pragma once
 
-// Engine and common defines
-#include "Common.h"
+#include "SandboxLayer.h"
 
 class Sandbox final : public Dwarfworks::Application
 {
   public:
     Sandbox();
-    virtual ~Sandbox() override final = default;
-};
+    ~Sandbox();
 
-#endif // SANDBOX_H_
+    void OnEvent(Dwarfworks::Event &event) override final;
+};

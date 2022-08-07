@@ -1,17 +1,20 @@
-#ifndef CORE_WINDOW_WINDOW_H_
-#define CORE_WINDOW_WINDOW_H_
+#ifndef CORE_WINDOW_WINDOW_H
+#define CORE_WINDOW_WINDOW_H
 
 #include "Dwarfworks/Core/Core.h"
-#include "Dwarfworks/Events/EventManager.h"
-#include "dwpch.h"
+#include "Dwarfworks/Event/EventDispatcher.h"
 
 namespace Dwarfworks
 {
+/**
+ * @brief
+ *
+ */
 struct ENGINE_API WindowProps
 {
-    std::string  Title;
-    unsigned int Width;
-    unsigned int Height;
+    std::string Title;
+    uint32_t    Width;
+    uint32_t    Height;
 
     explicit WindowProps(const std::string& title = "Dwarfworks Engine", unsigned int width = 1280,
                          unsigned int height = 720)
@@ -20,37 +23,52 @@ struct ENGINE_API WindowProps
     }
 };
 
-// Interface representing a desktop system based window.
-// Implemented per platform
+/**
+ * @brief
+ *
+ */
+using EventCallbackFn = std::function<void(Event&)>;
 
+/**
+ * @brief Interface representing a desktop system based window.
+ *
+ */
 class ENGINE_API Window
 {
   public:
-    // The event callback function.
-    using EventCallbackFn = std::function<void(Event&)>;
-
     virtual ~Window() = default;
+
+    // Get the native window for the platform
+    virtual void* Get() const       = 0;
+    virtual void* GetNative() const = 0;
 
     virtual void OnUpdate() = 0;
 
     virtual unsigned int GetWidth() const  = 0;
     virtual unsigned int GetHeight() const = 0;
 
-    // Window attributes
+    virtual void SetVSyncEnabled(bool enable = false) = 0;
+    virtual bool IsVSyncEnabled() const               = 0;
 
     virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
-
-    virtual void SetVSync(bool isEnabled) = 0;
-    virtual bool IsVSync() const          = 0;
-
-    // Get the native window for the platform
-    // Note: Currently we're using GLFWwindow for all GLFW supported platforms
-    // until implemented using the native APIs
-    virtual void* GetNativeWindow() const = 0;
 
     static Scope<Window> Create(const WindowProps& props = WindowProps {});
 };
 
+/**
+ * @brief
+ *
+ */
+struct WindowState final
+{
+    EventCallbackFn EventCallback {};
+
+    std::string Title {"Dwarfworks Engine"};
+    uint32_t    Width {1280};
+    uint32_t    Height {720};
+    bool        VSync {false};
+};
+
 } // namespace Dwarfworks
 
-#endif // CORE_WINDOW_WINDOW_H_
+#endif // CORE_WINDOW_WINDOW_H

@@ -20,13 +20,13 @@ IncludeDir["glm"] = "Dwarfworks/Vendor/glm"
 IncludeDir["spdlog"] = "Dwarfworks/Vendor/spdlog/include"
 IncludeDir["debugbreak"] = "Dwarfworks/Vendor/debugbreak"
 IncludeDir["stb_image"] = "Dwarfworks/Vendor/stb_image"
-IncludeDir["directx"] = "Dwarfworks/Vendor/directx"
+-- IncludeDir["directx"] = "Dwarfworks/Vendor/directx"
 
 -- define project external dependencies
-group "Dependencies"
-    include "Dwarfworks/Vendor/glfw"
-    include "Dwarfworks/Vendor/glad"
-    include "Dwarfworks/Vendor/imgui"
+--group "Dependencies"
+    --include "Dwarfworks/Vendor/glfw"
+    --include "Dwarfworks/Vendor/glad"
+    --include "Dwarfworks/Vendor/imgui"
 
 -- relative path to Dwarfworks source folder
 local SourceDir = "%{prj.name}/Source"
@@ -44,11 +44,36 @@ project "Dwarfworks"
     cppdialect "C++17"
     staticruntime "on" -- off
 
+    configurations {
+        "Debug",      -- Full on debug code enabled with all information available
+        "Release",    -- Stripped out a lot of debug info, but some (like Logging) is kept
+        "Dist"        -- build to be distributed to the public with all debug info stripped
+    }
+
+    -- define project external dependencies
+    group "Dependencies"
+        include "Dwarfworks/Vendor/glfw"
+        include "Dwarfworks/Vendor/glad"
+        include "Dwarfworks/Vendor/imgui"
+
     targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
     objdir ("bin-int/" .. OutputDir .. "/%{prj.name}")
 
-    pchheader "dwpch.h"                         -- create pre-compiled header
-    pchsource "Dwarfworks/Source/dwpch.cpp"     -- use pre-compiled header (from source)
+    -- setup PCH (pre-compiled headers)
+    -- for GNU makefiles
+    filter "action:gmake"
+        pchheader "dwpch.h"
+        pchsource "dwpch.cpp"
+
+    -- for Visual Studio actions
+    filter "action:vs*"
+        pchheader "dwpch.h"
+        pchsource "dwpch.cpp"
+
+    -- for Xcode actions
+    filter "action:xcode*"
+        pchheader "Source/dwpch.h"
+        pchsource "Source/dwpch.cpp"
 
     -- set project source files
     files {
@@ -56,6 +81,8 @@ project "Dwarfworks"
         SourceDir .. "/*.cpp",
         SourceDir .. "/Dwarfworks/**.h",
         SourceDir .. "/Dwarfworks/**.cpp",
+        SourceDir .. "/Dwarfworks/Source/**.h",
+        SourceDir .. "/Dwarfworks/Source/**.cpp",
 		VendorDir .. "/stb_image/**.h",
 		VendorDir .. "/stb_image/**.cpp",
 		VendorDir .. "/glm/**.hpp",
@@ -70,6 +97,7 @@ project "Dwarfworks"
     -- set project include directories
     includedirs {
         -- the project source folder
+        ".",
         SourceDir,
         -- Cross-platform break into source-line debugger
         "%{IncludeDir.debugbreak}",
@@ -96,33 +124,30 @@ project "Dwarfworks"
     -- set project target properties
 
     filter "system:windows"
+        -- system "windows"
         systemversion "latest"
 
         -- Windows specific
         files {
-            VendorDir .. "/directx/**.h",
+            -- VendorDir .. "/directx/**.h",
             SourceDir .. "/Platform/Windows/**.h",
             SourceDir .. "/Platform/Windows/**.cpp",
             SourceDir .. "/Platform/OpenGL/**.h",
             SourceDir .. "/Platform/OpenGL/**.cpp",
-            SourceDir .. "/Platform/D3D12/**.h",
-            SourceDir .. "/Platform/D3D12/**.cpp",
         }
 
         --
         includedirs {
             -- DirectX helpers
-            "%{IncludeDir.directx}"
+            -- "%{IncludeDir.directx}"
         }
 
-        -- 
+        --
         links {
             -- OpenGL
             "opengl32.lib",
             -- D3D12
-            "d3d12.lib",
-            "dxgi.lib",
-            "dxguid.lib",
+            -- "d3d12.lib", "dxgi.lib", "dxguid.lib",
         }
 
         -- preprocessor definitions
@@ -138,7 +163,36 @@ project "Dwarfworks"
             -- ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. OutputDir .. "/Sandbox")
         -- }
 
+    filter "system:macosx"
+        -- system "macosx"
+        systemversion "latest"
+
+        -- Mac specific
+       files {
+            SourceDir .. "/Platform/OpenGL/**.h",
+            SourceDir .. "/Platform/OpenGL/**.cpp",
+            SourceDir .. "/Platform/Mac/**.h",
+            SourceDir .. "/Platform/Mac/**.cpp",
+        }
+
+        --
+        links {
+            "OpenGL.framework",
+            "Cocoa.framework",
+            "OpenGL.framework",
+            "IOKit.framework",
+            "CoreFoundation.framework"
+        }
+
+        --
+        defines {
+            "CFG_MACOS",
+            "__APPLE__",
+            "GLFW_INCLUDE_NONE",
+        }
+
     filter "system:linux"
+        -- system "linux"
         systemversion "latest"
 
         -- Linux specific
@@ -149,8 +203,8 @@ project "Dwarfworks"
             SourceDir .. "/Platform/Linux/**.cpp",
         }
 
-        -- 
-        links { 
+        --
+        links {
             "Xrandr",
             "Xi",
             "GLU",
@@ -159,7 +213,7 @@ project "Dwarfworks"
             "dl",
             "pthread",
         }
-        
+
         -- preprocessor definitions
         defines {
             -- "DW_BUILD_DLL",
@@ -173,7 +227,7 @@ project "Dwarfworks"
         defines {
             "DW_DEBUG"
         }
-        
+
         symbols "on"
 
     filter "configurations:Release"
@@ -196,18 +250,32 @@ project "Sandbox"
     cppdialect "C++17"
     staticruntime "on"
 
+    configurations {
+        "Debug",      -- Full on debug code enabled with all information available
+        "Release",    -- Stripped out a lot of debug info, but some (like Logging) is kept
+        "Dist"        -- build to be distributed to the public with all debug info stripped
+    }
+
+    -- define project external dependencies
+    group "Dependencies"
+        --include "Dwarfworks"
+        include "Dwarfworks/Vendor/glfw"
+        include "Dwarfworks/Vendor/glad"
+        include "Dwarfworks/Vendor/imgui"
+
     targetdir ("bin/" .. OutputDir .. "/%{prj.name}")
     objdir ("bin-int/" .. OutputDir .. "/%{prj.name}")
 
     -- set project source files
     files {
-        SourceDir .. "/**.h", -- if needed, add `.hpp` files as well
+        SourceDir .. "/**.h",
+        SourceDir .. "/**.hpp",
         SourceDir .. "/**.cpp"
     }
 
     -- set project include directories
     includedirs {
-        -- The Game Engine - Dwarfworks
+        -- Dwarfworks
         "Dwarfworks/Source",
         "Dwarfworks/Vendor",
         -- Cross-platform break into source-line debugger
@@ -234,7 +302,31 @@ project "Sandbox"
             -- "DW_DYNAMIC_LINK"
         }
 
+    filter "system:macosx"
+        systemversion "latest"
+
+        links {
+            "GLFW",
+            "Glad",
+            "ImGui",
+            "Cocoa.framework",
+            "OpenGL.framework",
+            "IOKit.framework",
+            "CoreFoundation.framework",
+        }
+
+        defines {
+            -- "DW_DYNAMIC_LINK"
+
+            --"CFG_MACOS",
+            --"__APPLE__",
+
+            "GLFW_INCLUDE_NONE",
+        }
+
     filter "system:linux"
+        systemversion "latest"
+
         links {
             "GLFW",
             "Glad",
@@ -255,17 +347,27 @@ project "Sandbox"
     -- specify build and compilation options per build configuration
     filter "configurations:Debug"
         defines {
+            -- "DEBUG",
             "DW_DEBUG"
         }
         runtime "Debug"
         symbols "on"
 
     filter "configurations:Release"
-        defines "DW_RELEASE"
+        defines
+        {
+            -- "DEBUG",
+            "DW_RELEASE"
+        }
+
         runtime "Release"
         optimize "on"
 
     filter "configurations:Dist"
-        defines "DW_DIST"
+        defines
+        {
+            -- "NDEBUG",
+            "DW_DIST"
+        }
         runtime "Release"
         optimize "on"

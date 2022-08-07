@@ -1,10 +1,10 @@
-#ifndef DEBUGUI_DEBUGUI_LAYER_H_
-#define DEBUGUI_DEBUGUI_LAYER_H_
+#ifndef DEBUGUI_DEBUGUI_LAYER_H
+#define DEBUGUI_DEBUGUI_LAYER_H
 
-#include "Dwarfworks/Core/Layers/Layer.h"
-#include "Dwarfworks/Events/ApplicationEvent.h"
-#include "Dwarfworks/Events/KeyEvent.h"
-#include "Dwarfworks/Events/MouseEvent.h"
+#include "Dwarfworks/Core/Layer/Layer.h"
+#include "Dwarfworks/Event/ApplicationEvent.h"
+#include "Dwarfworks/Event/KeyEvent.h"
+#include "Dwarfworks/Event/MouseEvent.h"
 
 namespace Dwarfworks
 {
@@ -33,4 +33,4 @@ class ENGINE_API DebugUILayer final : public Layer
 
 } // namespace Dwarfworks
 
-#endif // !DEBUGUI_DEBUGUI_LAYER_H_
+#endif // !DEBUGUI_DEBUGUI_LAYER_H

@@ -1,20 +1,25 @@
 // begin PCH
+#include "Dwarfworks/Core/Log/Log.h"
+#include "Dwarfworks/Renderer/RenderCommand.h"
 #include "dwpch.h"
 // end PCH
 
 #include "Application.h"
 #include "Dwarfworks/Core/Timestep.h"
-#include "Dwarfworks/Graphics/Renderer.h"
+#include "Dwarfworks/Renderer/Renderer.h"
+#include "Dwarfworks/Renderer/2D/Renderer2D.h"
 #include "Dwarfworks/Math/Math.h"
+
+#include "Dwarfworks/Core/Input/KeyCodeDefinitions.h"
 
 // imgui
 #include "imgui.h"
 
 // TEMPORARY!
-#include <GLFW/glfw3.h>
+#include "GLFW/glfw3.h"
 
-namespace Dwarfworks
-{
+using namespace Dwarfworks;
+
 Application*   Application::s_Instance;
 std::once_flag Application::s_instantiateApplicationFlag;
 
@@ -29,6 +34,8 @@ Application& Application::Get()
     return *s_Instance;
 }
 
+// Application::Application()
+
 Application::Application(const WindowProps& props)
 {
     DW_CORE_ASSERT(!s_Instance, "Can have only one Application instance!");
@@ -36,7 +43,7 @@ Application::Application(const WindowProps& props)
     // Create the Application Window
     m_Window = Window::Create(props);
     // Set the Window event handling for this Application
-    m_Window->SetEventCallback(DW_BIND_EVENT_FN(Application::OnEvent));
+    m_Window->SetEventCallback(BIND_MEMBER(Application::OnEvent));
 
     // Initialize the Renderer
     Renderer::Initialize();
@@ -50,12 +57,13 @@ Application::~Application()
 {
     // Cleanup DebugUI overlay resources
     m_LayerStack.PopOverlay(m_DebugUILayer.get());
+    // Renderer::Shutdown();
     DW_CORE_INFO("Closed the Application!");
 }
 
 void Application::GameLoop()
 {
-    while (IsRunning())
+    while (m_IsRunning)
     {
         // -------------------------------- //
         // -- Timestep calculation -------- //
@@ -65,7 +73,7 @@ void Application::GameLoop()
         Timestep deltaTime = time - m_LastFrameTime;
         m_LastFrameTime    = time;
 
-        if (!IsMinimized())
+        if (!m_IsMinimized)
         {
             // -------------------------------- //
             // -- Update layers --------------- //
@@ -86,8 +94,6 @@ void Application::GameLoop()
             // -------------------------------- //
             // -- Render DebugUI overlay ------ //
             // -------------------------------- //
-
-            // TODO: If minimized - don't swap buffers
             m_DebugUILayer->Begin();
             for (auto layer : m_LayerStack)
             {
@@ -101,25 +107,42 @@ void Application::GameLoop()
         // -------------------------------- //
 
         // TODO: If minimized - don't swap buffers
-        m_Window->OnUpdate();
+        // if (!m_IsMinimized)
+        {
+            m_Window->OnUpdate();
+        }
     }
 }
 
 void Application::OnEvent(Event& event)
 {
     // listen for upcoming events and register them
-    EventManager eventManager(event);
+    EventDispatcher eventDispatcher(event);
     // dispatch the event and call its function if it matches the registered event
-    eventManager.Dispatch<WindowCloseEvent>(DW_BIND_EVENT_FN(Application::OnWindowClosed));
+    eventDispatcher.Dispatch<WindowCloseEvent>(BIND_MEMBER(Application::OnWindowClosed));
     // Note: Default resizing behaviour, refactor later.
-    eventManager.Dispatch<WindowResizeEvent>(DW_BIND_EVENT_FN(Application::OnWindowResize));
+    eventDispatcher.Dispatch<WindowResizeEvent>(BIND_MEMBER(Application::OnWindowResize));
 
     // call events in reverse order from most top to most bottom layer
-    std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto layer) {
+    std::for_each(m_LayerStack.rbegin(), m_LayerStack.rend(), [&](auto&& layer) {
         layer->OnEvent(event);
-        if (event.IsHandled)
+        // exit when the event is handled
+        if (event.IsHandled())
+        {
+            DW_CORE_WARN("Handled event {}", event.GetName());
             return;
+        }
     });
+}
+
+void Application::Quit()
+{
+    SetRunning(false);
+}
+
+void Application::Minimize()
+{
+    SetMinimized(true);
 }
 
 void Application::PushLayer(Layer* layer)
@@ -136,7 +159,8 @@ bool Application::OnWindowClosed(WindowCloseEvent& event)
 {
     // stop running
     SetRunning(false);
-    return true; // block
+
+    return true;
 }
 
 bool Application::OnWindowResize(WindowResizeEvent& event)
@@ -144,7 +168,6 @@ bool Application::OnWindowResize(WindowResizeEvent& event)
     if (event.GetWidth() == 0 || event.GetHeight() == 0)
     {
         SetMinimized(true);
-        return false;
     }
 
     SetMinimized(false);
@@ -152,5 +175,3 @@ bool Application::OnWindowResize(WindowResizeEvent& event)
 
     return false;
 }
-
-} // namespace Dwarfworks

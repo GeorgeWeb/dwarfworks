@@ -1,5 +1,5 @@
-#ifndef CORE_TIME_STEP_H_
-#define CORE_TIME_STEP_H_
+#ifndef CORE_TIME_STEP_H
+#define CORE_TIME_STEP_H
 
 namespace Dwarfworks
 {
@@ -13,8 +13,8 @@ class Timestep
     // implicit cast to float
     operator float() const { return m_Time; }
 
-    inline float GetSecnods() const { return m_Time; }
-    inline float GetMilliseconds() const { return m_Time * 1000.0f; }
+    float GetSecnods() const { return m_Time; }
+    float GetMilliseconds() const { return m_Time * 1000.0f; }
 
   private:
     float m_Time;
@@ -22,4 +22,4 @@ class Timestep
 
 } // namespace Dwarfworks
 
-#endif // CORE_TIME_STEP_H_
+#endif // CORE_TIME_STEP_H
